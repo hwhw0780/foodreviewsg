@@ -9,7 +9,10 @@ const Restaurant = sequelize.define('Restaurant', {
     },
     name: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notEmpty: true
+        }
     },
     nameChinese: {
         type: DataTypes.STRING,
@@ -17,7 +20,10 @@ const Restaurant = sequelize.define('Restaurant', {
     },
     category: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notEmpty: true
+        }
     },
     website: {
         type: DataTypes.TEXT,
@@ -28,13 +34,12 @@ const Restaurant = sequelize.define('Restaurant', {
     },
     bannerImage: {
         type: DataTypes.STRING,
-        allowNull: true,
-        comment: '16:9 aspect ratio banner image'
+        allowNull: false
     },
     photos: {
-        type: DataTypes.ARRAY(DataTypes.STRING),
-        defaultValue: [],
-        comment: '1:1 aspect ratio photos'
+        type: DataTypes.JSON,
+        allowNull: true,
+        defaultValue: []
     },
     phone: {
         type: DataTypes.STRING,
@@ -45,11 +50,17 @@ const Restaurant = sequelize.define('Restaurant', {
     },
     location: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notEmpty: true
+        }
     },
     address: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notEmpty: true
+        }
     },
     imageUrl: {
         type: DataTypes.STRING,
@@ -65,6 +76,7 @@ const Restaurant = sequelize.define('Restaurant', {
     },
     rating: {
         type: DataTypes.FLOAT,
+        allowNull: false,
         defaultValue: 0,
         validate: {
             min: 0,
@@ -73,7 +85,33 @@ const Restaurant = sequelize.define('Restaurant', {
     },
     reviewCount: {
         type: DataTypes.INTEGER,
-        defaultValue: 0
+        allowNull: false,
+        defaultValue: 0,
+        validate: {
+            min: 0
+        }
+    },
+    googleReviewUrl: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+        validate: {
+            isUrl: true
+        }
+    },
+    customReviews: {
+        type: DataTypes.JSON,
+        allowNull: false,
+        defaultValue: [],
+        validate: {
+            isValidReviewArray(value) {
+                if (!Array.isArray(value)) throw new Error('Reviews must be an array');
+                value.forEach(review => {
+                    if (!review.rating || !review.comment || !review.author) {
+                        throw new Error('Each review must have rating, comment, and author');
+                    }
+                });
+            }
+        }
     }
 }, {
     tableName: 'Restaurants',

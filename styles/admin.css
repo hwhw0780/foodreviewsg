@@ -362,4 +362,62 @@
 .error {
     background-color: #e74c3c;
     color: white;
+}
+
+/* Custom Reviews Styles */
+.review-item {
+    background: #f8f9fa;
+    border-radius: 5px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.review-header {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.review-author {
+    flex: 1;
+}
+
+.review-rating {
+    width: 100px;
+}
+
+.review-comment {
+    width: 100%;
+    min-height: 80px;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    resize: vertical;
+}
+
+.remove-review-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 0.5rem;
+    cursor: pointer;
+}
+
+.remove-review-btn:hover {
+    background: #c0392b;
+}
+
+.google-review-link {
+    margin-left: 0.5rem;
+    color: #4285f4;
+    text-decoration: none;
+}
+
+.google-review-link:hover {
+    color: #3367d6;
+}
+
+#add-review-btn {
+    margin-top: 1rem;
 } 

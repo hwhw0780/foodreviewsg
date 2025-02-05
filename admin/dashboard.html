@@ -221,6 +221,25 @@
                         <option value="4">$$$$ (Above $50)</option>
                     </select>
                 </div>
+                <div class="form-group">
+                    <label for="restaurant-rating">Rating</label>
+                    <input type="number" id="restaurant-rating" min="0" max="5" step="0.1" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="restaurant-reviews">Review Count</label>
+                    <input type="number" id="restaurant-reviews" min="0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="google-review-url">Google Review URL</label>
+                    <input type="url" id="google-review-url" placeholder="https://www.google.com/maps/place/...">
+                </div>
+                <div class="form-group full-width">
+                    <h3>Custom Reviews</h3>
+                    <div id="custom-reviews-container">
+                        <!-- Reviews will be added here -->
+                    </div>
+                    <button type="button" class="admin-btn secondary" id="add-review-btn">Add Review</button>
+                </div>
                 <div class="form-actions">
                     <button type="submit" class="admin-btn">Add Restaurant</button>
                     <button type="button" class="admin-btn secondary" id="cancel-form">Cancel</button>

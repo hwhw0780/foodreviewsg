@@ -72,7 +72,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${restaurant.category}</td>
                 <td>${restaurant.location}</td>
                 <td>${restaurant.rating.toFixed(1)}</td>
-                <td>${restaurant.reviewCount}</td>
+                <td>
+                    ${restaurant.reviewCount}
+                    ${restaurant.googleReviewUrl ? 
+                        `<a href="${restaurant.googleReviewUrl}" target="_blank" class="google-review-link">
+                            <i class="fab fa-google"></i>
+                        </a>` : ''}
+                </td>
                 <td class="table-actions">
                     <button class="edit-btn" data-id="${restaurant.id}">
                         <i class="fas fa-edit"></i>
@@ -218,11 +224,77 @@ document.addEventListener('DOMContentLoaded', function() {
             previewPrice.textContent = prices[e.target.value - 1];
         });
 
-        // Form submission
+        // Add review button handling
+        const addReviewBtn = document.getElementById('add-review-btn');
+        const customReviewsContainer = document.getElementById('custom-reviews-container');
+        let customReviews = [];
+
+        function createReviewElement(review = null) {
+            const reviewDiv = document.createElement('div');
+            reviewDiv.className = 'review-item';
+            reviewDiv.innerHTML = `
+                <div class="review-header">
+                    <input type="text" class="review-author" placeholder="Author Name" value="${review?.author || ''}" required>
+                    <select class="review-rating" required>
+                        ${[1, 2, 3, 4, 5].map(num => 
+                            `<option value="${num}" ${review?.rating === num ? 'selected' : ''}>${num} Star${num > 1 ? 's' : ''}</option>`
+                        ).join('')}
+                    </select>
+                    <button type="button" class="remove-review-btn"><i class="fas fa-trash"></i></button>
+                </div>
+                <textarea class="review-comment" placeholder="Write your review here..." required>${review?.comment || ''}</textarea>
+            `;
+
+            const removeBtn = reviewDiv.querySelector('.remove-review-btn');
+            removeBtn.addEventListener('click', () => {
+                reviewDiv.remove();
+                updateCustomReviews();
+            });
+
+            reviewDiv.querySelectorAll('input, textarea, select').forEach(input => {
+                input.addEventListener('change', updateCustomReviews);
+            });
+
+            return reviewDiv;
+        }
+
+        function updateCustomReviews() {
+            customReviews = Array.from(customReviewsContainer.querySelectorAll('.review-item')).map(item => ({
+                author: item.querySelector('.review-author').value,
+                rating: parseInt(item.querySelector('.review-rating').value),
+                comment: item.querySelector('.review-comment').value
+            }));
+        }
+
+        addReviewBtn.addEventListener('click', () => {
+            customReviewsContainer.appendChild(createReviewElement());
+        });
+
+        // Add two default reviews when form is shown
+        addRestaurantBtn.addEventListener('click', () => {
+            // ... existing show form code ...
+            
+            // Add default good review
+            customReviewsContainer.appendChild(createReviewElement({
+                author: "John Doe",
+                rating: 5,
+                comment: "Amazing food and great service! Highly recommended!"
+            }));
+
+            // Add default bad review
+            customReviewsContainer.appendChild(createReviewElement({
+                author: "Jane Smith",
+                rating: 2,
+                comment: "Food was mediocre and service was slow. Needs improvement."
+            }));
+
+            updateCustomReviews();
+        });
+
+        // Update form submission
         addRestaurantForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // Create FormData object to handle file uploads
             const formData = new FormData();
             formData.append('name', nameInput.value);
             formData.append('nameChinese', chineseNameInput.value);
@@ -233,6 +305,10 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.append('address', document.getElementById('restaurant-address').value);
             formData.append('priceRange', priceSelect.value);
             formData.append('bannerImage', bannerInput.files[0]);
+            formData.append('rating', document.getElementById('restaurant-rating').value);
+            formData.append('reviewCount', document.getElementById('restaurant-reviews').value);
+            formData.append('googleReviewUrl', document.getElementById('google-review-url').value);
+            formData.append('customReviews', JSON.stringify(customReviews));
             
             Array.from(photosInput.files).forEach(file => {
                 formData.append('photos', file);
@@ -247,6 +323,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (response.ok) {
                     showMessage('Restaurant added successfully!', 'success');
                     addRestaurantForm.reset();
+                    customReviewsContainer.innerHTML = '';
+                    customReviews = [];
                     // Clear previews
                     bannerPreview.innerHTML = '';
                     photosPreview.innerHTML = '';
@@ -284,6 +362,16 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('restaurant-location').value = restaurant.location;
             document.getElementById('restaurant-address').value = restaurant.address;
             document.getElementById('price-range').value = restaurant.priceRange;
+            document.getElementById('google-review-url').value = restaurant.googleReviewUrl || '';
+            
+            // Clear and populate custom reviews
+            customReviewsContainer.innerHTML = '';
+            if (restaurant.customReviews) {
+                restaurant.customReviews.forEach(review => {
+                    customReviewsContainer.appendChild(createReviewElement(review));
+                });
+            }
+            updateCustomReviews();
 
             // Show form
             restaurantFormSection.style.display = 'block';

@@ -52,9 +52,9 @@ async function startServer() {
         // Test database connection
         await testConnection();
         
-        // Force sync database (drop and recreate tables)
+        // Sync database (only create tables if they don't exist)
         console.log('Syncing database...');
-        await sequelize.sync({ force: true });
+        await sequelize.sync({ force: false });
         console.log('Database synced successfully');
 
         // Start server
