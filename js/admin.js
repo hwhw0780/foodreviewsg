@@ -34,6 +34,111 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Restaurant list functionality
+    let restaurants = [];
+    const restaurantTable = document.getElementById('restaurants-table');
+    const filterCategory = document.getElementById('filter-category');
+    const filterLocation = document.getElementById('filter-location');
+    const restaurantSearch = document.getElementById('restaurant-search');
+    const addRestaurantBtn = document.getElementById('add-restaurant-btn');
+    const restaurantFormSection = document.getElementById('restaurant-form-section');
+    const previewSection = document.getElementById('preview-section');
+    const cancelFormBtn = document.getElementById('cancel-form');
+
+    // Fetch and display restaurants
+    async function fetchRestaurants() {
+        try {
+            const response = await fetch('/api/restaurants');
+            if (!response.ok) {
+                throw new Error('Failed to fetch restaurants');
+            }
+            restaurants = await response.json();
+            displayRestaurants();
+        } catch (error) {
+            showMessage('Failed to fetch restaurants: ' + error.message, 'error');
+        }
+    }
+
+    // Display restaurants in table
+    function displayRestaurants(filtered = restaurants) {
+        const tbody = restaurantTable.querySelector('tbody');
+        tbody.innerHTML = '';
+
+        filtered.forEach(restaurant => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${restaurant.name}</td>
+                <td>${restaurant.nameChinese || '-'}</td>
+                <td>${restaurant.category}</td>
+                <td>${restaurant.location}</td>
+                <td>${restaurant.rating.toFixed(1)}</td>
+                <td>${restaurant.reviewCount}</td>
+                <td class="table-actions">
+                    <button class="edit-btn" data-id="${restaurant.id}">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="delete-btn" data-id="${restaurant.id}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        // Add event listeners to action buttons
+        tbody.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', () => editRestaurant(btn.dataset.id));
+        });
+
+        tbody.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', () => deleteRestaurant(btn.dataset.id));
+        });
+    }
+
+    // Filter restaurants
+    function filterRestaurants() {
+        const category = filterCategory.value;
+        const location = filterLocation.value;
+        const searchTerm = restaurantSearch.value.toLowerCase();
+
+        const filtered = restaurants.filter(restaurant => {
+            const categoryMatch = category === 'all' || restaurant.category === category;
+            const locationMatch = location === 'all' || 
+                                restaurant.location.toLowerCase() === location.toLowerCase();
+            const searchMatch = restaurant.name.toLowerCase().includes(searchTerm) ||
+                              (restaurant.nameChinese && restaurant.nameChinese.toLowerCase().includes(searchTerm));
+
+            return categoryMatch && locationMatch && searchMatch;
+        });
+
+        displayRestaurants(filtered);
+    }
+
+    // Add event listeners for filters
+    if (filterCategory) {
+        filterCategory.addEventListener('change', filterRestaurants);
+        filterLocation.addEventListener('change', filterRestaurants);
+        restaurantSearch.addEventListener('input', filterRestaurants);
+    }
+
+    // Toggle form visibility
+    if (addRestaurantBtn) {
+        addRestaurantBtn.addEventListener('click', () => {
+            restaurantFormSection.style.display = 'block';
+            previewSection.style.display = 'block';
+            addRestaurantBtn.style.display = 'none';
+        });
+    }
+
+    if (cancelFormBtn) {
+        cancelFormBtn.addEventListener('click', () => {
+            restaurantFormSection.style.display = 'none';
+            previewSection.style.display = 'none';
+            addRestaurantBtn.style.display = 'block';
+            document.getElementById('add-restaurant-form').reset();
+        });
+    }
+
     // Restaurant form handling
     const addRestaurantForm = document.getElementById('add-restaurant-form');
     if (addRestaurantForm) {
@@ -88,7 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const nameInput = document.getElementById('restaurant-name');
         const chineseNameInput = document.getElementById('restaurant-name-chinese');
         const categorySelect = document.getElementById('restaurant-category');
-        const locationInput = document.getElementById('restaurant-location');
+        const locationSelect = document.getElementById('restaurant-location');
         const priceSelect = document.getElementById('price-range');
 
         const previewName = document.getElementById('preview-name');
@@ -104,7 +209,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const option = e.target.options[e.target.selectedIndex];
             previewCategory.textContent = option.text;
         });
-        locationInput.addEventListener('input', e => previewLocation.textContent = e.target.value);
+        locationSelect.addEventListener('change', e => {
+            const option = e.target.options[e.target.selectedIndex];
+            previewLocation.textContent = option.text;
+        });
         priceSelect.addEventListener('change', e => {
             const prices = ['$', '$$', '$$$', '$$$$'];
             previewPrice.textContent = prices[e.target.value - 1];
@@ -121,7 +229,7 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.append('category', categorySelect.value);
             formData.append('website', document.getElementById('restaurant-website').value);
             formData.append('phone', document.getElementById('restaurant-phone').value);
-            formData.append('location', locationInput.value);
+            formData.append('location', locationSelect.value);
             formData.append('address', document.getElementById('restaurant-address').value);
             formData.append('priceRange', priceSelect.value);
             formData.append('bannerImage', bannerInput.files[0]);
@@ -144,6 +252,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     photosPreview.innerHTML = '';
                     previewBannerImage.src = '#';
                     previewPhotosGrid.innerHTML = '';
+                    // Hide form and show list
+                    restaurantFormSection.style.display = 'none';
+                    previewSection.style.display = 'none';
+                    addRestaurantBtn.style.display = 'block';
+                    // Refresh restaurant list
+                    fetchRestaurants();
                 } else {
                     throw new Error('Failed to add restaurant');
                 }
@@ -151,6 +265,61 @@ document.addEventListener('DOMContentLoaded', function() {
                 showMessage('Failed to add restaurant: ' + error.message, 'error');
             }
         });
+    }
+
+    // Edit restaurant
+    async function editRestaurant(id) {
+        try {
+            const restaurant = restaurants.find(r => r.id === parseInt(id));
+            if (!restaurant) {
+                throw new Error('Restaurant not found');
+            }
+
+            // Populate form
+            document.getElementById('restaurant-name').value = restaurant.name;
+            document.getElementById('restaurant-name-chinese').value = restaurant.nameChinese || '';
+            document.getElementById('restaurant-category').value = restaurant.category;
+            document.getElementById('restaurant-website').value = restaurant.website || '';
+            document.getElementById('restaurant-phone').value = restaurant.phone || '';
+            document.getElementById('restaurant-location').value = restaurant.location;
+            document.getElementById('restaurant-address').value = restaurant.address;
+            document.getElementById('price-range').value = restaurant.priceRange;
+
+            // Show form
+            restaurantFormSection.style.display = 'block';
+            previewSection.style.display = 'block';
+            addRestaurantBtn.style.display = 'none';
+
+            // Update form title and submit button
+            document.getElementById('form-title').textContent = 'Edit Restaurant';
+            const submitBtn = addRestaurantForm.querySelector('button[type="submit"]');
+            submitBtn.textContent = 'Update Restaurant';
+
+            // Scroll to form
+            restaurantFormSection.scrollIntoView({ behavior: 'smooth' });
+        } catch (error) {
+            showMessage('Failed to edit restaurant: ' + error.message, 'error');
+        }
+    }
+
+    // Delete restaurant
+    async function deleteRestaurant(id) {
+        if (confirm('Are you sure you want to delete this restaurant?')) {
+            try {
+                const response = await fetch(`/api/restaurants/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    showMessage('Restaurant deleted successfully!', 'success');
+                    fetchRestaurants();
+                } else {
+                    throw new Error('Failed to delete restaurant');
+                }
+            } catch (error) {
+                showMessage('Failed to delete restaurant: ' + error.message, 'error');
+            }
+        }
     }
 
     // Statistics update handling
@@ -201,5 +370,10 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
             messageDiv.remove();
         }, 3000);
+    }
+
+    // Initial fetch of restaurants if on dashboard
+    if (window.location.href.includes('dashboard.html')) {
+        fetchRestaurants();
     }
 }); 

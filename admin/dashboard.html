@@ -49,9 +49,89 @@
             </div>
         </section>
 
-        <!-- Restaurant Management -->
+        <!-- Restaurant List -->
         <section class="admin-section">
-            <h2>Add New Restaurant</h2>
+            <h2>Restaurant Management</h2>
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <label for="filter-category">Category:</label>
+                    <select id="filter-category">
+                        <option value="all">All Categories</option>
+                        <option value="chinese">Chinese (中餐)</option>
+                        <option value="chicken-rice">Chicken Rice (海南鸡饭)</option>
+                        <option value="dim-sum">Dim Sum (点心)</option>
+                        <option value="malay">Malay</option>
+                        <option value="indian">Indian</option>
+                        <option value="japanese">Japanese (日本料理)</option>
+                        <option value="korean">Korean (韩国料理)</option>
+                        <option value="western">Western (西餐)</option>
+                        <option value="hotpot">Hotpot (火锅)</option>
+                        <option value="seafood">Seafood (海鲜)</option>
+                        <option value="dessert">Dessert (甜点)</option>
+                        <option value="cafe">Café (咖啡馆)</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filter-location">Location:</label>
+                    <select id="filter-location">
+                        <option value="all">All Locations</option>
+                        <option value="ang-mo-kio">Ang Mo Kio</option>
+                        <option value="bedok">Bedok</option>
+                        <option value="bishan">Bishan</option>
+                        <option value="bugis">Bugis</option>
+                        <option value="chinatown">Chinatown</option>
+                        <option value="city-hall">City Hall</option>
+                        <option value="clementi">Clementi</option>
+                        <option value="dhoby-ghaut">Dhoby Ghaut</option>
+                        <option value="jurong-east">Jurong East</option>
+                        <option value="jurong-west">Jurong West</option>
+                        <option value="kallang">Kallang</option>
+                        <option value="marina-bay">Marina Bay</option>
+                        <option value="novena">Novena</option>
+                        <option value="orchard">Orchard</option>
+                        <option value="pasir-ris">Pasir Ris</option>
+                        <option value="paya-lebar">Paya Lebar</option>
+                        <option value="punggol">Punggol</option>
+                        <option value="raffles-place">Raffles Place</option>
+                        <option value="serangoon">Serangoon</option>
+                        <option value="sengkang">Sengkang</option>
+                        <option value="sembawang">Sembawang</option>
+                        <option value="tampines">Tampines</option>
+                        <option value="toa-payoh">Toa Payoh</option>
+                        <option value="woodlands">Woodlands</option>
+                        <option value="yishun">Yishun</option>
+                    </select>
+                </div>
+                <div class="search-group">
+                    <input type="text" id="restaurant-search" placeholder="Search restaurants...">
+                </div>
+            </div>
+
+            <div class="restaurant-list">
+                <table id="restaurants-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Chinese Name</th>
+                            <th>Category</th>
+                            <th>Location</th>
+                            <th>Rating</th>
+                            <th>Reviews</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <button id="add-restaurant-btn" class="admin-btn">Add New Restaurant</button>
+        </section>
+
+        <!-- Add/Edit Restaurant Form -->
+        <section class="admin-section" id="restaurant-form-section" style="display: none;">
+            <h2 id="form-title">Add New Restaurant</h2>
             <form id="add-restaurant-form" class="restaurant-form">
                 <div class="form-group">
                     <label for="restaurant-name">Restaurant Name (English)*</label>
@@ -89,7 +169,34 @@
                 </div>
                 <div class="form-group">
                     <label for="restaurant-location">Location*</label>
-                    <input type="text" id="restaurant-location" required placeholder="e.g., Orchard">
+                    <select id="restaurant-location" required>
+                        <option value="">Select Location</option>
+                        <option value="ang-mo-kio">Ang Mo Kio</option>
+                        <option value="bedok">Bedok</option>
+                        <option value="bishan">Bishan</option>
+                        <option value="bugis">Bugis</option>
+                        <option value="chinatown">Chinatown</option>
+                        <option value="city-hall">City Hall</option>
+                        <option value="clementi">Clementi</option>
+                        <option value="dhoby-ghaut">Dhoby Ghaut</option>
+                        <option value="jurong-east">Jurong East</option>
+                        <option value="jurong-west">Jurong West</option>
+                        <option value="kallang">Kallang</option>
+                        <option value="marina-bay">Marina Bay</option>
+                        <option value="novena">Novena</option>
+                        <option value="orchard">Orchard</option>
+                        <option value="pasir-ris">Pasir Ris</option>
+                        <option value="paya-lebar">Paya Lebar</option>
+                        <option value="punggol">Punggol</option>
+                        <option value="raffles-place">Raffles Place</option>
+                        <option value="serangoon">Serangoon</option>
+                        <option value="sengkang">Sengkang</option>
+                        <option value="sembawang">Sembawang</option>
+                        <option value="tampines">Tampines</option>
+                        <option value="toa-payoh">Toa Payoh</option>
+                        <option value="woodlands">Woodlands</option>
+                        <option value="yishun">Yishun</option>
+                    </select>
                 </div>
                 <div class="form-group full-width">
                     <label for="restaurant-address">Full Address*</label>
@@ -116,13 +223,13 @@
                 </div>
                 <div class="form-actions">
                     <button type="submit" class="admin-btn">Add Restaurant</button>
-                    <button type="reset" class="admin-btn secondary">Clear Form</button>
+                    <button type="button" class="admin-btn secondary" id="cancel-form">Cancel</button>
                 </div>
             </form>
         </section>
 
         <!-- Preview Section -->
-        <section class="admin-section">
+        <section class="admin-section" id="preview-section" style="display: none;">
             <h2>Restaurant Preview</h2>
             <div class="restaurant-preview">
                 <div class="preview-banner">
