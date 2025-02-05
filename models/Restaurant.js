@@ -20,7 +20,7 @@ const Restaurant = sequelize.define('Restaurant', {
         allowNull: false
     },
     website: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: true,
         validate: {
             isUrl: true
@@ -75,6 +75,9 @@ const Restaurant = sequelize.define('Restaurant', {
         type: DataTypes.INTEGER,
         defaultValue: 0
     }
+}, {
+    tableName: 'Restaurants',
+    timestamps: true
 });
 
 module.exports = Restaurant; 
