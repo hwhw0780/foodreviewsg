@@ -35,11 +35,30 @@ document.addEventListener('DOMContentLoaded', function() {
     // Fetch restaurants from API
     async function fetchRestaurants() {
         try {
+            console.log('=== Fetching Restaurants ===');
             const response = await fetch('/api/restaurants');
+            console.log('API Response:', response);
+            
             if (!response.ok) {
                 throw new Error('Failed to fetch restaurants');
             }
+            
             restaurants = await response.json();
+            console.log('Fetched restaurants:', restaurants);
+            
+            if (!restaurants || restaurants.length === 0) {
+                console.log('No restaurants found in response');
+                showNoResults('No restaurants available.');
+                return;
+            }
+
+            // Validate restaurant data
+            restaurants.forEach((restaurant, index) => {
+                if (!restaurant.id) {
+                    console.warn(`Restaurant at index ${index} is missing ID:`, restaurant);
+                }
+            });
+
             displayRestaurants();
         } catch (error) {
             console.error('Error fetching restaurants:', error);
@@ -60,13 +79,21 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Add click event listener
         card.addEventListener('click', function(e) {
+            console.log('=== Card Click Event ===');
+            console.log('Event:', e);
+            console.log('Clicked restaurant ID:', restaurant.id);
+            console.log('Restaurant data:', restaurant);
             e.preventDefault();
-            console.log('Card clicked for restaurant:', restaurant.id);
-            showRestaurantModal(restaurant);
+            try {
+                showRestaurantModal(restaurant);
+            } catch (error) {
+                console.error('Error showing modal:', error);
+            }
         });
         
         // Update image handling to use absolute paths
         const bannerImageUrl = restaurant.bannerImage?.startsWith('/') ? restaurant.bannerImage : `/${restaurant.bannerImage}`;
+        console.log('Banner image URL:', bannerImageUrl);
         
         card.innerHTML = `
             <div class="card-image">
@@ -90,11 +117,15 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
         
+        console.log('Card HTML created:', card.outerHTML);
         return card;
     }
 
     // Function to show restaurant modal
     function showRestaurantModal(restaurant) {
+        console.log('=== Showing Modal ===');
+        console.log('Creating modal for restaurant:', restaurant);
+        
         const modal = document.createElement('div');
         modal.className = 'restaurant-modal';
         
@@ -102,7 +133,9 @@ document.addEventListener('DOMContentLoaded', function() {
                      (restaurant.rating % 1 >= 0.5 ? '½' : '') +
                      '☆'.repeat(5 - Math.ceil(restaurant.rating));
         
-        modal.innerHTML = `
+        console.log('Building modal HTML...');
+        
+        const modalHTML = `
             <div class="modal-content">
                 <span class="close-modal">&times;</span>
                 <div class="modal-header">
@@ -187,23 +220,42 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
 
+        console.log('Modal HTML built');
+        modal.innerHTML = modalHTML;
+        console.log('Modal HTML set');
+
+        console.log('Appending modal to body...');
         document.body.appendChild(modal);
+        console.log('Modal appended to body');
 
         // Close modal when clicking the close button or outside the modal
         const closeBtn = modal.querySelector('.close-modal');
-        closeBtn.onclick = () => document.body.removeChild(modal);
+        console.log('Close button found:', closeBtn);
+        
+        closeBtn.onclick = () => {
+            console.log('Close button clicked');
+            document.body.removeChild(modal);
+        };
+        
         modal.onclick = (e) => {
+            console.log('Modal clicked:', e.target === modal ? 'outside content' : 'inside content');
             if (e.target === modal) {
                 document.body.removeChild(modal);
             }
         };
 
         // Close modal when pressing Escape key
-        document.addEventListener('keydown', function(e) {
+        const escapeHandler = function(e) {
+            console.log('Key pressed:', e.key);
             if (e.key === 'Escape' && document.body.contains(modal)) {
+                console.log('Escape pressed, removing modal');
                 document.body.removeChild(modal);
+                document.removeEventListener('keydown', escapeHandler);
             }
-        });
+        };
+        
+        document.addEventListener('keydown', escapeHandler);
+        console.log('Modal setup complete');
     }
 
     // Generate rating stars HTML
@@ -221,6 +273,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Display filtered restaurants
     function displayRestaurants() {
+        console.log('=== Displaying Restaurants ===');
         restaurantGrid.innerHTML = '';
         let visibleCount = 0;
         const maxVisible = currentCategory === 'all' ? Infinity : 5;
@@ -232,13 +285,17 @@ document.addEventListener('DOMContentLoaded', function() {
             return categoryMatch && locationMatch;
         });
 
+        console.log('Filtered restaurants:', filteredRestaurants);
+
         if (filteredRestaurants.length === 0) {
             showNoResults();
             return;
         }
 
         filteredRestaurants.slice(0, maxVisible).forEach(restaurant => {
-            restaurantGrid.innerHTML += createRestaurantCard(restaurant).outerHTML;
+            console.log('Creating card for restaurant:', restaurant);
+            const card = createRestaurantCard(restaurant);
+            restaurantGrid.appendChild(card);
             visibleCount++;
         });
 
@@ -291,6 +348,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function handleSearch() {
         const searchTerm = searchInput.value.trim().toLowerCase();
+        console.log('Searching for:', searchTerm);
         
         const filteredRestaurants = restaurants.filter(restaurant => {
             return restaurant.name.toLowerCase().includes(searchTerm) ||
@@ -303,8 +361,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (filteredRestaurants.length === 0) {
             showNoResults(`No restaurants found matching "${searchTerm}"`);
         } else {
+            console.log('Found restaurants:', filteredRestaurants);
             filteredRestaurants.forEach(restaurant => {
-                restaurantGrid.innerHTML += createRestaurantCard(restaurant).outerHTML;
+                const card = createRestaurantCard(restaurant);
+                restaurantGrid.appendChild(card);
             });
         }
     }
