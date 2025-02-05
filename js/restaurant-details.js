@@ -2,14 +2,21 @@
 const urlParams = new URLSearchParams(window.location.search);
 const restaurantId = urlParams.get('id');
 
+console.log('Restaurant ID from URL:', restaurantId);
+
 // Function to fetch restaurant details
 async function fetchRestaurantDetails() {
     try {
+        console.log('Fetching details for restaurant ID:', restaurantId);
         const response = await fetch(`/api/restaurants/${restaurantId}`);
+        console.log('API Response status:', response.status);
+        
         if (!response.ok) {
             throw new Error('Restaurant not found');
         }
+        
         const restaurant = await response.json();
+        console.log('Restaurant data received:', restaurant);
         displayRestaurantDetails(restaurant);
     } catch (error) {
         console.error('Error fetching restaurant details:', error);

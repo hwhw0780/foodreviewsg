@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Create restaurant card HTML
     function createRestaurantCard(restaurant) {
+        console.log('Creating card for restaurant:', restaurant);
         const stars = '★'.repeat(Math.floor(restaurant.rating)) + 
                      (restaurant.rating % 1 >= 0.5 ? '½' : '') +
                      '☆'.repeat(5 - Math.ceil(restaurant.rating));
@@ -56,12 +57,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const card = document.createElement('div');
         card.className = 'restaurant-card';
         card.onclick = () => {
-            window.location.href = `/restaurant-details.html?id=${restaurant.id}`;
+            console.log('Card clicked for restaurant:', restaurant.id);
+            const detailsUrl = `/restaurant-details.html?id=${restaurant.id}`;
+            console.log('Navigating to:', detailsUrl);
+            window.location.href = detailsUrl;
         };
         
         card.innerHTML = `
             <div class="card-image">
-                <img src="${restaurant.bannerImage}" alt="${restaurant.name}">
+                <img src="${restaurant.bannerImage}" alt="${restaurant.name}" onerror="this.onerror=null; this.src='/images/default-restaurant.jpg';">
             </div>
             <div class="card-content">
                 <h3>${restaurant.name}</h3>

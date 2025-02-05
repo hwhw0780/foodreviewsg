@@ -30,8 +30,12 @@ router.get('/', async (req, res) => {
 // Get restaurant by ID
 router.get('/:id', async (req, res) => {
     try {
+        console.log('Fetching restaurant with ID:', req.params.id);
         const restaurant = await Restaurant.findByPk(req.params.id);
+        console.log('Found restaurant:', restaurant);
+        
         if (!restaurant) {
+            console.log('Restaurant not found');
             return res.status(404).json({ error: 'Restaurant not found' });
         }
         res.json(restaurant);
