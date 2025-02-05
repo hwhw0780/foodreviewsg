@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SG Food Reviews - Your Ultimate Singapore Food Guide</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="index.html">SG Food Reviews</a>
+        </div>
+        <div class="nav-links">
+            <a href="index.html" class="active">Home</a>
+            <a href="#restaurants">Restaurants</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+            <a href="admin/login.html" class="admin-login"><i class="fas fa-user"></i> Admin Login</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-content">
+            <h1>Discover Singapore's Best Restaurants</h1>
+            <p>Your trusted guide to the finest dining experiences in Singapore</p>
+            <div class="search-bar">
+                <input type="text" placeholder="Search for restaurants...">
+                <button><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Category Filter Section -->
+    <section class="category-filter">
+        <div class="category-container">
+            <h2>Browse by Category</h2>
+            <div class="category-buttons">
+                <button class="category-btn active" data-category="all">
+                    <i class="fas fa-utensils"></i> All
+                </button>
+                <button class="category-btn" data-category="chinese">
+                    <i class="fas fa-bowl-rice"></i> Chinese (中餐)
+                </button>
+                <button class="category-btn" data-category="chicken-rice">
+                    <i class="fas fa-drumstick-bite"></i> Chicken Rice (海南鸡饭)
+                </button>
+                <button class="category-btn" data-category="dim-sum">
+                    <i class="fas fa-cookie"></i> Dim Sum (点心)
+                </button>
+                <button class="category-btn" data-category="malay">
+                    <i class="fas fa-pepper-hot"></i> Malay
+                </button>
+                <button class="category-btn" data-category="indian">
+                    <i class="fas fa-fire-alt"></i> Indian
+                </button>
+                <button class="category-btn" data-category="local">
+                    <i class="fas fa-home"></i> Local (本地)
+                </button>
+                <button class="category-btn" data-category="japanese">
+                    <i class="fas fa-fish"></i> Japanese (日本料理)
+                </button>
+                <button class="category-btn" data-category="korean">
+                    <i class="fas fa-seedling"></i> Korean (韩国料理)
+                </button>
+                <button class="category-btn" data-category="western">
+                    <i class="fas fa-hamburger"></i> Western (西餐)
+                </button>
+                <button class="category-btn" data-category="hotpot">
+                    <i class="fas fa-fire"></i> Hotpot (火锅)
+                </button>
+                <button class="category-btn" data-category="seafood">
+                    <i class="fas fa-fish"></i> Seafood (海鲜)
+                </button>
+                <button class="category-btn" data-category="dessert">
+                    <i class="fas fa-ice-cream"></i> Dessert (甜点)
+                </button>
+                <button class="category-btn" data-category="ice-cream">
+                    <i class="fas fa-ice-cream"></i> Ice Cream (冰淇淋)
+                </button>
+                <button class="category-btn" data-category="cafe">
+                    <i class="fas fa-coffee"></i> Café (咖啡馆)
+                </button>
+                <button class="category-btn" data-category="bubble-tea">
+                    <i class="fas fa-glass-whiskey"></i> Bubble Tea (珍珠奶茶)
+                </button>
+                <button class="category-btn" data-category="bakery">
+                    <i class="fas fa-bread-slice"></i> Bakery (面包店)
+                </button>
+                <button class="category-btn" data-category="vegetarian">
+                    <i class="fas fa-leaf"></i> Vegetarian (素食)
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Location Filter -->
+    <section class="location-filter">
+        <div class="location-container">
+            <label for="location-select" class="location-label">Location:</label>
+            <select id="location-select">
+                <option value="all">All of Singapore</option>
+                <option value="ang-mo-kio">Ang Mo Kio</option>
+                <option value="bedok">Bedok</option>
+                <option value="bishan">Bishan</option>
+                <option value="bugis">Bugis</option>
+                <option value="chinatown">Chinatown</option>
+                <option value="city-hall">City Hall</option>
+                <option value="clementi">Clementi</option>
+                <option value="dhoby-ghaut">Dhoby Ghaut</option>
+                <option value="jurong-east">Jurong East</option>
+                <option value="jurong-west">Jurong West</option>
+                <option value="kallang">Kallang</option>
+                <option value="marina-bay">Marina Bay</option>
+                <option value="novena">Novena</option>
+                <option value="orchard">Orchard</option>
+                <option value="pasir-ris">Pasir Ris</option>
+                <option value="paya-lebar">Paya Lebar</option>
+                <option value="punggol">Punggol</option>
+                <option value="raffles-place">Raffles Place</option>
+                <option value="serangoon">Serangoon</option>
+                <option value="sengkang">Sengkang</option>
+                <option value="sembawang">Sembawang</option>
+                <option value="tampines">Tampines</option>
+                <option value="toa-payoh">Toa Payoh</option>
+                <option value="woodlands">Woodlands</option>
+                <option value="yishun">Yishun</option>
+            </select>
+        </div>
+    </section>
+
+    <!-- Featured Restaurants Section -->
+    <section class="featured-restaurants">
+        <h2 id="featured-title">Featured Restaurants</h2>
+        <div class="restaurant-grid">
+            <!-- Example restaurant card (will be dynamically populated) -->
+            <div class="restaurant-card" data-category="chinese" data-location="serangoon">
+                <div class="restaurant-image">
+                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5" alt="Restaurant Image">
+                </div>
+                <div class="restaurant-info">
+                    <h3>Din Tai Fung (鼎泰丰)</h3>
+                    <p class="cuisine">Chinese • Dim Sum</p>
+                    <div class="rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                        <span>(1,234 reviews)</span>
+                    </div>
+                    <p class="location"><i class="fas fa-map-marker-alt"></i> NEX Mall, Serangoon</p>
+                    <p class="price-range"><i class="fas fa-dollar-sign"></i><i class="fas fa-dollar-sign"></i></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="statistics">
+        <div class="stats-container">
+            <div class="stat-box">
+                <i class="fas fa-users"></i>
+                <div class="stat-info">
+                    <h3 class="stat-number" id="daily-users">15,234</h3>
+                    <p class="stat-label">Daily Active Users</p>
+                </div>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-calendar-check"></i>
+                <div class="stat-info">
+                    <h3 class="stat-number" id="daily-bookings">2,456</h3>
+                    <p class="stat-label">Today's Bookings</p>
+                </div>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-utensils"></i>
+                <div class="stat-info">
+                    <h3 class="stat-number" id="total-restaurants">1,890</h3>
+                    <p class="stat-label">Partner Restaurants</p>
+                </div>
+            </div>
+            <div class="stat-box">
+                <i class="fas fa-star"></i>
+                <div class="stat-info">
+                    <h3 class="stat-number" id="total-reviews">45,678</h3>
+                    <p class="stat-label">Customer Reviews</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About SG Food Reviews</h3>
+                <p>Your trusted platform for discovering and reviewing the best restaurants in Singapore.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#privacy">Privacy Policy</a></li>
+                    <li><a href="#terms">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Connect With Us</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 SG Food Reviews. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html> 

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - SG Food Reviews</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="admin-body">
+    <!-- Admin Navigation -->
+    <nav class="admin-nav">
+        <div class="nav-brand">
+            <a href="../index.html">SG Food Reviews</a>
+        </div>
+        <div class="nav-links">
+            <a href="#" class="active"><i class="fas fa-chart-line"></i> Dashboard</a>
+            <a href="#restaurants"><i class="fas fa-utensils"></i> Restaurants</a>
+            <a href="#reviews"><i class="fas fa-star"></i> Reviews</a>
+            <a href="#users"><i class="fas fa-users"></i> Users</a>
+            <a href="#" id="logout-btn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="admin-container">
+        <!-- Statistics Management -->
+        <section class="admin-section">
+            <h2>Statistics Management</h2>
+            <div class="stats-editor">
+                <div class="stat-edit-box">
+                    <label for="daily-users-input">Daily Active Users</label>
+                    <input type="number" id="daily-users-input" value="15234">
+                </div>
+                <div class="stat-edit-box">
+                    <label for="daily-bookings-input">Today's Bookings</label>
+                    <input type="number" id="daily-bookings-input" value="2456">
+                </div>
+                <div class="stat-edit-box">
+                    <label for="total-restaurants-input">Partner Restaurants</label>
+                    <input type="number" id="total-restaurants-input" value="1890">
+                </div>
+                <div class="stat-edit-box">
+                    <label for="total-reviews-input">Customer Reviews</label>
+                    <input type="number" id="total-reviews-input" value="45678">
+                </div>
+                <button id="update-stats-btn" class="admin-btn">Update Statistics</button>
+            </div>
+        </section>
+
+        <!-- Restaurant Management -->
+        <section class="admin-section">
+            <h2>Add New Restaurant</h2>
+            <form id="add-restaurant-form" class="restaurant-form">
+                <div class="form-group">
+                    <label for="restaurant-name">Restaurant Name (English)</label>
+                    <input type="text" id="restaurant-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="restaurant-name-chinese">Restaurant Name (Chinese) - Optional</label>
+                    <input type="text" id="restaurant-name-chinese">
+                </div>
+                <div class="form-group">
+                    <label for="restaurant-category">Category</label>
+                    <select id="restaurant-category" required>
+                        <option value="">Select Category</option>
+                        <option value="chinese">Chinese (中餐)</option>
+                        <option value="chicken-rice">Chicken Rice (海南鸡饭)</option>
+                        <option value="dim-sum">Dim Sum (点心)</option>
+                        <option value="malay">Malay</option>
+                        <option value="indian">Indian</option>
+                        <option value="japanese">Japanese (日本料理)</option>
+                        <option value="korean">Korean (韩国料理)</option>
+                        <option value="western">Western (西餐)</option>
+                        <option value="hotpot">Hotpot (火锅)</option>
+                        <option value="seafood">Seafood (海鲜)</option>
+                        <option value="dessert">Dessert (甜点)</option>
+                        <option value="cafe">Café (咖啡馆)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="restaurant-location">Location</label>
+                    <select id="restaurant-location" required>
+                        <option value="">Select Location</option>
+                        <option value="ang-mo-kio">Ang Mo Kio</option>
+                        <option value="bugis">Bugis</option>
+                        <option value="chinatown">Chinatown</option>
+                        <option value="orchard">Orchard</option>
+                        <option value="serangoon">Serangoon</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="restaurant-address">Full Address</label>
+                    <input type="text" id="restaurant-address" required>
+                </div>
+                <div class="form-group">
+                    <label for="restaurant-image">Image URL</label>
+                    <input type="url" id="restaurant-image" required>
+                </div>
+                <div class="form-group">
+                    <label for="price-range">Price Range</label>
+                    <select id="price-range" required>
+                        <option value="1">$ (Below $15)</option>
+                        <option value="2">$$ ($15-$30)</option>
+                        <option value="3">$$$ ($31-$50)</option>
+                        <option value="4">$$$$ (Above $50)</option>
+                    </select>
+                </div>
+                <button type="submit" class="admin-btn">Add Restaurant</button>
+            </form>
+        </section>
+    </div>
+
+    <script src="../js/admin.js"></script>
+</body>
+</html> 
