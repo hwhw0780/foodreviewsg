@@ -78,8 +78,24 @@ router.post('/', upload.fields([
             });
         }
 
+        // Parse customReviews if it's a string
+        let customReviews = [];
+        if (req.body.customReviews) {
+            try {
+                customReviews = JSON.parse(req.body.customReviews);
+                if (!Array.isArray(customReviews)) {
+                    throw new Error('Reviews must be an array');
+                }
+            } catch (error) {
+                return res.status(400).json({
+                    error: 'Invalid customReviews format'
+                });
+            }
+        }
+
         const restaurantData = {
             ...req.body,
+            customReviews,
             bannerImage: req.files?.['bannerImage'] ? `/uploads/${req.files['bannerImage'][0].filename}` : null,
             photos: req.files?.['photos'] ? req.files['photos'].map(file => `/uploads/${file.filename}`) : []
         };

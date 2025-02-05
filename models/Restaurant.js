@@ -104,12 +104,19 @@ const Restaurant = sequelize.define('Restaurant', {
         defaultValue: [],
         validate: {
             isValidReviewArray(value) {
-                if (!Array.isArray(value)) throw new Error('Reviews must be an array');
-                value.forEach(review => {
-                    if (!review.rating || !review.comment || !review.author) {
-                        throw new Error('Each review must have rating, comment, and author');
-                    }
-                });
+                if (!Array.isArray(value)) {
+                    throw new Error('Reviews must be an array');
+                }
+                if (value.length > 0) {
+                    value.forEach(review => {
+                        if (!review.author || !review.rating || !review.comment) {
+                            throw new Error('Each review must have author, rating, and comment');
+                        }
+                        if (typeof review.rating !== 'number' || review.rating < 1 || review.rating > 5) {
+                            throw new Error('Rating must be a number between 1 and 5');
+                        }
+                    });
+                }
             }
         }
     }
