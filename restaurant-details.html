@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Details - SG Food Reviews</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/restaurant-details.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="index.html">SG Food Reviews</a>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="index.html#restaurants">Restaurants</a>
+            <a href="index.html#about">About</a>
+            <a href="index.html#contact">Contact</a>
+            <a href="admin/login.html" class="admin-login"><i class="fas fa-user"></i> Admin Login</a>
+        </div>
+    </nav>
+
+    <!-- Restaurant Details Section -->
+    <div class="restaurant-details">
+        <!-- Banner Image -->
+        <div class="banner-section">
+            <img id="banner-image" src="" alt="Restaurant Banner">
+        </div>
+
+        <!-- Restaurant Info -->
+        <div class="info-section">
+            <div class="main-info">
+                <h1 id="restaurant-name"></h1>
+                <p id="restaurant-chinese-name" class="chinese-name"></p>
+                <div class="category-location">
+                    <span id="restaurant-category"></span>
+                    <span class="separator">•</span>
+                    <span id="restaurant-location"></span>
+                </div>
+                <div class="rating-section">
+                    <div class="stars" id="rating-stars"></div>
+                    <span id="rating-text"></span>
+                </div>
+                <div class="price-range" id="price-range"></div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a id="menu-link" class="action-btn menu-btn" target="_blank" style="display: none">
+                    <i class="fas fa-utensils"></i> View Menu
+                </a>
+                <a id="booking-link" class="action-btn booking-btn" target="_blank" style="display: none">
+                    <i class="fas fa-calendar-alt"></i> Book a Table
+                </a>
+                <a id="google-review-link" class="action-btn google-btn" target="_blank" style="display: none">
+                    <i class="fab fa-google"></i> Google Reviews
+                </a>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="contact-info">
+                <div class="info-item" id="phone-container" style="display: none">
+                    <i class="fas fa-phone"></i>
+                    <span id="phone-number"></span>
+                </div>
+                <div class="info-item" id="website-container" style="display: none">
+                    <i class="fas fa-globe"></i>
+                    <a id="website-link" target="_blank"></a>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span id="full-address"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Photos Grid -->
+        <div class="photos-section">
+            <h2>Photos</h2>
+            <div class="photos-grid" id="photos-grid"></div>
+        </div>
+
+        <!-- Reviews Section -->
+        <div class="reviews-section">
+            <h2>Customer Reviews</h2>
+            <div class="reviews-container" id="reviews-container"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About SG Food Reviews</h3>
+                <p>Your trusted platform for discovering and reviewing the best restaurants in Singapore.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#privacy">Privacy Policy</a></li>
+                    <li><a href="#terms">Terms of Service</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Connect With Us</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 SG Food Reviews. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/restaurant-details.js"></script>
+</body>
+</html> 

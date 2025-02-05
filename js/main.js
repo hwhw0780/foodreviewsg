@@ -49,24 +49,38 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Create restaurant card HTML
     function createRestaurantCard(restaurant) {
-        const priceSymbols = '$'.repeat(restaurant.priceRange);
-        return `
-            <div class="restaurant-card" data-category="${restaurant.category}" data-location="${restaurant.location.toLowerCase()}">
-                <div class="restaurant-image">
-                    <img src="${restaurant.bannerImage}" alt="${restaurant.name}">
-                </div>
+        const stars = '★'.repeat(Math.floor(restaurant.rating)) + 
+                     (restaurant.rating % 1 >= 0.5 ? '½' : '') +
+                     '☆'.repeat(5 - Math.ceil(restaurant.rating));
+        
+        const card = document.createElement('div');
+        card.className = 'restaurant-card';
+        card.onclick = () => {
+            window.location.href = `/restaurant-details.html?id=${restaurant.id}`;
+        };
+        
+        card.innerHTML = `
+            <div class="card-image">
+                <img src="${restaurant.bannerImage}" alt="${restaurant.name}">
+            </div>
+            <div class="card-content">
+                <h3>${restaurant.name}</h3>
                 <div class="restaurant-info">
-                    <h3>${restaurant.name}${restaurant.nameChinese ? ` (${restaurant.nameChinese})` : ''}</h3>
-                    <p class="cuisine">${categoryNames[restaurant.category] || restaurant.category}</p>
+                    <span class="category">${restaurant.category}</span>
+                    <span class="separator">•</span>
+                    <span class="location">${restaurant.location}</span>
+                </div>
+                <div class="rating-price">
                     <div class="rating">
-                        ${getRatingStars(restaurant.rating)}
-                        <span>(${restaurant.reviewCount} reviews)</span>
+                        <span class="stars">${stars}</span>
+                        <span class="review-count">(${restaurant.reviewCount} reviews)</span>
                     </div>
-                    <p class="location"><i class="fas fa-map-marker-alt"></i> ${restaurant.location}</p>
-                    <p class="price-range"><i class="fas fa-dollar-sign"></i>${priceSymbols}</p>
+                    <div class="price-range">${'$'.repeat(restaurant.priceRange)}</div>
                 </div>
             </div>
         `;
+        
+        return card;
     }
 
     // Generate rating stars HTML
@@ -101,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         filteredRestaurants.slice(0, maxVisible).forEach(restaurant => {
-            restaurantGrid.innerHTML += createRestaurantCard(restaurant);
+            restaurantGrid.innerHTML += createRestaurantCard(restaurant).outerHTML;
             visibleCount++;
         });
 
@@ -167,7 +181,7 @@ document.addEventListener('DOMContentLoaded', function() {
             showNoResults(`No restaurants found matching "${searchTerm}"`);
         } else {
             filteredRestaurants.forEach(restaurant => {
-                restaurantGrid.innerHTML += createRestaurantCard(restaurant);
+                restaurantGrid.innerHTML += createRestaurantCard(restaurant).outerHTML;
             });
         }
     }

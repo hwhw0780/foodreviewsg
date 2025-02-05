@@ -98,6 +98,20 @@ const Restaurant = sequelize.define('Restaurant', {
             isUrl: true
         }
     },
+    menuUrl: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+        validate: {
+            isUrl: true
+        }
+    },
+    bookingUrl: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+        validate: {
+            isUrl: true
+        }
+    },
     customReviews: {
         type: DataTypes.JSON,
         allowNull: false,

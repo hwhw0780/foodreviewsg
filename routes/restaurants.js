@@ -36,7 +36,8 @@ router.get('/:id', async (req, res) => {
         }
         res.json(restaurant);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch restaurant' });
+        console.error('Error fetching restaurant:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 
