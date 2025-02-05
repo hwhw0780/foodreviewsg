@@ -895,4 +895,139 @@ footer {
     .action-btn {
         width: 100%;
     }
+}
+
+.restaurant-title {
+    font-size: 2.5rem;
+    color: #333;
+    margin: 1rem 0 0.5rem;
+    font-weight: 800;
+}
+
+.restaurant-chinese-name {
+    font-size: 1.8rem;
+    color: #666;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.photos-section {
+    margin: 2rem 0;
+}
+
+.photos-section h3 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.photos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.photo-item {
+    aspect-ratio: 1;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.photo-item:hover {
+    transform: scale(1.05);
+}
+
+.photo-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Responsive styles for photos */
+@media (max-width: 768px) {
+    .photos-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+    
+    .restaurant-title {
+        font-size: 2rem;
+    }
+    
+    .restaurant-chinese-name {
+        font-size: 1.5rem;
+    }
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin: 1.5rem 0;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    padding: 0.8rem 1.5rem;
+    border-radius: 5px;
+    text-decoration: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.menu-btn {
+    background-color: #e74c3c;
+}
+
+.booking-btn {
+    background-color: #2ecc71;
+}
+
+.google-btn {
+    background-color: #4285f4;
+}
+
+.facebook-btn {
+    background-color: #1877f2;
+    padding: 0.8rem;
+}
+
+.xhs-btn {
+    background-color: #000000;
+    padding: 0.8rem;
+}
+
+.xhs-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Responsive styles for action buttons */
+@media (max-width: 768px) {
+    .action-buttons {
+        justify-content: center;
+    }
+    
+    .action-btn {
+        min-width: 48px;
+        justify-content: center;
+    }
+    
+    .facebook-btn,
+    .xhs-btn {
+        padding: 0.8rem;
+        aspect-ratio: 1;
+    }
 } 

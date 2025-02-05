@@ -147,6 +147,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </div>
                 <div class="modal-body">
+                    <h1 class="restaurant-title">${restaurant.name}</h1>
+                    ${restaurant.nameChinese ? `<h2 class="restaurant-chinese-name">${restaurant.nameChinese}</h2>` : ''}
+                    
                     <div class="restaurant-info">
                         <div class="info-row">
                             <span class="category">${restaurant.category}</span>
@@ -196,7 +199,31 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <i class="fab fa-google"></i> Google Reviews
                             </a>
                         ` : ''}
+                        ${restaurant.facebookUrl ? `
+                            <a href="${restaurant.facebookUrl}" target="_blank" class="action-btn facebook-btn">
+                                <i class="fab fa-facebook"></i>
+                            </a>
+                        ` : ''}
+                        ${restaurant.xhsUrl ? `
+                            <a href="${restaurant.xhsUrl}" target="_blank" class="action-btn xhs-btn">
+                                <img src="/images/xhs-icon.png" alt="XHS" class="xhs-icon">
+                            </a>
+                        ` : ''}
                     </div>
+
+                    ${restaurant.photos && restaurant.photos.length > 0 ? `
+                        <div class="photos-section">
+                            <h3>Photos</h3>
+                            <div class="photos-grid">
+                                ${restaurant.photos.map(photo => `
+                                    <div class="photo-item">
+                                        <img src="${photo}" alt="${restaurant.name}" 
+                                             onclick="window.open('${photo}', '_blank')">
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
 
                     ${restaurant.customReviews && restaurant.customReviews.length > 0 ? `
                         <div class="reviews-section">
