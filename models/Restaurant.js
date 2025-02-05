@@ -29,7 +29,13 @@ const Restaurant = sequelize.define('Restaurant', {
         type: DataTypes.TEXT,
         allowNull: true,
         validate: {
-            isUrl: true
+            isUrl: function(value) {
+                if (value && value.length > 0) {
+                    if (!/^https?:\/\/.+/.test(value)) {
+                        throw new Error('Must be a valid URL starting with http:// or https://');
+                    }
+                }
+            }
         }
     },
     bannerImage: {
@@ -95,35 +101,65 @@ const Restaurant = sequelize.define('Restaurant', {
         type: DataTypes.TEXT,
         allowNull: true,
         validate: {
-            isUrl: true
+            isUrl: function(value) {
+                if (value && value.length > 0) {
+                    if (!/^https?:\/\/.+/.test(value)) {
+                        throw new Error('Must be a valid URL starting with http:// or https://');
+                    }
+                }
+            }
         }
     },
     menuUrl: {
         type: DataTypes.TEXT,
         allowNull: true,
         validate: {
-            isUrl: true
+            isUrl: function(value) {
+                if (value && value.length > 0) {
+                    if (!/^https?:\/\/.+/.test(value)) {
+                        throw new Error('Must be a valid URL starting with http:// or https://');
+                    }
+                }
+            }
         }
     },
     bookingUrl: {
         type: DataTypes.TEXT,
         allowNull: true,
         validate: {
-            isUrl: true
+            isUrl: function(value) {
+                if (value && value.length > 0) {
+                    if (!/^https?:\/\/.+/.test(value)) {
+                        throw new Error('Must be a valid URL starting with http:// or https://');
+                    }
+                }
+            }
         }
     },
     facebookUrl: {
         type: DataTypes.TEXT,
         allowNull: true,
         validate: {
-            isUrl: true
+            isUrl: function(value) {
+                if (value && value.length > 0) {
+                    if (!/^https?:\/\/.+/.test(value)) {
+                        throw new Error('Must be a valid URL starting with http:// or https://');
+                    }
+                }
+            }
         }
     },
     xhsUrl: {
         type: DataTypes.TEXT,
         allowNull: true,
         validate: {
-            isUrl: true
+            isUrl: function(value) {
+                if (value && value.length > 0) {
+                    if (!/^https?:\/\/.+/.test(value)) {
+                        throw new Error('Must be a valid URL starting with http:// or https://');
+                    }
+                }
+            }
         }
     },
     customReviews: {
