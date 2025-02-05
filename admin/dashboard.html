@@ -54,15 +54,15 @@
             <h2>Add New Restaurant</h2>
             <form id="add-restaurant-form" class="restaurant-form">
                 <div class="form-group">
-                    <label for="restaurant-name">Restaurant Name (English)</label>
+                    <label for="restaurant-name">Restaurant Name (English)*</label>
                     <input type="text" id="restaurant-name" required>
                 </div>
                 <div class="form-group">
-                    <label for="restaurant-name-chinese">Restaurant Name (Chinese) - Optional</label>
+                    <label for="restaurant-name-chinese">Restaurant Name (Chinese)</label>
                     <input type="text" id="restaurant-name-chinese">
                 </div>
                 <div class="form-group">
-                    <label for="restaurant-category">Category</label>
+                    <label for="restaurant-category">Category*</label>
                     <select id="restaurant-category" required>
                         <option value="">Select Category</option>
                         <option value="chinese">Chinese (中餐)</option>
@@ -80,26 +80,33 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="restaurant-location">Location</label>
-                    <select id="restaurant-location" required>
-                        <option value="">Select Location</option>
-                        <option value="ang-mo-kio">Ang Mo Kio</option>
-                        <option value="bugis">Bugis</option>
-                        <option value="chinatown">Chinatown</option>
-                        <option value="orchard">Orchard</option>
-                        <option value="serangoon">Serangoon</option>
-                    </select>
+                    <label for="restaurant-website">Website</label>
+                    <input type="url" id="restaurant-website" placeholder="https://example.com">
                 </div>
                 <div class="form-group">
-                    <label for="restaurant-address">Full Address</label>
-                    <input type="text" id="restaurant-address" required>
+                    <label for="restaurant-phone">Phone Number</label>
+                    <input type="tel" id="restaurant-phone" placeholder="+65 1234 5678">
                 </div>
                 <div class="form-group">
-                    <label for="restaurant-image">Image URL</label>
-                    <input type="url" id="restaurant-image" required>
+                    <label for="restaurant-location">Location*</label>
+                    <input type="text" id="restaurant-location" required placeholder="e.g., Orchard">
+                </div>
+                <div class="form-group full-width">
+                    <label for="restaurant-address">Full Address*</label>
+                    <input type="text" id="restaurant-address" required placeholder="Full street address">
                 </div>
                 <div class="form-group">
-                    <label for="price-range">Price Range</label>
+                    <label for="banner-image">Banner Image (16:9)*</label>
+                    <input type="file" id="banner-image" accept="image/*" required>
+                    <div class="image-preview" id="banner-preview"></div>
+                </div>
+                <div class="form-group">
+                    <label for="other-photos">Other Photos (1:1)</label>
+                    <input type="file" id="other-photos" accept="image/*" multiple>
+                    <div class="image-preview" id="photos-preview"></div>
+                </div>
+                <div class="form-group">
+                    <label for="price-range">Price Range*</label>
                     <select id="price-range" required>
                         <option value="1">$ (Below $15)</option>
                         <option value="2">$$ ($15-$30)</option>
@@ -107,8 +114,29 @@
                         <option value="4">$$$$ (Above $50)</option>
                     </select>
                 </div>
-                <button type="submit" class="admin-btn">Add Restaurant</button>
+                <div class="form-actions">
+                    <button type="submit" class="admin-btn">Add Restaurant</button>
+                    <button type="reset" class="admin-btn secondary">Clear Form</button>
+                </div>
             </form>
+        </section>
+
+        <!-- Preview Section -->
+        <section class="admin-section">
+            <h2>Restaurant Preview</h2>
+            <div class="restaurant-preview">
+                <div class="preview-banner">
+                    <img id="preview-banner-image" src="#" alt="Restaurant Banner">
+                </div>
+                <div class="preview-info">
+                    <h3 id="preview-name">Restaurant Name</h3>
+                    <p id="preview-chinese-name">Chinese Name</p>
+                    <p id="preview-category">Category</p>
+                    <p id="preview-location">Location</p>
+                    <p id="preview-price">Price Range</p>
+                    <div id="preview-photos" class="preview-photos-grid"></div>
+                </div>
+            </div>
         </section>
     </div>
 

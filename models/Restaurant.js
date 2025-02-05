@@ -19,6 +19,30 @@ const Restaurant = sequelize.define('Restaurant', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    website: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        validate: {
+            isUrl: true
+        }
+    },
+    bannerImage: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        comment: '16:9 aspect ratio banner image'
+    },
+    photos: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+        defaultValue: [],
+        comment: '1:1 aspect ratio photos'
+    },
+    phone: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        validate: {
+            is: /^\+?[0-9\-\s()]+$/
+        }
+    },
     location: {
         type: DataTypes.STRING,
         allowNull: false

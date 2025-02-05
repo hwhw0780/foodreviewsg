@@ -3,7 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const { sequelize, testConnection } = require('./config/database');
-const Restaurant = require('./models/Restaurant');
+const restaurantRoutes = require('./routes/restaurants');
+const statisticsRoutes = require('./routes/statistics');
 
 const app = express();
 
@@ -14,6 +15,13 @@ app.use(express.urlencoded({ extended: true }));
 
 // Serve static files
 app.use(express.static(path.join(__dirname, '/')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Ensure uploads directory exists
+const fs = require('fs');
+if (!fs.existsSync('./uploads')) {
+    fs.mkdirSync('./uploads');
+}
 
 // Routes
 app.get('/', (req, res) => {
@@ -29,23 +37,8 @@ app.get('/admin/dashboard', (req, res) => {
 });
 
 // API Routes
-app.get('/api/restaurants', async (req, res) => {
-    try {
-        const restaurants = await Restaurant.findAll();
-        res.json(restaurants);
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch restaurants' });
-    }
-});
-
-app.post('/api/restaurants', async (req, res) => {
-    try {
-        const restaurant = await Restaurant.create(req.body);
-        res.status(201).json(restaurant);
-    } catch (error) {
-        res.status(400).json({ error: 'Failed to create restaurant' });
-    }
-});
+app.use('/api/restaurants', restaurantRoutes);
+app.use('/api/statistics', statisticsRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
