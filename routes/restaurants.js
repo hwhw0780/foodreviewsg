@@ -46,16 +46,58 @@ router.post('/', upload.fields([
     { name: 'photos', maxCount: 10 }
 ]), async (req, res) => {
     try {
+        // Validate required fields
+        const requiredFields = ['name', 'category', 'location', 'address', 'priceRange'];
+        const missingFields = requiredFields.filter(field => !req.body[field]);
+        
+        if (missingFields.length > 0) {
+            return res.status(400).json({ 
+                error: `Missing required fields: ${missingFields.join(', ')}`
+            });
+        }
+
+        // Validate priceRange
+        const priceRange = parseInt(req.body.priceRange);
+        if (isNaN(priceRange) || priceRange < 1 || priceRange > 4) {
+            return res.status(400).json({
+                error: 'Price range must be a number between 1 and 4'
+            });
+        }
+
+        // Validate website if provided
+        if (req.body.website && !req.body.website.match(/^https?:\/\/.+/)) {
+            return res.status(400).json({
+                error: 'Website must be a valid URL starting with http:// or https://'
+            });
+        }
+
+        // Validate phone if provided
+        if (req.body.phone && !req.body.phone.match(/^\+?[0-9\-\s()]+$/)) {
+            return res.status(400).json({
+                error: 'Phone number format is invalid'
+            });
+        }
+
         const restaurantData = {
             ...req.body,
-            bannerImage: req.files['bannerImage'] ? `/uploads/${req.files['bannerImage'][0].filename}` : null,
-            photos: req.files['photos'] ? req.files['photos'].map(file => `/uploads/${file.filename}`) : []
+            bannerImage: req.files?.['bannerImage'] ? `/uploads/${req.files['bannerImage'][0].filename}` : null,
+            photos: req.files?.['photos'] ? req.files['photos'].map(file => `/uploads/${file.filename}`) : []
         };
+
+        console.log('Creating restaurant with data:', restaurantData);
 
         const restaurant = await Restaurant.create(restaurantData);
         res.status(201).json(restaurant);
     } catch (error) {
-        res.status(400).json({ error: 'Failed to create restaurant: ' + error.message });
+        console.error('Restaurant creation error:', error);
+        res.status(400).json({ 
+            error: 'Failed to create restaurant',
+            details: error.message,
+            validationErrors: error.errors?.map(e => ({
+                field: e.path,
+                message: e.message
+            }))
+        });
     }
 });
 
@@ -74,17 +116,20 @@ router.put('/:id', upload.fields([
             ...req.body
         };
 
-        if (req.files['bannerImage']) {
+        if (req.files?.['bannerImage']) {
             updateData.bannerImage = `/uploads/${req.files['bannerImage'][0].filename}`;
         }
-        if (req.files['photos']) {
+        if (req.files?.['photos']) {
             updateData.photos = req.files['photos'].map(file => `/uploads/${file.filename}`);
         }
 
         await restaurant.update(updateData);
         res.json(restaurant);
     } catch (error) {
-        res.status(400).json({ error: 'Failed to update restaurant' });
+        res.status(400).json({ 
+            error: 'Failed to update restaurant',
+            details: error.message
+        });
     }
 });
 
