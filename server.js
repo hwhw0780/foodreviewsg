@@ -14,13 +14,20 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve static files
-app.use(express.static(path.join(__dirname, '/')));
+app.use(express.static(path.join(__dirname)));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
-// Ensure uploads directory exists
+// Ensure uploads and images directories exist
 const fs = require('fs');
-if (!fs.existsSync('./uploads')) {
-    fs.mkdirSync('./uploads');
+const uploadDir = path.join(__dirname, 'uploads');
+const imagesDir = path.join(__dirname, 'images');
+
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
+if (!fs.existsSync(imagesDir)) {
+    fs.mkdirSync(imagesDir, { recursive: true });
 }
 
 // Routes
@@ -28,10 +35,13 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// Serve restaurant details page
 app.get('/restaurant-details.html', (req, res) => {
+    console.log('Serving restaurant details page, query params:', req.query);
     res.sendFile(path.join(__dirname, 'restaurant-details.html'));
 });
 
+// Admin routes
 app.get('/admin/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'admin/login.html'));
 });

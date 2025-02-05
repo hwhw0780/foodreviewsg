@@ -30,18 +30,26 @@ router.get('/', async (req, res) => {
 // Get restaurant by ID
 router.get('/:id', async (req, res) => {
     try {
-        console.log('Fetching restaurant with ID:', req.params.id);
-        const restaurant = await Restaurant.findByPk(req.params.id);
+        const id = parseInt(req.params.id);
+        console.log('Fetching restaurant with ID:', id);
+        
+        if (isNaN(id)) {
+            console.log('Invalid restaurant ID:', req.params.id);
+            return res.status(400).json({ error: 'Invalid restaurant ID' });
+        }
+
+        const restaurant = await Restaurant.findByPk(id);
         console.log('Found restaurant:', restaurant);
         
         if (!restaurant) {
-            console.log('Restaurant not found');
+            console.log('Restaurant not found for ID:', id);
             return res.status(404).json({ error: 'Restaurant not found' });
         }
+
         res.json(restaurant);
     } catch (error) {
         console.error('Error fetching restaurant:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error', details: error.message });
     }
 });
 
