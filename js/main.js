@@ -2,12 +2,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Get DOM elements
     const categoryButtons = document.querySelectorAll('.category-btn');
     const locationSelect = document.getElementById('location-select');
-    const restaurantCards = document.querySelectorAll('.restaurant-card');
+    const restaurantGrid = document.querySelector('.restaurant-grid');
     const featuredTitle = document.getElementById('featured-title');
 
     // Current filter state
     let currentCategory = 'all';
     let currentLocation = 'all';
+    let restaurants = [];
 
     // Category names mapping (English to display name)
     const categoryNames = {
@@ -31,72 +32,120 @@ document.addEventListener('DOMContentLoaded', function() {
         'vegetarian': 'Vegetarian (素食)'
     };
 
-    // Update featured title based on category
-    function updateTitle(category) {
+    // Fetch restaurants from API
+    async function fetchRestaurants() {
+        try {
+            const response = await fetch('/api/restaurants');
+            if (!response.ok) {
+                throw new Error('Failed to fetch restaurants');
+            }
+            restaurants = await response.json();
+            displayRestaurants();
+        } catch (error) {
+            console.error('Error fetching restaurants:', error);
+            showNoResults('Failed to load restaurants. Please try again later.');
+        }
+    }
+
+    // Create restaurant card HTML
+    function createRestaurantCard(restaurant) {
+        const priceSymbols = '$'.repeat(restaurant.priceRange);
+        return `
+            <div class="restaurant-card" data-category="${restaurant.category}" data-location="${restaurant.location.toLowerCase()}">
+                <div class="restaurant-image">
+                    <img src="${restaurant.bannerImage}" alt="${restaurant.name}">
+                </div>
+                <div class="restaurant-info">
+                    <h3>${restaurant.name}${restaurant.nameChinese ? ` (${restaurant.nameChinese})` : ''}</h3>
+                    <p class="cuisine">${categoryNames[restaurant.category] || restaurant.category}</p>
+                    <div class="rating">
+                        ${getRatingStars(restaurant.rating)}
+                        <span>(${restaurant.reviewCount} reviews)</span>
+                    </div>
+                    <p class="location"><i class="fas fa-map-marker-alt"></i> ${restaurant.location}</p>
+                    <p class="price-range"><i class="fas fa-dollar-sign"></i>${priceSymbols}</p>
+                </div>
+            </div>
+        `;
+    }
+
+    // Generate rating stars HTML
+    function getRatingStars(rating) {
+        const fullStars = Math.floor(rating);
+        const hasHalfStar = rating % 1 >= 0.5;
+        const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+        
+        return `
+            ${`<i class="fas fa-star"></i>`.repeat(fullStars)}
+            ${hasHalfStar ? `<i class="fas fa-star-half-alt"></i>` : ''}
+            ${`<i class="far fa-star"></i>`.repeat(emptyStars)}
+        `;
+    }
+
+    // Display filtered restaurants
+    function displayRestaurants() {
+        restaurantGrid.innerHTML = '';
+        let visibleCount = 0;
+        const maxVisible = currentCategory === 'all' ? Infinity : 5;
+
+        const filteredRestaurants = restaurants.filter(restaurant => {
+            const categoryMatch = currentCategory === 'all' || restaurant.category === currentCategory;
+            const locationMatch = currentLocation === 'all' || 
+                                restaurant.location.toLowerCase() === currentLocation.toLowerCase();
+            return categoryMatch && locationMatch;
+        });
+
+        if (filteredRestaurants.length === 0) {
+            showNoResults();
+            return;
+        }
+
+        filteredRestaurants.slice(0, maxVisible).forEach(restaurant => {
+            restaurantGrid.innerHTML += createRestaurantCard(restaurant);
+            visibleCount++;
+        });
+
+        updateTitle(currentCategory, visibleCount);
+    }
+
+    // Show no results message
+    function showNoResults(message = null) {
+        const defaultMessage = `No restaurants found for this category in ${
+            currentLocation === 'all' ? 'Singapore' : currentLocation.replace('-', ' ')
+        }.`;
+        
+        restaurantGrid.innerHTML = `
+            <div class="no-results">
+                <i class="fas fa-search"></i>
+                <p>${message || defaultMessage}</p>
+            </div>
+        `;
+    }
+
+    // Update title based on category and count
+    function updateTitle(category, count) {
         const categoryName = categoryNames[category] || category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' ');
         if (category === 'all') {
             featuredTitle.textContent = 'Featured Restaurants';
         } else {
-            featuredTitle.textContent = `Top 5 ${categoryName} Restaurants`;
-        }
-    }
-
-    // Filter restaurants based on category and location
-    function filterRestaurants() {
-        let visibleCount = 0;
-        const maxVisible = currentCategory === 'all' ? Infinity : 5;
-
-        restaurantCards.forEach(card => {
-            const cardCategory = card.dataset.category;
-            const cardLocation = card.dataset.location;
-            
-            const categoryMatch = currentCategory === 'all' || cardCategory === currentCategory;
-            const locationMatch = currentLocation === 'all' || cardLocation === currentLocation;
-
-            if (categoryMatch && locationMatch && visibleCount < maxVisible) {
-                card.classList.remove('hidden');
-                visibleCount++;
-            } else {
-                card.classList.add('hidden');
-            }
-        });
-
-        // Show "no results" message if no restaurants are visible
-        const noResultsMessage = document.getElementById('no-results-message');
-        if (visibleCount === 0) {
-            if (!noResultsMessage) {
-                const message = document.createElement('div');
-                message.id = 'no-results-message';
-                message.className = 'no-results';
-                message.innerHTML = `
-                    <i class="fas fa-search"></i>
-                    <p>No restaurants found for this category in ${currentLocation === 'all' ? 'Singapore' : currentLocation.replace('-', ' ')}.</p>
-                `;
-                document.querySelector('.restaurant-grid').appendChild(message);
-            }
-        } else if (noResultsMessage) {
-            noResultsMessage.remove();
+            featuredTitle.textContent = `Top ${count} ${categoryName} Restaurants`;
         }
     }
 
     // Category button click handler
     categoryButtons.forEach(button => {
         button.addEventListener('click', () => {
-            // Update active state
             categoryButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
-
-            // Update current category and filter
             currentCategory = button.getAttribute('data-category');
-            updateTitle(currentCategory);
-            filterRestaurants();
+            displayRestaurants();
         });
     });
 
     // Location select change handler
     locationSelect.addEventListener('change', () => {
         currentLocation = locationSelect.value;
-        filterRestaurants();
+        displayRestaurants();
     });
 
     // Search functionality
@@ -106,21 +155,21 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleSearch() {
         const searchTerm = searchInput.value.trim().toLowerCase();
         
-        restaurantCards.forEach(card => {
-            const restaurantName = card.querySelector('h3').textContent.toLowerCase();
-            const cuisine = card.querySelector('.cuisine').textContent.toLowerCase();
-            const location = card.querySelector('.location').textContent.toLowerCase();
-
-            if (restaurantName.includes(searchTerm) || 
-                cuisine.includes(searchTerm) || 
-                location.includes(searchTerm)) {
-                if (!card.classList.contains('hidden')) {
-                    card.style.display = 'block';
-                }
-            } else {
-                card.style.display = 'none';
-            }
+        const filteredRestaurants = restaurants.filter(restaurant => {
+            return restaurant.name.toLowerCase().includes(searchTerm) ||
+                   (restaurant.nameChinese && restaurant.nameChinese.toLowerCase().includes(searchTerm)) ||
+                   restaurant.category.toLowerCase().includes(searchTerm) ||
+                   restaurant.location.toLowerCase().includes(searchTerm);
         });
+
+        restaurantGrid.innerHTML = '';
+        if (filteredRestaurants.length === 0) {
+            showNoResults(`No restaurants found matching "${searchTerm}"`);
+        } else {
+            filteredRestaurants.forEach(restaurant => {
+                restaurantGrid.innerHTML += createRestaurantCard(restaurant);
+            });
+        }
     }
 
     searchButton.addEventListener('click', handleSearch);
@@ -182,11 +231,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
-    // Example of how to update statistics (this will be called from admin dashboard)
-    // window.updateStatistics({
-    //     'daily-users': 16000,
-    //     'daily-bookings': 2600,
-    //     'total-restaurants': 1950,
-    //     'total-reviews': 46000
-    // });
+    // Initial fetch of restaurants
+    fetchRestaurants();
 }); 
