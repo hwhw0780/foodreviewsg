@@ -52,10 +52,10 @@ async function startServer() {
         // Test database connection
         await testConnection();
         
-        // Sync database (only create tables if they don't exist)
-        console.log('Syncing database...');
-        await sequelize.sync({ force: false });
-        console.log('Database synced successfully');
+        // Sync database with alter option to safely update schema
+        console.log('Syncing database with alter...');
+        await sequelize.sync({ alter: true });
+        console.log('Database synced successfully with updated schema');
 
         // Start server
         const PORT = process.env.PORT || 3000;
