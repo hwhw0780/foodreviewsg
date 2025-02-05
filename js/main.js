@@ -62,10 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
         card.addEventListener('click', function(e) {
             e.preventDefault();
             console.log('Card clicked for restaurant:', restaurant.id);
-            console.log('Full restaurant data:', restaurant);
-            const detailsUrl = `/restaurant-details.html?id=${restaurant.id}`;
-            console.log('Attempting to navigate to:', detailsUrl);
-            window.location.href = detailsUrl;
+            showRestaurantModal(restaurant);
         });
         
         // Update image handling to use absolute paths
@@ -94,6 +91,119 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         
         return card;
+    }
+
+    // Function to show restaurant modal
+    function showRestaurantModal(restaurant) {
+        const modal = document.createElement('div');
+        modal.className = 'restaurant-modal';
+        
+        const stars = '★'.repeat(Math.floor(restaurant.rating)) + 
+                     (restaurant.rating % 1 >= 0.5 ? '½' : '') +
+                     '☆'.repeat(5 - Math.ceil(restaurant.rating));
+        
+        modal.innerHTML = `
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <div class="modal-header">
+                    <img src="${restaurant.bannerImage || '/images/default-restaurant.jpg'}" 
+                         alt="${restaurant.name}" class="modal-banner">
+                    <div class="modal-title">
+                        <h2>${restaurant.name}</h2>
+                        ${restaurant.nameChinese ? `<p class="chinese-name">${restaurant.nameChinese}</p>` : ''}
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="restaurant-info">
+                        <div class="info-row">
+                            <span class="category">${restaurant.category}</span>
+                            <span class="separator">•</span>
+                            <span class="location">${restaurant.location}</span>
+                        </div>
+                        <div class="info-row">
+                            <div class="rating">
+                                <span class="stars">${stars}</span>
+                                <span class="review-count">(${restaurant.reviewCount} reviews)</span>
+                            </div>
+                            <div class="price-range">${'$'.repeat(restaurant.priceRange)}</div>
+                        </div>
+                        ${restaurant.address ? `
+                            <div class="info-row">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>${restaurant.address}</span>
+                            </div>
+                        ` : ''}
+                        ${restaurant.phone ? `
+                            <div class="info-row">
+                                <i class="fas fa-phone"></i>
+                                <a href="tel:${restaurant.phone}">${restaurant.phone}</a>
+                            </div>
+                        ` : ''}
+                        ${restaurant.website ? `
+                            <div class="info-row">
+                                <i class="fas fa-globe"></i>
+                                <a href="${restaurant.website}" target="_blank">Visit Website</a>
+                            </div>
+                        ` : ''}
+                    </div>
+                    
+                    <div class="action-buttons">
+                        ${restaurant.menuUrl ? `
+                            <a href="${restaurant.menuUrl}" target="_blank" class="action-btn menu-btn">
+                                <i class="fas fa-utensils"></i> View Menu
+                            </a>
+                        ` : ''}
+                        ${restaurant.bookingUrl ? `
+                            <a href="${restaurant.bookingUrl}" target="_blank" class="action-btn booking-btn">
+                                <i class="fas fa-calendar-alt"></i> Book a Table
+                            </a>
+                        ` : ''}
+                        ${restaurant.googleReviewUrl ? `
+                            <a href="${restaurant.googleReviewUrl}" target="_blank" class="action-btn google-btn">
+                                <i class="fab fa-google"></i> Google Reviews
+                            </a>
+                        ` : ''}
+                    </div>
+
+                    ${restaurant.customReviews && restaurant.customReviews.length > 0 ? `
+                        <div class="reviews-section">
+                            <h3>Customer Reviews</h3>
+                            <div class="reviews-container">
+                                ${restaurant.customReviews.map(review => `
+                                    <div class="review-card">
+                                        <div class="review-header">
+                                            <span class="reviewer-name">${review.author}</span>
+                                            <span class="review-rating">
+                                                ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
+                                            </span>
+                                        </div>
+                                        <p class="review-comment">${review.comment}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Close modal when clicking the close button or outside the modal
+        const closeBtn = modal.querySelector('.close-modal');
+        closeBtn.onclick = () => document.body.removeChild(modal);
+        modal.onclick = (e) => {
+            if (e.target === modal) {
+                document.body.removeChild(modal);
+            }
+        };
+
+        // Close modal when pressing Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.body.contains(modal)) {
+                document.body.removeChild(modal);
+            }
+        });
     }
 
     // Generate rating stars HTML
