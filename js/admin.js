@@ -308,6 +308,10 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.append('rating', document.getElementById('restaurant-rating').value);
             formData.append('reviewCount', document.getElementById('restaurant-reviews').value);
             formData.append('googleReviewUrl', document.getElementById('google-review-url').value);
+            formData.append('menuUrl', document.getElementById('menu-url').value);
+            formData.append('bookingUrl', document.getElementById('booking-url').value);
+            formData.append('facebookUrl', document.getElementById('facebook-url').value);
+            formData.append('xhsUrl', document.getElementById('xhs-url').value);
             formData.append('customReviews', JSON.stringify(customReviews));
             
             Array.from(photosInput.files).forEach(file => {
@@ -362,7 +366,11 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('restaurant-location').value = restaurant.location;
             document.getElementById('restaurant-address').value = restaurant.address;
             document.getElementById('price-range').value = restaurant.priceRange;
+            document.getElementById('menu-url').value = restaurant.menuUrl || '';
+            document.getElementById('booking-url').value = restaurant.bookingUrl || '';
             document.getElementById('google-review-url').value = restaurant.googleReviewUrl || '';
+            document.getElementById('facebook-url').value = restaurant.facebookUrl || '';
+            document.getElementById('xhs-url').value = restaurant.xhsUrl || '';
             
             // Clear and populate custom reviews
             customReviewsContainer.innerHTML = '';

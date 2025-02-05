@@ -112,6 +112,20 @@ const Restaurant = sequelize.define('Restaurant', {
             isUrl: true
         }
     },
+    facebookUrl: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+        validate: {
+            isUrl: true
+        }
+    },
+    xhsUrl: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+        validate: {
+            isUrl: true
+        }
+    },
     customReviews: {
         type: DataTypes.JSON,
         allowNull: false,
