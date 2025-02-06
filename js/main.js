@@ -513,12 +513,12 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     // Partner form submission handler
-    const partnerForm = document.getElementById('partner-form');
+    const partnerForm = document.getElementById('partner-contact-form');
     if (partnerForm) {
         partnerForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const restaurantName = document.getElementById('restaurant-name').value;
+            const restaurantName = document.getElementById('restaurant-name-input').value;
             const email = document.getElementById('contact-email').value;
             const phone = document.getElementById('contact-phone').value;
             const website = document.getElementById('restaurant-website').value;
@@ -541,7 +541,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     alert('Thank you for your interest! We will contact you soon.');
                     partnerForm.reset();
                 } else {
-                    throw new Error('Failed to submit form');
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Failed to submit form');
                 }
             } catch (error) {
                 console.error('Error submitting form:', error);

@@ -13,8 +13,16 @@ const transporter = nodemailer.createTransport({
 
 // Handle partner inquiry submissions
 router.post('/partner-inquiry', async (req, res) => {
+    console.log('Received partner inquiry:', req.body);
+    
     try {
         const { restaurantName, email, phone, website } = req.body;
+
+        // Validate required fields
+        if (!restaurantName || !email || !phone) {
+            console.error('Missing required fields');
+            return res.status(400).json({ error: 'Restaurant name, email, and phone are required' });
+        }
 
         // Email content
         const mailOptions = {
@@ -31,13 +39,16 @@ router.post('/partner-inquiry', async (req, res) => {
             `
         };
 
+        console.log('Attempting to send email with options:', mailOptions);
+
         // Send the email
-        await transporter.sendMail(mailOptions);
+        const info = await transporter.sendMail(mailOptions);
+        console.log('Email sent successfully:', info);
 
         res.status(200).json({ message: 'Inquiry submitted successfully' });
     } catch (error) {
         console.error('Error processing partner inquiry:', error);
-        res.status(500).json({ error: 'Failed to process inquiry' });
+        res.status(500).json({ error: 'Failed to process inquiry: ' + error.message });
     }
 });
 
