@@ -80,14 +80,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         </a>` : ''}
                 </td>
                 <td class="ad-status-cell">
-                    <div class="ad-toggle">
-                        <input type="checkbox" class="ad-toggle-input" 
-                               ${restaurant.adStatus !== 'none' ? 'checked' : ''}
-                               data-restaurant-id="${restaurant.id}">
+                    <label class="ad-toggle">
+                        <input type="checkbox" ${restaurant.adStatus !== 'none' ? 'checked' : ''}>
                         <span class="ad-toggle-slider"></span>
-                    </div>
-                    ${restaurant.adStatus !== 'none' ? 
-                        `<span class="ad-badge ${restaurant.adStatus}">${restaurant.adStatus.toUpperCase()}</span>` : ''}
+                    </label>
+                    <span class="ad-badge ${restaurant.adStatus}">${restaurant.adStatus}</span>
                 </td>
                 <td class="table-actions">
                     <button class="edit-btn" data-id="${restaurant.id}">
@@ -101,13 +98,10 @@ document.addEventListener('DOMContentLoaded', function() {
             tbody.appendChild(tr);
 
             // Add event listener for ad toggle
-            const toggle = tr.querySelector('.ad-toggle-input');
-            toggle.addEventListener('change', () => {
-                if (toggle.checked) {
-                    showAdStatusModal(restaurant.id);
-                } else {
-                    updateAdStatus(restaurant.id, 'none', null);
-                }
+            const toggle = tr.querySelector('.ad-toggle input');
+            toggle.addEventListener('change', async (e) => {
+                const newStatus = e.target.checked ? 'gold' : 'none';
+                await updateAdStatus(restaurant.id, newStatus);
             });
         });
 
@@ -571,10 +565,31 @@ document.addEventListener('DOMContentLoaded', function() {
         currentRestaurantId = restaurantId;
         const restaurant = restaurants.find(r => r.id === parseInt(restaurantId));
         
+        if (!restaurant) {
+            console.error('Restaurant not found:', restaurantId);
+            return;
+        }
+        
         // Set current values
-        document.getElementById('ad-status').value = restaurant.adStatus || 'none';
+        const adStatusSelect = document.getElementById('ad-status');
+        const adExpiryInput = document.getElementById('ad-expiry');
+        
+        adStatusSelect.value = restaurant.adStatus || 'none';
+        
         if (restaurant.adExpiryDate) {
-            document.getElementById('ad-expiry').value = new Date(restaurant.adExpiryDate).toISOString().split('T')[0];
+            const date = new Date(restaurant.adExpiryDate);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            adExpiryInput.value = `${year}-${month}-${day}`;
+        } else {
+            // Set default expiry date to 30 days from now
+            const date = new Date();
+            date.setDate(date.getDate() + 30);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            adExpiryInput.value = `${year}-${month}-${day}`;
         }
         
         adStatusModal.style.display = 'block';
@@ -583,9 +598,13 @@ document.addEventListener('DOMContentLoaded', function() {
     closeModalBtn.onclick = function() {
         adStatusModal.style.display = 'none';
         // Reset toggle if user closes without saving
-        const toggle = document.querySelector(`.ad-toggle-input[data-restaurant-id="${currentRestaurantId}"]`);
-        const restaurant = restaurants.find(r => r.id === parseInt(currentRestaurantId));
-        toggle.checked = restaurant.adStatus !== 'none';
+        if (currentRestaurantId) {
+            const toggle = document.querySelector(`.ad-toggle input[data-restaurant-id="${currentRestaurantId}"]`);
+            const restaurant = restaurants.find(r => r.id === parseInt(currentRestaurantId));
+            if (toggle && restaurant) {
+                toggle.checked = restaurant.adStatus !== 'none';
+            }
+        }
     }
 
     window.onclick = function(event) {
@@ -599,40 +618,35 @@ document.addEventListener('DOMContentLoaded', function() {
         const status = document.getElementById('ad-status').value;
         const expiryDate = document.getElementById('ad-expiry').value;
         
-        await updateAdStatus(currentRestaurantId, status, expiryDate);
+        if (!currentRestaurantId) {
+            showMessage('Error: No restaurant selected', 'error');
+            return;
+        }
+        
+        await updateAdStatus(currentRestaurantId, status);
         adStatusModal.style.display = 'none';
     }
 
-    async function updateAdStatus(restaurantId, status, expiryDate) {
+    async function updateAdStatus(restaurantId, status) {
         try {
             const response = await fetch(`/api/restaurants/${restaurantId}/ad-status`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ status, expiryDate })
+                body: JSON.stringify({ status })
             });
 
             if (!response.ok) {
                 throw new Error('Failed to update ad status');
             }
 
-            // Update local data
-            const restaurant = restaurants.find(r => r.id === parseInt(restaurantId));
-            restaurant.adStatus = status;
-            restaurant.adExpiryDate = expiryDate;
-            
-            // Refresh display
-            displayRestaurants(restaurants);
-            showMessage('Ad status updated successfully!', 'success');
+            // Refresh the restaurant list to show updated status
+            await fetchRestaurants();
+            showMessage('Ad status updated successfully', 'success');
         } catch (error) {
             console.error('Error updating ad status:', error);
-            showMessage('Failed to update ad status: ' + error.message, 'error');
-            
-            // Reset toggle
-            const toggle = document.querySelector(`.ad-toggle-input[data-restaurant-id="${restaurantId}"]`);
-            const restaurant = restaurants.find(r => r.id === parseInt(restaurantId));
-            toggle.checked = restaurant.adStatus !== 'none';
+            showMessage('Failed to update ad status', 'error');
         }
     }
 

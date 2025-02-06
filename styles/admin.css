@@ -427,6 +427,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    min-width: 120px;
 }
 
 .ad-badge {
@@ -434,14 +435,18 @@
     border-radius: 4px;
     font-size: 0.8rem;
     font-weight: 500;
+    text-transform: uppercase;
+    display: none;
 }
 
 .ad-badge.gold {
+    display: inline-block;
     background-color: #ffd700;
     color: #000;
 }
 
 .ad-badge.silver {
+    display: inline-block;
     background-color: #c0c0c0;
     color: #000;
 }
@@ -449,14 +454,17 @@
 .ad-toggle {
     position: relative;
     display: inline-block;
-    width: 60px;
-    height: 30px;
+    width: 50px;
+    height: 24px;
+    margin-right: 8px;
 }
 
 .ad-toggle input {
     opacity: 0;
     width: 0;
     height: 0;
+    position: absolute;
+    cursor: pointer;
 }
 
 .ad-toggle-slider {
@@ -468,61 +476,31 @@
     bottom: 0;
     background-color: #ccc;
     transition: .4s;
-    border-radius: 30px;
+    border-radius: 24px;
 }
 
 .ad-toggle-slider:before {
     position: absolute;
     content: "";
-    height: 22px;
-    width: 22px;
-    left: 4px;
-    bottom: 4px;
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
     background-color: white;
     transition: .4s;
     border-radius: 50%;
 }
 
 .ad-toggle input:checked + .ad-toggle-slider {
-    background-color: #2ecc71;
+    background-color: #ffd700;
+}
+
+.ad-toggle input:focus + .ad-toggle-slider {
+    box-shadow: 0 0 1px #ffd700;
 }
 
 .ad-toggle input:checked + .ad-toggle-slider:before {
-    transform: translateX(30px);
-}
-
-/* Ad Status Modal */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.5);
-}
-
-.modal-content {
-    background-color: white;
-    margin: 15% auto;
-    padding: 2rem;
-    border-radius: 10px;
-    width: 80%;
-    max-width: 500px;
-    position: relative;
-}
-
-.close {
-    position: absolute;
-    right: 1rem;
-    top: 1rem;
-    font-size: 1.5rem;
-    cursor: pointer;
-}
-
-.close:hover {
-    color: #e74c3c;
+    transform: translateX(26px);
 }
 
 /* Restaurant Card Ad Styles */
@@ -555,4 +533,69 @@
 .ad-indicator.silver {
     background-color: #c0c0c0;
     color: #000;
+}
+
+/* Ad Status Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 2rem;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.close {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+    transition: color 0.3s ease;
+}
+
+.close:hover {
+    color: #e74c3c;
+}
+
+#ad-status-form {
+    margin-top: 1rem;
+}
+
+#ad-status-form .form-group {
+    margin-bottom: 1rem;
+}
+
+#ad-status-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+#ad-status-form select,
+#ad-status-form input[type="date"] {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+#ad-status-form button[type="submit"] {
+    margin-top: 1rem;
+    width: 100%;
 } 
