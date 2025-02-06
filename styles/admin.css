@@ -420,4 +420,139 @@
 
 #add-review-btn {
     margin-top: 1rem;
+}
+
+/* Ad Status Styles */
+.ad-status-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.ad-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.ad-badge.gold {
+    background-color: #ffd700;
+    color: #000;
+}
+
+.ad-badge.silver {
+    background-color: #c0c0c0;
+    color: #000;
+}
+
+.ad-toggle {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 30px;
+}
+
+.ad-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.ad-toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 30px;
+}
+
+.ad-toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+.ad-toggle input:checked + .ad-toggle-slider {
+    background-color: #2ecc71;
+}
+
+.ad-toggle input:checked + .ad-toggle-slider:before {
+    transform: translateX(30px);
+}
+
+/* Ad Status Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 2rem;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 500px;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #e74c3c;
+}
+
+/* Restaurant Card Ad Styles */
+.restaurant-card.gold-ad {
+    border: 2px solid #ffd700;
+    position: relative;
+}
+
+.restaurant-card.silver-ad {
+    border: 2px solid #c0c0c0;
+    position: relative;
+}
+
+.ad-indicator {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    z-index: 1;
+}
+
+.ad-indicator.gold {
+    background-color: #ffd700;
+    color: #000;
+}
+
+.ad-indicator.silver {
+    background-color: #c0c0c0;
+    color: #000;
 } 

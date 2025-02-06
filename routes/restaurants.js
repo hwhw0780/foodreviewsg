@@ -4,6 +4,8 @@ const multer = require('multer');
 const path = require('path');
 const Restaurant = require('../models/Restaurant');
 const fs = require('fs');
+const { Op } = require('sequelize');
+const sequelize = require('sequelize');
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -37,9 +39,28 @@ const upload = multer({
 // Get all restaurants
 router.get('/', async (req, res) => {
     try {
-        const restaurants = await Restaurant.findAll();
+        const restaurants = await Restaurant.findAll({
+            order: [
+                [sequelize.literal(`CASE 
+                    WHEN "adStatus" = 'gold' AND ("adExpiryDate" IS NULL OR "adExpiryDate" > NOW()) THEN 1
+                    WHEN "adStatus" = 'none' OR "adExpiryDate" <= NOW() THEN 2
+                    WHEN "adStatus" = 'silver' AND ("adExpiryDate" IS NULL OR "adExpiryDate" > NOW()) THEN 3
+                END`), 'ASC'],
+                ['rating', 'DESC']
+            ]
+        });
+
+        // Filter out expired ads
+        restaurants.forEach(restaurant => {
+            if (restaurant.adExpiryDate && new Date(restaurant.adExpiryDate) < new Date()) {
+                restaurant.adStatus = 'none';
+                restaurant.adExpiryDate = null;
+            }
+        });
+
         res.json(restaurants);
     } catch (error) {
+        console.error('Error fetching restaurants:', error);
         res.status(500).json({ error: 'Failed to fetch restaurants' });
     }
 });
@@ -247,6 +268,34 @@ router.put('/:id', upload.fields([
             error: 'Failed to update restaurant',
             details: error.message
         });
+    }
+});
+
+// Update ad status
+router.put('/:id/ad-status', async (req, res) => {
+    try {
+        const { status, expiryDate } = req.body;
+        const restaurant = await Restaurant.findByPk(req.params.id);
+        
+        if (!restaurant) {
+            return res.status(404).json({ error: 'Restaurant not found' });
+        }
+
+        // Validate status
+        if (!['none', 'gold', 'silver'].includes(status)) {
+            return res.status(400).json({ error: 'Invalid ad status' });
+        }
+
+        // Update restaurant
+        await restaurant.update({
+            adStatus: status,
+            adExpiryDate: expiryDate ? new Date(expiryDate) : null
+        });
+
+        res.json(restaurant);
+    } catch (error) {
+        console.error('Error updating ad status:', error);
+        res.status(500).json({ error: 'Failed to update ad status' });
     }
 });
 

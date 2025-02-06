@@ -183,6 +183,15 @@ const Restaurant = sequelize.define('Restaurant', {
                 }
             }
         }
+    },
+    adStatus: {
+        type: DataTypes.ENUM('none', 'gold', 'silver'),
+        allowNull: false,
+        defaultValue: 'none'
+    },
+    adExpiryDate: {
+        type: DataTypes.DATE,
+        allowNull: true
     }
 }, {
     tableName: 'Restaurants',

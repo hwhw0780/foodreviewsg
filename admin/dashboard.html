@@ -117,6 +117,7 @@
                             <th>Location</th>
                             <th>Rating</th>
                             <th>Reviews</th>
+                            <th>Ad Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -128,6 +129,29 @@
 
             <button id="add-restaurant-btn" class="admin-btn">Add New Restaurant</button>
         </section>
+
+        <!-- Ad Status Modal -->
+        <div id="ad-status-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Update Advertisement Status</h2>
+                <form id="ad-status-form">
+                    <div class="form-group">
+                        <label for="ad-status">Advertisement Level:</label>
+                        <select id="ad-status" name="ad-status">
+                            <option value="none">No Advertisement</option>
+                            <option value="gold">Gold (Top Priority)</option>
+                            <option value="silver">Silver (Featured)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="ad-expiry">Expiry Date:</label>
+                        <input type="date" id="ad-expiry" name="ad-expiry">
+                    </div>
+                    <button type="submit" class="admin-btn">Save Changes</button>
+                </form>
+            </div>
+        </div>
 
         <!-- Add/Edit Restaurant Form -->
         <section class="admin-section" id="restaurant-form-section" style="display: none;">
