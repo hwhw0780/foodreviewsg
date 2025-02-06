@@ -547,4 +547,48 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initial fetch of restaurants
     fetchRestaurants();
+
+    // Navigation functionality
+    const homeLink = document.querySelector('nav a[href="#"]');
+    const restaurantLink = document.querySelector('nav a[href="#restaurants"]');
+    const aboutLink = document.querySelector('nav a[href="#about"]');
+    const contactLink = document.querySelector('nav a[href="#contact"]');
+
+    // Home link - reload page
+    if (homeLink) {
+        homeLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = '/';
+        });
+    }
+
+    // Restaurant link - show all restaurants
+    if (restaurantLink) {
+        restaurantLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Reset filters to show all restaurants
+            document.getElementById('categoryFilter').value = 'all';
+            document.getElementById('locationFilter').value = 'all';
+            // Trigger filter change to update display
+            filterRestaurants();
+            // Smooth scroll to restaurants section
+            document.getElementById('restaurants').scrollIntoView({ behavior: 'smooth' });
+        });
+    }
+
+    // About link - smooth scroll
+    if (aboutLink) {
+        aboutLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('about').scrollIntoView({ behavior: 'smooth' });
+        });
+    }
+
+    // Contact link - smooth scroll
+    if (contactLink) {
+        contactLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+        });
+    }
 }); 
