@@ -141,23 +141,62 @@ router.put('/:id', upload.fields([
             return res.status(404).json({ error: 'Restaurant not found' });
         }
 
+        // Prepare update data
         const updateData = {
-            ...req.body
+            name: req.body.name,
+            nameChinese: req.body.nameChinese,
+            category: req.body.category,
+            website: req.body.website,
+            phone: req.body.phone,
+            location: req.body.location,
+            address: req.body.address,
+            priceRange: req.body.priceRange,
+            rating: req.body.rating,
+            reviewCount: req.body.reviewCount,
+            googleReviewUrl: req.body.googleReviewUrl,
+            menuUrl: req.body.menuUrl,
+            bookingUrl: req.body.bookingUrl,
+            facebookUrl: req.body.facebookUrl,
+            xhsUrl: req.body.xhsUrl
         };
 
+        // Handle custom reviews
+        if (req.body.customReviews) {
+            try {
+                updateData.customReviews = JSON.parse(req.body.customReviews);
+            } catch (error) {
+                console.error('Error parsing customReviews:', error);
+                updateData.customReviews = [];
+            }
+        }
+
+        // Handle banner image if new one is uploaded
         if (req.files?.['bannerImage']) {
             updateData.bannerImage = `/uploads/${req.files['bannerImage'][0].filename}`;
         }
+
+        // Handle photos if new ones are uploaded
         if (req.files?.['photos']) {
             updateData.photos = req.files['photos'].map(file => `/uploads/${file.filename}`);
         }
 
+        console.log('Updating restaurant with data:', updateData);
+
+        // Update the restaurant
         await restaurant.update(updateData);
-        res.json(restaurant);
+        
+        // Fetch the updated restaurant to return
+        const updatedRestaurant = await Restaurant.findByPk(req.params.id);
+        res.json(updatedRestaurant);
     } catch (error) {
+        console.error('Update error:', error);
         res.status(400).json({ 
             error: 'Failed to update restaurant',
-            details: error.message
+            details: error.message,
+            validationErrors: error.errors?.map(e => ({
+                field: e.path,
+                message: e.message
+            }))
         });
     }
 });

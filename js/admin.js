@@ -307,7 +307,6 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.append('location', locationSelect.value);
             formData.append('address', document.getElementById('restaurant-address').value);
             formData.append('priceRange', priceSelect.value);
-            formData.append('bannerImage', bannerInput.files[0]);
             formData.append('rating', document.getElementById('restaurant-rating').value);
             formData.append('reviewCount', document.getElementById('restaurant-reviews').value);
             formData.append('googleReviewUrl', document.getElementById('google-review-url').value);
@@ -317,18 +316,33 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.append('xhsUrl', document.getElementById('xhs-url').value);
             formData.append('customReviews', JSON.stringify(customReviews));
             
-            Array.from(photosInput.files).forEach(file => {
-                formData.append('photos', file);
-            });
+            // Only append files if they are selected
+            if (bannerInput.files[0]) {
+                formData.append('bannerImage', bannerInput.files[0]);
+            }
+            if (photosInput.files.length > 0) {
+                Array.from(photosInput.files).forEach(file => {
+                    formData.append('photos', file);
+                });
+            }
 
             try {
-                const response = await fetch('/api/restaurants', {
-                    method: 'POST',
+                // Check if we're editing or creating
+                const restaurantId = this.dataset.restaurantId;
+                const isEditing = !!restaurantId;
+                
+                const url = isEditing ? `/api/restaurants/${restaurantId}` : '/api/restaurants';
+                const method = isEditing ? 'PUT' : 'POST';
+                
+                console.log(`${isEditing ? 'Updating' : 'Creating'} restaurant with data:`, Object.fromEntries(formData));
+                
+                const response = await fetch(url, {
+                    method: method,
                     body: formData
                 });
 
                 if (response.ok) {
-                    showMessage('Restaurant added successfully!', 'success');
+                    showMessage(`Restaurant ${isEditing ? 'updated' : 'added'} successfully!`, 'success');
                     addRestaurantForm.reset();
                     customReviewsContainer.innerHTML = '';
                     customReviews = [];
@@ -341,13 +355,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     restaurantFormSection.style.display = 'none';
                     previewSection.style.display = 'none';
                     addRestaurantBtn.style.display = 'block';
+                    // Clear the restaurant ID if we were editing
+                    delete addRestaurantForm.dataset.restaurantId;
                     // Refresh restaurant list
                     fetchRestaurants();
                 } else {
-                    throw new Error('Failed to add restaurant');
+                    throw new Error('Failed to save restaurant');
                 }
             } catch (error) {
-                showMessage('Failed to add restaurant: ' + error.message, 'error');
+                showMessage(`Failed to ${this.dataset.restaurantId ? 'update' : 'add'} restaurant: ` + error.message, 'error');
             }
         });
     }
