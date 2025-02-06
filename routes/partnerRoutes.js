@@ -2,6 +2,12 @@ const express = require('express');
 const router = express.Router();
 const nodemailer = require('nodemailer');
 
+// Check if email password is configured
+if (!process.env.EMAIL_PASSWORD) {
+    console.error('EMAIL_PASSWORD environment variable is not set');
+    throw new Error('Email configuration is incomplete: EMAIL_PASSWORD is required');
+}
+
 // Create a transporter using Gmail SMTP
 const transporter = nodemailer.createTransport({
     service: 'gmail',
