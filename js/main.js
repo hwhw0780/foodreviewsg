@@ -35,6 +35,9 @@ document.addEventListener('DOMContentLoaded', function() {
         'vegetarian': 'Vegetarian (素食)'
     };
 
+    // Sample restaurant data
+    const sampleRestaurants = [];
+
     // Fetch restaurants from API
     async function fetchRestaurants() {
         try {
@@ -82,59 +85,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Create restaurant card HTML
     function createRestaurantCard(restaurant) {
-        console.log('Creating card for restaurant:', restaurant);
-        const stars = '★'.repeat(Math.floor(restaurant.rating)) + 
-                     (restaurant.rating % 1 >= 0.5 ? '½' : '') +
-                     '☆'.repeat(5 - Math.ceil(restaurant.rating));
-        
         const card = document.createElement('div');
         card.className = 'restaurant-card';
-        card.setAttribute('data-restaurant-id', restaurant.id);
-        
-        // Add click event listener
-        card.addEventListener('click', function(e) {
-            console.log('=== Card Click Event ===');
-            console.log('Event:', e);
-            console.log('Clicked restaurant ID:', restaurant.id);
-            console.log('Restaurant data:', restaurant);
-            e.preventDefault();
-            try {
-                showRestaurantModal(restaurant);
-            } catch (error) {
-                console.error('Error showing modal:', error);
-            }
-        });
-        
-        // Update image handling to use absolute paths
-        const bannerImageUrl = restaurant.bannerImage?.startsWith('/') ? restaurant.bannerImage : `/${restaurant.bannerImage}`;
-        console.log('Banner image URL:', bannerImageUrl);
-        
-        // Get price range text
-        const priceRangeText = getPriceRangeText(restaurant.priceRange);
-        
+        card.dataset.category = restaurant.category;
+        card.dataset.location = restaurant.location.toLowerCase().replace(/\s+/g, '-');
+
         card.innerHTML = `
-            <div class="card-image">
-                <img src="${bannerImageUrl || ''}" alt="${restaurant.name}" 
-                     onerror="this.onerror=null; this.src='/images/default-restaurant.jpg';">
+            <div class="restaurant-image">
+                <img src="${restaurant.image}" alt="${restaurant.name}">
             </div>
-            <div class="card-content">
+            <div class="restaurant-info">
                 <h3>${restaurant.name}</h3>
-                <div class="restaurant-info">
-                    <span class="category">${restaurant.category}</span>
-                    <span class="separator">•</span>
-                    <span class="location">${restaurant.location}</span>
+                ${restaurant.nameChinese ? `<p class="chinese-name">${restaurant.nameChinese}</p>` : ''}
+                <p class="cuisine">${getCategoryText(restaurant.category)}</p>
+                <div class="rating">
+                    ${getRatingStars(restaurant.rating)}
+                    <span>(${restaurant.reviewCount} reviews)</span>
                 </div>
-                <div class="rating-price">
-                    <div class="rating">
-                        <span class="stars">${stars}</span>
-                        <span class="review-count">(${restaurant.reviewCount} reviews)</span>
-                    </div>
-                    <div class="price-range">${priceRangeText}</div>
-                </div>
+                <p class="location"><i class="fas fa-map-marker-alt"></i> ${restaurant.location}</p>
+                <p class="price-range">${'$'.repeat(restaurant.priceRange)}</p>
             </div>
         `;
-        
-        console.log('Card HTML created:', card.outerHTML);
+
         return card;
     }
 
@@ -550,6 +522,18 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // Initial load
+    document.addEventListener('DOMContentLoaded', () => {
+        // Display sample restaurants initially
+        const restaurantGrid = document.querySelector('.restaurant-grid');
+        restaurantGrid.innerHTML = ''; // Clear example card
+        sampleRestaurants.forEach(restaurant => {
+            restaurantGrid.appendChild(createRestaurantCard(restaurant));
+        });
+
+        // ... rest of your initialization code ...
+    });
 
     // Initial fetch of restaurants
     fetchRestaurants();

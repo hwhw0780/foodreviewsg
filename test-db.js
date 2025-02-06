@@ -11,22 +11,7 @@ async function testDatabase() {
         await sequelize.sync({ force: false });
         console.log('Database synced successfully');
 
-        // Create a test restaurant
-        const testRestaurant = await Restaurant.create({
-            name: "Din Tai Fung",
-            nameChinese: "鼎泰丰",
-            category: "chinese",
-            location: "orchard",
-            address: "435 Orchard Road, Wisma Atria #04-22, Singapore 238877",
-            imageUrl: "https://example.com/din-tai-fung.jpg",
-            priceRange: 2,
-            rating: 4.5,
-            reviewCount: 1234
-        });
-
-        console.log('Test restaurant created:', testRestaurant.toJSON());
-
-        // Query the restaurant back
+        // Query all restaurants
         const restaurants = await Restaurant.findAll();
         console.log('All restaurants:', restaurants.map(r => r.toJSON()));
 
