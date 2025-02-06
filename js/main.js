@@ -66,6 +66,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Function to get price range text based on value
+    function getPriceRangeText(priceRange) {
+        switch (parseInt(priceRange)) {
+            case 1: return '$ (Below $15)';
+            case 2: return '$$ ($15-$30)';
+            case 3: return '$$$ ($31-$50)';
+            case 4: return '$$$$ (Above $50)';
+            default: return '$ (Below $15)';
+        }
+    }
+
     // Create restaurant card HTML
     function createRestaurantCard(restaurant) {
         console.log('Creating card for restaurant:', restaurant);
@@ -95,8 +106,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const bannerImageUrl = restaurant.bannerImage?.startsWith('/') ? restaurant.bannerImage : `/${restaurant.bannerImage}`;
         console.log('Banner image URL:', bannerImageUrl);
         
-        // Create price range string with correct number of dollar signs
-        const priceRangeStr = '$'.repeat(parseInt(restaurant.priceRange) || 1);
+        // Get price range text
+        const priceRangeText = getPriceRangeText(restaurant.priceRange);
         
         card.innerHTML = `
             <div class="card-image">
@@ -115,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <span class="stars">${stars}</span>
                         <span class="review-count">(${restaurant.reviewCount} reviews)</span>
                     </div>
-                    <div class="price-range">${priceRangeStr}</div>
+                    <div class="price-range">${priceRangeText}</div>
                 </div>
             </div>
         `;
@@ -136,8 +147,8 @@ document.addEventListener('DOMContentLoaded', function() {
                      (restaurant.rating % 1 >= 0.5 ? '½' : '') +
                      '☆'.repeat(5 - Math.ceil(restaurant.rating));
         
-        // Create price range string with correct number of dollar signs
-        const priceRangeStr = '$'.repeat(parseInt(restaurant.priceRange) || 1);
+        // Get price range text
+        const priceRangeText = getPriceRangeText(restaurant.priceRange);
         
         console.log('Building modal HTML...');
         
@@ -162,7 +173,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <span class="separator">•</span>
                             <span class="location">${restaurant.location}</span>
                             <span class="separator">•</span>
-                            <span class="price-range">${priceRangeStr}</span>
+                            <span class="price-range">${priceRangeText}</span>
                         </div>
                         <div class="info-row">
                             <div class="rating">
