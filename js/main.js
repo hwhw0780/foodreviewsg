@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentCategory = 'all';
     let currentLocation = 'all';
     let restaurants = [];
+    let restaurantCache = new Map();
+    let lastCacheUpdate = null;
+    const CACHE_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
 
     // Category names mapping (English to display name)
     const categoryNames = {
@@ -316,13 +319,38 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
     }
 
+    // Function to get random items from array
+    function getRandomItems(array, count) {
+        const shuffled = [...array].sort(() => 0.5 - Math.random());
+        return shuffled.slice(0, count);
+    }
+
+    // Function to get cached restaurants or generate new selection
+    function getCachedOrRandomRestaurants(restaurants, cacheKey) {
+        const now = Date.now();
+        if (!lastCacheUpdate || (now - lastCacheUpdate) > CACHE_DURATION) {
+            // Clear entire cache if it's time to update
+            restaurantCache.clear();
+            lastCacheUpdate = now;
+        }
+
+        if (!restaurantCache.has(cacheKey)) {
+            // Generate new random selection if more than 5 restaurants
+            if (restaurants.length > 5) {
+                restaurantCache.set(cacheKey, getRandomItems(restaurants, 5));
+            } else {
+                restaurantCache.set(cacheKey, restaurants);
+            }
+        }
+
+        return restaurantCache.get(cacheKey);
+    }
+
     // Display filtered restaurants
     function displayRestaurants() {
         console.log('=== Displaying Restaurants ===');
         restaurantGrid.innerHTML = '';
-        let visibleCount = 0;
-        const maxVisible = currentCategory === 'all' ? Infinity : 5;
-
+        
         const filteredRestaurants = restaurants.filter(restaurant => {
             const categoryMatch = currentCategory === 'all' || restaurant.category === currentCategory;
             const locationMatch = currentLocation === 'all' || 
@@ -337,14 +365,19 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        filteredRestaurants.slice(0, maxVisible).forEach(restaurant => {
+        // Get cached or random selection based on category and location
+        const cacheKey = `${currentCategory}-${currentLocation}`;
+        const displayRestaurants = getCachedOrRandomRestaurants(filteredRestaurants, cacheKey);
+        
+        console.log('Displaying restaurants:', displayRestaurants);
+
+        displayRestaurants.forEach(restaurant => {
             console.log('Creating card for restaurant:', restaurant);
             const card = createRestaurantCard(restaurant);
             restaurantGrid.appendChild(card);
-            visibleCount++;
         });
 
-        updateTitle(currentCategory, visibleCount);
+        updateTitle(currentCategory, displayRestaurants.length);
     }
 
     // Show no results message
@@ -367,7 +400,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (category === 'all') {
             featuredTitle.textContent = 'Featured Restaurants';
         } else {
-            featuredTitle.textContent = `Top ${count} ${categoryName} Restaurants`;
+            const totalCount = restaurants.filter(r => r.category === category).length;
+            if (totalCount > 5) {
+                featuredTitle.textContent = `Top 5 ${categoryName} Restaurants`;
+            } else {
+                featuredTitle.textContent = `Top ${count} ${categoryName} Restaurants`;
+            }
         }
     }
 
@@ -407,6 +445,7 @@ document.addEventListener('DOMContentLoaded', function() {
             showNoResults(`No restaurants found matching "${searchTerm}"`);
         } else {
             console.log('Found restaurants:', filteredRestaurants);
+            // For search results, show all matches without random selection
             filteredRestaurants.forEach(restaurant => {
                 const card = createRestaurantCard(restaurant);
                 restaurantGrid.appendChild(card);

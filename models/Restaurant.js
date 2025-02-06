@@ -40,7 +40,7 @@ const Restaurant = sequelize.define('Restaurant', {
     },
     bannerImage: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     photos: {
         type: DataTypes.JSON,

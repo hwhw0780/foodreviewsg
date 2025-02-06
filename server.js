@@ -20,6 +20,7 @@ app.use(express.static(path.join(__dirname)));
 const fs = require('fs');
 const uploadDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)) {
+    console.log('Creating uploads directory at:', uploadDir);
     fs.mkdirSync(uploadDir, { recursive: true });
 }
 app.use('/uploads', express.static(uploadDir));
@@ -34,6 +35,8 @@ app.use('/images', express.static(imagesDir));
 // Add logging for image requests
 app.use('/uploads', (req, res, next) => {
     console.log('Image request:', req.url);
+    console.log('Full path:', path.join(uploadDir, req.url));
+    console.log('File exists:', fs.existsSync(path.join(uploadDir, req.url)));
     next();
 });
 
