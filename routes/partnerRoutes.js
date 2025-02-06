@@ -4,10 +4,15 @@ const nodemailer = require('nodemailer');
 
 // Create a transporter using Gmail SMTP
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true, // use SSL
     auth: {
         user: 'sgbestfoodplatform@gmail.com',
         pass: process.env.EMAIL_PASSWORD // App password from Gmail
+    },
+    tls: {
+        rejectUnauthorized: false
     }
 });
 
