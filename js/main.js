@@ -1,4 +1,31 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Navbar scroll effect
+    const navbar = document.querySelector('.navbar');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+
+    // Smooth scroll for advertise button
+    const advertiseBtn = document.querySelector('.advertise-btn');
+    if (advertiseBtn) {
+        advertiseBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const partnerSection = document.querySelector('#contact');
+            if (partnerSection) {
+                const navbarHeight = document.querySelector('.navbar').offsetHeight;
+                const targetPosition = partnerSection.offsetTop - navbarHeight;
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    }
+
     // Get DOM elements
     const categoryButtons = document.querySelectorAll('.category-btn');
     const locationSelect = document.getElementById('location-select');
@@ -91,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Create restaurant card HTML
     function createRestaurantCard(restaurant) {
         const card = document.createElement('div');
-        card.className = `restaurant-card ${restaurant.adStatus !== 'none' ? `${restaurant.adStatus}-ad` : ''}`;
+        card.className = `restaurant-card ${restaurant.adStatus !== 'none' ? 'ad' : ''}`;
         card.dataset.category = restaurant.category;
         card.dataset.location = restaurant.location.toLowerCase().replace(/\s+/g, '-');
 
@@ -102,8 +129,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Add ad indicator if restaurant has active ad status
         const adIndicator = restaurant.adStatus !== 'none' ? `
-            <div class="ad-indicator ${restaurant.adStatus}">
-                ${restaurant.adStatus.toUpperCase()} AD
+            <div class="ad-indicator">
+                Ads
             </div>
         ` : '';
 
@@ -355,19 +382,40 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Get cached or random selection based on category and location
-        const cacheKey = `${currentCategory}-${currentLocation}`;
-        const displayRestaurants = getCachedOrRandomRestaurants(filteredRestaurants, cacheKey);
-        
-        console.log('Displaying restaurants:', displayRestaurants);
+        // Separate ads and regular restaurants
+        const adRestaurants = filteredRestaurants.filter(r => r.adStatus !== 'none');
+        const regularRestaurants = filteredRestaurants.filter(r => r.adStatus === 'none')
+            .sort((a, b) => b.rating - a.rating)
+            .slice(0, 5); // Get top 5 regular restaurants by rating
 
-        displayRestaurants.forEach(restaurant => {
-            console.log('Creating card for restaurant:', restaurant);
-            const card = createRestaurantCard(restaurant);
-            restaurantGrid.appendChild(card);
+        // Randomly select ads for display
+        let selectedAds = [];
+        if (adRestaurants.length > 0) {
+            // Shuffle ads
+            const shuffledAds = [...adRestaurants].sort(() => Math.random() - 0.5);
+            // Select up to 2 ads for before/after positions
+            selectedAds = shuffledAds.slice(0, Math.min(2, shuffledAds.length));
+            // If there are more ads, randomly add them to the regular list
+            if (shuffledAds.length > 2) {
+                const remainingAds = shuffledAds.slice(2);
+                regularRestaurants.splice(Math.floor(Math.random() * regularRestaurants.length), 0, ...remainingAds);
+            }
+        }
+
+        // Display restaurants in order: 1 ad (if available) + regular restaurants + 1 ad (if available)
+        if (selectedAds.length > 0) {
+            restaurantGrid.appendChild(createRestaurantCard(selectedAds[0]));
+        }
+
+        regularRestaurants.forEach(restaurant => {
+            restaurantGrid.appendChild(createRestaurantCard(restaurant));
         });
 
-        updateTitle(currentCategory, displayRestaurants.length);
+        if (selectedAds.length > 1) {
+            restaurantGrid.appendChild(createRestaurantCard(selectedAds[1]));
+        }
+
+        updateTitle(currentCategory, regularRestaurants.length);
     }
 
     // Show no results message
@@ -390,12 +438,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (category === 'all') {
             featuredTitle.textContent = 'Featured Restaurants';
         } else {
-            const totalCount = restaurants.filter(r => r.category === category).length;
-            if (totalCount > 5) {
-                featuredTitle.textContent = `Top 5 ${categoryName} Restaurants`;
-            } else {
-                featuredTitle.textContent = `Top ${count} ${categoryName} Restaurants`;
-            }
+            featuredTitle.textContent = `${categoryName} Restaurants`;
         }
     }
 
@@ -599,4 +642,36 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
         });
     }
+
+    // Mobile Menu Functionality
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const navLinks = document.querySelector('.nav-links');
+    const mobileMenuOverlay = document.createElement('div');
+    mobileMenuOverlay.className = 'mobile-menu-overlay';
+    document.body.appendChild(mobileMenuOverlay);
+
+    function toggleMobileMenu() {
+        navLinks.classList.toggle('active');
+        mobileMenuOverlay.classList.toggle('active');
+        document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+    }
+
+    mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+    mobileMenuOverlay.addEventListener('click', toggleMobileMenu);
+
+    // Close mobile menu when clicking a link
+    navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            if (navLinks.classList.contains('active')) {
+                toggleMobileMenu();
+            }
+        });
+    });
+
+    // Close mobile menu on window resize
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768 && navLinks.classList.contains('active')) {
+            toggleMobileMenu();
+        }
+    });
 }); 

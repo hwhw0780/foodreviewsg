@@ -1,4 +1,4 @@
-# SG Food Reviews
+# SG Best Food
 
 A comprehensive food review platform for restaurants in Singapore.
 

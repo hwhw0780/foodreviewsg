@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SG Food Reviews - Your Ultimate Singapore Food Guide</title>
+    <title>SG Best Food - Your Ultimate Singapore Food Guide</title>
     <link rel="stylesheet" href="styles/main.css">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -12,14 +12,17 @@
     <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="nav-brand">
-            <a href="index.html">SG Food Reviews</a>
+            <img src="logo.png" alt="SG Best Food Logo" class="logo">
+            <a href="index.html">SG Best Food</a>
         </div>
+        <button class="mobile-menu-btn">
+            <i class="fas fa-bars"></i>
+        </button>
         <div class="nav-links">
             <a href="index.html" class="active">Home</a>
             <a href="#restaurants">Restaurants</a>
             <a href="#about">About</a>
             <a href="#contact">Contact</a>
-            <a href="admin/login.html" class="admin-login"><i class="fas fa-user"></i> Admin Login</a>
         </div>
     </nav>
 
@@ -165,6 +168,10 @@
         <div class="stats-header">
             <h2>Platform Statistics</h2>
             <p>Join Singapore's fastest-growing food discovery platform</p>
+            <a href="#contact" class="advertise-btn">
+                <i class="fas fa-bullhorn"></i>
+                Advertise with us!
+            </a>
         </div>
         <div class="stats-container">
             <div class="stat-box">
@@ -201,7 +208,7 @@
     <!-- About Section -->
     <section id="about" class="about-section">
         <div class="about-content">
-            <h2>About SG Food Reviews</h2>
+            <h2>About SG Best Food</h2>
             <div class="about-grid">
                 <div class="about-item">
                     <i class="fas fa-utensils"></i>
@@ -210,8 +217,8 @@
                 </div>
                 <div class="about-item">
                     <i class="fas fa-star"></i>
-                    <h3>Trusted Reviews</h3>
-                    <p>We provide authentic, unbiased reviews from real diners, helping you make informed dining decisions.</p>
+                    <h3>Advertising Opportunity</h3>
+                    <p>Help restaurants advertise and explore new opportunities, as we bring thousands of potential customers to your doorstep every day.</p>
                 </div>
                 <div class="about-item">
                     <i class="fas fa-globe-asia"></i>
@@ -231,36 +238,75 @@
     <section id="contact" class="partner-section">
         <div class="partner-content">
             <h2>Want to be part of Singapore's Best Food Platform?</h2>
-            <div class="pricing-box">
-                <div class="price">$2x<span>/month</span></div>
-                <ul class="benefits">
-                    <li><i class="fas fa-check"></i> Featured listing on our platform</li>
-                    <li><i class="fas fa-check"></i> Direct booking integration</li>
-                    <li><i class="fas fa-check"></i> Real-time customer analytics</li>
-                    <li><i class="fas fa-check"></i> Social media promotion</li>
-                    <li><i class="fas fa-check"></i> Customer review management</li>
-                </ul>
+            <div class="partner-flex-container">
+                <div class="pricing-box">
+                    <div class="package-header">
+                        <span class="package-label">Value Package</span>
+                        <div class="price-container">
+                            <span class="currency">$</span>
+                            <span class="amount">2x</span>
+                            <span class="period">/month</span>
+                        </div>
+                    </div>
+                    <div class="benefits-container">
+                        <div class="benefit-item">
+                            <i class="fas fa-crown"></i>
+                            <div class="benefit-text">
+                                <h4>Premium listing position on our platform</h4>
+                                <p>Stand out from the crowd with top placement</p>
+                            </div>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-calendar-check"></i>
+                            <div class="benefit-text">
+                                <h4>Direct booking integration</h4>
+                                <p>Seamless reservation system</p>
+                            </div>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-users"></i>
+                            <div class="benefit-text">
+                                <h4>High visibility to 15,000+ daily visitors</h4>
+                                <p>Reach thousands of potential customers</p>
+                            </div>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fab fa-google"></i>
+                            <div class="benefit-text">
+                                <h4>Enhanced exposure through Google Ads</h4>
+                                <p>Expand your reach beyond our platform</p>
+                            </div>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-star"></i>
+                            <div class="benefit-text">
+                                <h4>Equal exposure opportunity with branded restaurants</h4>
+                                <p>Compete with the biggest names in the industry</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form id="partner-contact-form" class="partner-form">
+                    <h3>Get Started Today!</h3>
+                    <div class="form-group">
+                        <label for="restaurant-name-input">Restaurant Name*</label>
+                        <input type="text" id="restaurant-name-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-email">Email Address*</label>
+                        <input type="email" id="contact-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-phone">Phone Number*</label>
+                        <input type="tel" id="contact-phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="restaurant-website">Website (Optional)</label>
+                        <input type="url" id="restaurant-website" placeholder="https://example.com">
+                    </div>
+                    <button type="submit" class="partner-submit-btn">Submit Interest</button>
+                </form>
             </div>
-            <form id="partner-contact-form" class="partner-form">
-                <h3>Get Started Today!</h3>
-                <div class="form-group">
-                    <label for="restaurant-name-input">Restaurant Name*</label>
-                    <input type="text" id="restaurant-name-input" required>
-                </div>
-                <div class="form-group">
-                    <label for="contact-email">Email Address*</label>
-                    <input type="email" id="contact-email" required>
-                </div>
-                <div class="form-group">
-                    <label for="contact-phone">Phone Number*</label>
-                    <input type="tel" id="contact-phone" required>
-                </div>
-                <div class="form-group">
-                    <label for="restaurant-website">Website (Optional)</label>
-                    <input type="url" id="restaurant-website" placeholder="https://example.com">
-                </div>
-                <button type="submit" class="partner-submit-btn">Submit Interest</button>
-            </form>
         </div>
     </section>
 
@@ -268,29 +314,29 @@
     <footer>
         <div class="footer-content">
             <div class="footer-section">
-                <h3>About SG Food Reviews</h3>
-                <p>Your trusted platform for discovering and reviewing the best restaurants in Singapore.</p>
+                <h3>About SG Best Food</h3>
+                <p>Your trusted platform for discovering and reviewing the best restaurants in Singapore. We help food lovers find their next favorite dining spot.</p>
             </div>
             <div class="footer-section">
                 <h3>Quick Links</h3>
                 <ul>
                     <li><a href="#about">About Us</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#restaurants">Restaurants</a></li>
+                    <li><a href="#contact">Partner With Us</a></li>
                     <li><a href="#privacy">Privacy Policy</a></li>
-                    <li><a href="#terms">Terms of Service</a></li>
                 </ul>
             </div>
             <div class="footer-section">
-                <h3>Connect With Us</h3>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                </div>
+                <h3>Contact Info</h3>
+                <ul class="contact-info">
+                    <li><i class="fas fa-envelope"></i> info@sgfoodreviews.com</li>
+                    <li><i class="fas fa-phone"></i> +65 1234 5678</li>
+                    <li><i class="fas fa-map-marker-alt"></i> Singapore</li>
+                </ul>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2025 SG Food Reviews. All rights reserved. Created by hwhw</p>
+            <p>&copy; 2025 SG Best Food. All rights reserved. Created by hwhw</p>
         </div>
     </footer>
 
