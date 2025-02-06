@@ -42,9 +42,9 @@ router.get('/', async (req, res) => {
         const restaurants = await Restaurant.findAll({
             order: [
                 [sequelize.literal(`CASE 
-                    WHEN "adStatus" = 'gold' AND ("adExpiryDate" IS NULL OR "adExpiryDate" > NOW()) THEN 1
-                    WHEN "adStatus" = 'none' OR "adExpiryDate" <= NOW() THEN 2
-                    WHEN "adStatus" = 'silver' AND ("adExpiryDate" IS NULL OR "adExpiryDate" > NOW()) THEN 3
+                    WHEN "adStatus" = 'gold' THEN 1
+                    WHEN "adStatus" = 'none' THEN 2
+                    WHEN "adStatus" = 'silver' THEN 3
                 END`), 'ASC'],
                 ['rating', 'DESC']
             ]
@@ -274,7 +274,7 @@ router.put('/:id', upload.fields([
 // Update ad status
 router.put('/:id/ad-status', async (req, res) => {
     try {
-        const { status, expiryDate } = req.body;
+        const { status } = req.body;
         const restaurant = await Restaurant.findByPk(req.params.id);
         
         if (!restaurant) {
@@ -289,7 +289,7 @@ router.put('/:id/ad-status', async (req, res) => {
         // Update restaurant
         await restaurant.update({
             adStatus: status,
-            adExpiryDate: expiryDate ? new Date(expiryDate) : null
+            adExpiryDate: null // Remove expiry date as it's no longer needed
         });
 
         res.json(restaurant);

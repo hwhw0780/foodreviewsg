@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </td>
                 <td class="ad-status-cell">
                     <label class="ad-toggle">
-                        <input type="checkbox" ${restaurant.adStatus !== 'none' ? 'checked' : ''}>
+                        <input type="checkbox" ${restaurant.adStatus === 'gold' ? 'checked' : ''}>
                         <span class="ad-toggle-slider"></span>
                     </label>
                     <span class="ad-badge ${restaurant.adStatus}">${restaurant.adStatus}</span>
@@ -647,6 +647,8 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             console.error('Error updating ad status:', error);
             showMessage('Failed to update ad status', 'error');
+            // Reset toggle state on error
+            await fetchRestaurants();
         }
     }
 

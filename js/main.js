@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Create restaurant card HTML
     function createRestaurantCard(restaurant) {
         const card = document.createElement('div');
-        card.className = 'restaurant-card';
+        card.className = `restaurant-card ${restaurant.adStatus !== 'none' ? `${restaurant.adStatus}-ad` : ''}`;
         card.dataset.category = restaurant.category;
         card.dataset.location = restaurant.location.toLowerCase().replace(/\s+/g, '-');
 
@@ -100,7 +100,15 @@ document.addEventListener('DOMContentLoaded', function() {
             showRestaurantModal(restaurant);
         });
 
+        // Add ad indicator if restaurant has active ad status
+        const adIndicator = restaurant.adStatus !== 'none' ? `
+            <div class="ad-indicator ${restaurant.adStatus}">
+                ${restaurant.adStatus.toUpperCase()}
+            </div>
+        ` : '';
+
         card.innerHTML = `
+            ${adIndicator}
             <div class="restaurant-image">
                 <img src="${restaurant.image}" alt="${restaurant.name}">
             </div>
