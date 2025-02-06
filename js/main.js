@@ -97,20 +97,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Add click event listener to show modal
         card.addEventListener('click', () => {
-            showRestaurantModal(restaurant);
+            window.location.href = `restaurant-details.html?id=${restaurant.id}`;
         });
 
         // Add ad indicator if restaurant has active ad status
         const adIndicator = restaurant.adStatus !== 'none' ? `
             <div class="ad-indicator ${restaurant.adStatus}">
-                ${restaurant.adStatus.toUpperCase()}
+                ${restaurant.adStatus.toUpperCase()} AD
             </div>
         ` : '';
 
         card.innerHTML = `
             ${adIndicator}
             <div class="restaurant-image">
-                <img src="${restaurant.image}" alt="${restaurant.name}">
+                <img src="${restaurant.bannerImage || '/images/default-restaurant.jpg'}" alt="${restaurant.name}">
             </div>
             <div class="restaurant-info">
                 <h3>${restaurant.name}</h3>
