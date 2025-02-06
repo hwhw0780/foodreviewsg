@@ -15,20 +15,27 @@ app.use(express.urlencoded({ extended: true }));
 
 // Serve static files
 app.use(express.static(path.join(__dirname)));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use('/images', express.static(path.join(__dirname, 'images')));
 
-// Ensure uploads and images directories exist
+// Ensure uploads directory exists and serve it
 const fs = require('fs');
 const uploadDir = path.join(__dirname, 'uploads');
-const imagesDir = path.join(__dirname, 'images');
-
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
 }
+app.use('/uploads', express.static(uploadDir));
+
+// Ensure images directory exists and serve it
+const imagesDir = path.join(__dirname, 'images');
 if (!fs.existsSync(imagesDir)) {
     fs.mkdirSync(imagesDir, { recursive: true });
 }
+app.use('/images', express.static(imagesDir));
+
+// Add logging for image requests
+app.use('/uploads', (req, res, next) => {
+    console.log('Image request:', req.url);
+    next();
+});
 
 // Routes
 app.get('/', (req, res) => {

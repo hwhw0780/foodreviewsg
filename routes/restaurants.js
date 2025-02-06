@@ -3,19 +3,36 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const Restaurant = require('../models/Restaurant');
+const fs = require('fs');
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/');
+        // Ensure the uploads directory exists
+        const uploadDir = path.join(__dirname, '..', 'uploads');
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        cb(null, uploadDir);
     },
     filename: function (req, file, cb) {
+        // Generate a unique filename
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+        const ext = path.extname(file.originalname);
+        cb(null, file.fieldname + '-' + uniqueSuffix + ext);
     }
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({ 
+    storage: storage,
+    fileFilter: function (req, file, cb) {
+        // Accept images only
+        if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
+            return cb(new Error('Only image files are allowed!'), false);
+        }
+        cb(null, true);
+    }
+});
 
 // Get all restaurants
 router.get('/', async (req, res) => {
@@ -108,9 +125,9 @@ router.post('/', upload.fields([
 
         const restaurantData = {
             ...req.body,
-            customReviews,
-            bannerImage: req.files?.['bannerImage'] ? `/uploads/${req.files['bannerImage'][0].filename}` : null,
-            photos: req.files?.['photos'] ? req.files['photos'].map(file => `/uploads/${file.filename}`) : []
+            customReviews: req.body.customReviews ? JSON.parse(req.body.customReviews) : [],
+            bannerImage: req.files?.['bannerImage'] ? `/uploads/${path.basename(req.files['bannerImage'][0].path)}` : null,
+            photos: req.files?.['photos'] ? req.files['photos'].map(file => `/uploads/${path.basename(file.path)}`) : []
         };
 
         console.log('Creating restaurant with data:', restaurantData);
@@ -121,11 +138,7 @@ router.post('/', upload.fields([
         console.error('Restaurant creation error:', error);
         res.status(400).json({ 
             error: 'Failed to create restaurant',
-            details: error.message,
-            validationErrors: error.errors?.map(e => ({
-                field: e.path,
-                message: e.message
-            }))
+            details: error.message
         });
     }
 });
@@ -172,12 +185,28 @@ router.put('/:id', upload.fields([
 
         // Handle banner image if new one is uploaded
         if (req.files?.['bannerImage']) {
-            updateData.bannerImage = `/uploads/${req.files['bannerImage'][0].filename}`;
+            updateData.bannerImage = `/uploads/${path.basename(req.files['bannerImage'][0].path)}`;
+            // Optionally delete old banner image
+            if (restaurant.bannerImage) {
+                const oldPath = path.join(__dirname, '..', restaurant.bannerImage);
+                if (fs.existsSync(oldPath)) {
+                    fs.unlinkSync(oldPath);
+                }
+            }
         }
 
         // Handle photos if new ones are uploaded
         if (req.files?.['photos']) {
-            updateData.photos = req.files['photos'].map(file => `/uploads/${file.filename}`);
+            updateData.photos = req.files['photos'].map(file => `/uploads/${path.basename(file.path)}`);
+            // Optionally delete old photos
+            if (restaurant.photos && Array.isArray(restaurant.photos)) {
+                restaurant.photos.forEach(photo => {
+                    const oldPath = path.join(__dirname, '..', photo);
+                    if (fs.existsSync(oldPath)) {
+                        fs.unlinkSync(oldPath);
+                    }
+                });
+            }
         }
 
         console.log('Updating restaurant with data:', updateData);
@@ -192,11 +221,7 @@ router.put('/:id', upload.fields([
         console.error('Update error:', error);
         res.status(400).json({ 
             error: 'Failed to update restaurant',
-            details: error.message,
-            validationErrors: error.errors?.map(e => ({
-                field: e.path,
-                message: e.message
-            }))
+            details: error.message
         });
     }
 });
