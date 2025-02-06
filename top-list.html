@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top 5 Restaurants - SG Best Food</title>
+    <meta name="description" content="">
+    <link rel="stylesheet" href="/styles/main.css">
+    <link rel="stylesheet" href="/styles/top-list.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="/">SG Best Food</a>
+        </div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/#restaurants">Restaurants</a>
+            <a href="/#about">About</a>
+            <a href="/#contact">Contact</a>
+        </div>
+    </nav>
+
+    <!-- Top 5 List Content -->
+    <div class="top-list-container">
+        <header class="list-header">
+            <h1 id="list-title"></h1>
+            <p id="list-description"></p>
+            <div class="last-updated">Last updated: <span id="last-updated-date"></span></div>
+        </header>
+
+        <div class="restaurant-list">
+            <!-- Restaurants will be dynamically inserted here -->
+        </div>
+
+        <div class="list-footer">
+            <div class="share-buttons">
+                <button onclick="shareOnFacebook()">
+                    <i class="fab fa-facebook"></i> Share
+                </button>
+                <button onclick="shareOnTwitter()">
+                    <i class="fab fa-twitter"></i> Tweet
+                </button>
+                <button onclick="copyLink()">
+                    <i class="fas fa-link"></i> Copy Link
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About SG Best Food</h3>
+                <p>Your trusted guide to discovering the best restaurants in Singapore.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="/#about">About Us</a></li>
+                    <li><a href="/#contact">Contact</a></li>
+                    <li><a href="/privacy">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <ul class="contact-info">
+                    <li><i class="fas fa-envelope"></i> info@sgbestfood.com</li>
+                    <li><i class="fas fa-map-marker-alt"></i> Singapore</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 SG Best Food. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Get the slug from the URL
+        const slug = window.location.pathname.split('/').pop();
+
+        // Fetch and display the Top 5 list
+        async function fetchTopList() {
+            try {
+                const response = await fetch(`/api/top-lists/${slug}`);
+                if (!response.ok) throw new Error('List not found');
+                
+                const list = await response.json();
+                displayTopList(list);
+                updateMetaTags(list);
+            } catch (error) {
+                console.error('Error:', error);
+                document.querySelector('.top-list-container').innerHTML = `
+                    <div class="error-message">
+                        <h2>List not found</h2>
+                        <a href="/" class="btn">Return to Home</a>
+                    </div>
+                `;
+            }
+        }
+
+        function displayTopList(list) {
+            // Update header
+            document.getElementById('list-title').textContent = list.metaTitle;
+            document.getElementById('list-description').textContent = list.metaDescription;
+            document.getElementById('last-updated-date').textContent = 
+                new Date(list.lastUpdated).toLocaleDateString('en-SG', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+            // Display restaurants
+            const restaurantList = document.querySelector('.restaurant-list');
+            restaurantList.innerHTML = list.restaurants
+                .sort((a, b) => a.rank - b.rank)
+                .map(restaurant => `
+                    <div class="restaurant-card rank-${restaurant.rank}">
+                        <div class="rank-badge">#${restaurant.rank}</div>
+                        <div class="restaurant-image">
+                            <img src="${restaurant.bannerImage}" alt="${restaurant.name}">
+                        </div>
+                        <div class="restaurant-info">
+                            <h2>${restaurant.name}</h2>
+                            ${restaurant.nameChinese ? `<p class="chinese-name">${restaurant.nameChinese}</p>` : ''}
+                            <div class="rating">
+                                <div class="stars">
+                                    ${'★'.repeat(Math.floor(restaurant.rating))}
+                                    ${restaurant.rating % 1 >= 0.5 ? '½' : ''}
+                                    ${'☆'.repeat(5 - Math.ceil(restaurant.rating))}
+                                </div>
+                                <span>(${restaurant.reviewCount} reviews)</span>
+                            </div>
+                            <p class="location"><i class="fas fa-map-marker-alt"></i> ${restaurant.location}</p>
+                            <p class="price-range">
+                                ${'$'.repeat(restaurant.priceRange)}
+                            </p>
+                            <a href="/restaurant-details.html?id=${restaurant.id}" class="view-details">
+                                View Details <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                `).join('');
+        }
+
+        function updateMetaTags(list) {
+            document.title = list.metaTitle;
+            document.querySelector('meta[name="description"]').content = list.metaDescription;
+        }
+
+        // Social sharing functions
+        function shareOnFacebook() {
+            const url = encodeURIComponent(window.location.href);
+            window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+        }
+
+        function shareOnTwitter() {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent(document.getElementById('list-title').textContent);
+            window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank');
+        }
+
+        function copyLink() {
+            navigator.clipboard.writeText(window.location.href)
+                .then(() => alert('Link copied to clipboard!'))
+                .catch(err => console.error('Failed to copy link:', err));
+        }
+
+        // Initialize page
+        fetchTopList();
+    </script>
+</body>
+</html> 

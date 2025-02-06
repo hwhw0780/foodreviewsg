@@ -6,6 +6,7 @@ const { sequelize, testConnection } = require('./config/database');
 const restaurantRoutes = require('./routes/restaurants');
 const statisticsRoutes = require('./routes/statistics');
 const partnerRoutes = require('./routes/partnerRoutes');
+const topListRoutes = require('./routes/topLists');
 
 const app = express();
 
@@ -46,6 +47,11 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// Serve dynamic Top 5 list pages
+app.get('/top-5/:slug', (req, res) => {
+    res.sendFile(path.join(__dirname, 'top-list.html'));
+});
+
 // Serve restaurant details page
 app.get('/restaurant-details.html', (req, res) => {
     console.log('Serving restaurant details page, query params:', req.query);
@@ -64,6 +70,7 @@ app.get('/admin/dashboard', (req, res) => {
 // API Routes
 app.use('/api/restaurants', restaurantRoutes);
 app.use('/api/statistics', statisticsRoutes);
+app.use('/api/top-lists', topListRoutes);
 app.use('/api', partnerRoutes);
 
 // Error handling middleware
