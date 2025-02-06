@@ -316,21 +316,34 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.append('xhsUrl', document.getElementById('xhs-url').value);
             formData.append('customReviews', JSON.stringify(customReviews));
             
+            // Check if we're editing or creating
+            const restaurantId = this.dataset.restaurantId;
+            const isEditing = !!restaurantId;
+
+            // If editing, get the existing restaurant data
+            let existingRestaurant;
+            if (isEditing) {
+                existingRestaurant = restaurants.find(r => r.id === parseInt(restaurantId));
+            }
+            
             // Only append files if they are selected
             if (bannerInput.files[0]) {
                 formData.append('bannerImage', bannerInput.files[0]);
+            } else if (isEditing && existingRestaurant?.bannerImage) {
+                // Keep existing banner image
+                formData.append('keepExistingBanner', 'true');
             }
+
             if (photosInput.files.length > 0) {
                 Array.from(photosInput.files).forEach(file => {
                     formData.append('photos', file);
                 });
+            } else if (isEditing && existingRestaurant?.photos) {
+                // Keep existing photos
+                formData.append('keepExistingPhotos', 'true');
             }
 
             try {
-                // Check if we're editing or creating
-                const restaurantId = this.dataset.restaurantId;
-                const isEditing = !!restaurantId;
-                
                 const url = isEditing ? `/api/restaurants/${restaurantId}` : '/api/restaurants';
                 const method = isEditing ? 'PUT' : 'POST';
                 
@@ -403,6 +416,30 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('google-review-url').value = restaurant.googleReviewUrl || '';
             document.getElementById('facebook-url').value = restaurant.facebookUrl || '';
             document.getElementById('xhs-url').value = restaurant.xhsUrl || '';
+
+            // Show existing banner image
+            const bannerPreview = document.getElementById('banner-preview');
+            const previewBannerImage = document.getElementById('preview-banner-image');
+            if (bannerPreview && restaurant.bannerImage) {
+                bannerPreview.innerHTML = `<img src="${restaurant.bannerImage}" alt="Banner Preview">`;
+            }
+            if (previewBannerImage) {
+                previewBannerImage.src = restaurant.bannerImage || '#';
+            }
+
+            // Show existing photos
+            const photosPreview = document.getElementById('photos-preview');
+            const previewPhotosGrid = document.getElementById('preview-photos');
+            if (photosPreview && restaurant.photos && Array.isArray(restaurant.photos)) {
+                photosPreview.innerHTML = restaurant.photos
+                    .map(photo => `<img src="${photo}" alt="Restaurant Photo">`)
+                    .join('');
+            }
+            if (previewPhotosGrid && restaurant.photos && Array.isArray(restaurant.photos)) {
+                previewPhotosGrid.innerHTML = restaurant.photos
+                    .map(photo => `<img src="${photo}" alt="Restaurant Photo">`)
+                    .join('');
+            }
 
             // Clear and populate custom reviews
             const customReviewsContainer = document.getElementById('custom-reviews-container');

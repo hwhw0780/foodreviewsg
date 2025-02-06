@@ -183,10 +183,20 @@ router.put('/:id', upload.fields([
             }
         }
 
-        // Handle banner image if new one is uploaded
+        // Handle banner image
         if (req.files?.['bannerImage']) {
+            // New banner image uploaded
             updateData.bannerImage = `/uploads/${path.basename(req.files['bannerImage'][0].path)}`;
-            // Optionally delete old banner image
+            // Delete old banner image
+            if (restaurant.bannerImage) {
+                const oldPath = path.join(__dirname, '..', restaurant.bannerImage);
+                if (fs.existsSync(oldPath)) {
+                    fs.unlinkSync(oldPath);
+                }
+            }
+        } else if (!req.body.keepExistingBanner) {
+            // No new image and not keeping existing - remove banner
+            updateData.bannerImage = null;
             if (restaurant.bannerImage) {
                 const oldPath = path.join(__dirname, '..', restaurant.bannerImage);
                 if (fs.existsSync(oldPath)) {
@@ -194,11 +204,24 @@ router.put('/:id', upload.fields([
                 }
             }
         }
+        // If keepExistingBanner is true, don't update bannerImage field
 
-        // Handle photos if new ones are uploaded
+        // Handle photos
         if (req.files?.['photos']) {
+            // New photos uploaded
             updateData.photos = req.files['photos'].map(file => `/uploads/${path.basename(file.path)}`);
-            // Optionally delete old photos
+            // Delete old photos
+            if (restaurant.photos && Array.isArray(restaurant.photos)) {
+                restaurant.photos.forEach(photo => {
+                    const oldPath = path.join(__dirname, '..', photo);
+                    if (fs.existsSync(oldPath)) {
+                        fs.unlinkSync(oldPath);
+                    }
+                });
+            }
+        } else if (!req.body.keepExistingPhotos) {
+            // No new photos and not keeping existing - remove all photos
+            updateData.photos = [];
             if (restaurant.photos && Array.isArray(restaurant.photos)) {
                 restaurant.photos.forEach(photo => {
                     const oldPath = path.join(__dirname, '..', photo);
@@ -208,6 +231,7 @@ router.put('/:id', upload.fields([
                 });
             }
         }
+        // If keepExistingPhotos is true, don't update photos field
 
         console.log('Updating restaurant with data:', updateData);
 

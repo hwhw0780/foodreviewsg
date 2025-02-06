@@ -95,6 +95,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const bannerImageUrl = restaurant.bannerImage?.startsWith('/') ? restaurant.bannerImage : `/${restaurant.bannerImage}`;
         console.log('Banner image URL:', bannerImageUrl);
         
+        // Create price range string with correct number of dollar signs
+        const priceRangeStr = '$'.repeat(parseInt(restaurant.priceRange) || 1);
+        
         card.innerHTML = `
             <div class="card-image">
                 <img src="${bannerImageUrl || ''}" alt="${restaurant.name}" 
@@ -112,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <span class="stars">${stars}</span>
                         <span class="review-count">(${restaurant.reviewCount} reviews)</span>
                     </div>
-                    <div class="price-range">${'$'.repeat(restaurant.priceRange)}</div>
+                    <div class="price-range">${priceRangeStr}</div>
                 </div>
             </div>
         `;
@@ -132,6 +135,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const stars = '★'.repeat(Math.floor(restaurant.rating)) + 
                      (restaurant.rating % 1 >= 0.5 ? '½' : '') +
                      '☆'.repeat(5 - Math.ceil(restaurant.rating));
+        
+        // Create price range string with correct number of dollar signs
+        const priceRangeStr = '$'.repeat(parseInt(restaurant.priceRange) || 1);
         
         console.log('Building modal HTML...');
         
@@ -155,13 +161,14 @@ document.addEventListener('DOMContentLoaded', function() {
                             <span class="category">${restaurant.category}</span>
                             <span class="separator">•</span>
                             <span class="location">${restaurant.location}</span>
+                            <span class="separator">•</span>
+                            <span class="price-range">${priceRangeStr}</span>
                         </div>
                         <div class="info-row">
                             <div class="rating">
                                 <span class="stars">${stars}</span>
                                 <span class="review-count">(${restaurant.reviewCount} reviews)</span>
                             </div>
-                            <div class="price-range">${'$'.repeat(restaurant.priceRange)}</div>
                         </div>
                         ${restaurant.address ? `
                             <div class="info-row">
