@@ -30,7 +30,7 @@
     <header class="hero">
         <div class="hero-content">
             <h1>Discover Singapore's Best Restaurants</h1>
-            <p>Your trusted guide to the finest dining experiences in Singapore</p>
+            <p>Your trusted guide to Singapore's <span class="highlight-text">TOP 5</span> restaurants in each category - carefully curated for the finest dining experiences</p>
             <div class="search-bar">
                 <input type="text" placeholder="Search for restaurants...">
                 <button><i class="fas fa-search"></i></button>
@@ -244,7 +244,7 @@
                         <span class="package-label">Value Package</span>
                         <div class="price-container">
                             <span class="currency">$</span>
-                            <span class="amount">2x</span>
+                            <span class="amount">49</span>
                             <span class="period">/month</span>
                         </div>
                     </div>
@@ -285,9 +285,31 @@
                             </div>
                         </div>
                     </div>
+                    <div class="payment-options">
+                        <div class="payment-label">Pay by PayPal:</div>
+                        <div class="payment-buttons">
+                            <button class="paypal-btn yearly">
+                                <i class="fab fa-paypal"></i>
+                                <div class="button-content">
+                                    <span class="main-text">Pay Yearly $450</span>
+                                    <span class="savings">save $138</span>
+                                    <span class="paypal-text">Pay by PayPal</span>
+                                    <span class="cancel-text">cancel anytime</span>
+                                </div>
+                            </button>
+                            <button class="paypal-btn monthly" id="monthly-subscription-btn">
+                                <i class="fab fa-paypal"></i>
+                                <div class="button-content">
+                                    <span class="main-text">Pay Monthly $49</span>
+                                    <span class="paypal-text">Pay by PayPal</span>
+                                    <span class="cancel-text">cancel anytime</span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 <form id="partner-contact-form" class="partner-form">
-                    <h3>Get Started Today!</h3>
+                    <h3>Have Question? Contact Us!</h3>
                     <div class="form-group">
                         <label for="restaurant-name-input">Restaurant Name*</label>
                         <input type="text" id="restaurant-name-input" required>
@@ -304,7 +326,7 @@
                         <label for="restaurant-website">Website (Optional)</label>
                         <input type="url" id="restaurant-website" placeholder="https://example.com">
                     </div>
-                    <button type="submit" class="partner-submit-btn">Submit Interest</button>
+                    <button type="submit" class="partner-submit-btn">Submit</button>
                 </form>
             </div>
         </div>
