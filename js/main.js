@@ -95,6 +95,11 @@ document.addEventListener('DOMContentLoaded', function() {
         card.dataset.category = restaurant.category;
         card.dataset.location = restaurant.location.toLowerCase().replace(/\s+/g, '-');
 
+        // Add click event listener to show modal
+        card.addEventListener('click', () => {
+            showRestaurantModal(restaurant);
+        });
+
         card.innerHTML = `
             <div class="restaurant-image">
                 <img src="${restaurant.image}" alt="${restaurant.name}">
