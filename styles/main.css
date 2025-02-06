@@ -1030,4 +1030,130 @@ footer {
         padding: 0.8rem;
         aspect-ratio: 1;
     }
+}
+
+/* Partner Section */
+.partner-section {
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.partner-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.partner-content h2 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin-bottom: 2rem;
+}
+
+.pricing-box {
+    background: white;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    margin-bottom: 3rem;
+    display: inline-block;
+    min-width: 300px;
+}
+
+.price {
+    font-size: 3rem;
+    color: #e74c3c;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+}
+
+.price span {
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.benefits {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+}
+
+.benefits li {
+    margin: 1rem 0;
+    color: #2c3e50;
+}
+
+.benefits i {
+    color: #2ecc71;
+    margin-right: 0.5rem;
+}
+
+.partner-form {
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.partner-form h3 {
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+}
+
+.partner-form .form-group {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.partner-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.partner-form input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.partner-form input:focus {
+    border-color: #e74c3c;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+}
+
+.partner-submit-btn {
+    background-color: #e74c3c;
+    color: white;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.partner-submit-btn:hover {
+    background-color: #c0392b;
+}
+
+@media (max-width: 768px) {
+    .partner-content h2 {
+        font-size: 2rem;
+    }
+
+    .pricing-box {
+        min-width: auto;
+        width: 100%;
+    }
+
+    .partner-form {
+        padding: 1.5rem;
+    }
 } 

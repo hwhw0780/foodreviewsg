@@ -5,6 +5,7 @@ const path = require('path');
 const { sequelize, testConnection } = require('./config/database');
 const restaurantRoutes = require('./routes/restaurants');
 const statisticsRoutes = require('./routes/statistics');
+const partnerRoutes = require('./routes/partnerRoutes');
 
 const app = express();
 
@@ -63,6 +64,7 @@ app.get('/admin/dashboard', (req, res) => {
 // API Routes
 app.use('/api/restaurants', restaurantRoutes);
 app.use('/api/statistics', statisticsRoutes);
+app.use('/api', partnerRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

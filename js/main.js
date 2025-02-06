@@ -512,6 +512,44 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
+    // Partner form submission handler
+    const partnerForm = document.getElementById('partner-form');
+    if (partnerForm) {
+        partnerForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const restaurantName = document.getElementById('restaurant-name').value;
+            const email = document.getElementById('contact-email').value;
+            const phone = document.getElementById('contact-phone').value;
+            const website = document.getElementById('restaurant-website').value;
+
+            try {
+                const response = await fetch('/api/partner-inquiry', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        restaurantName,
+                        email,
+                        phone,
+                        website
+                    })
+                });
+
+                if (response.ok) {
+                    alert('Thank you for your interest! We will contact you soon.');
+                    partnerForm.reset();
+                } else {
+                    throw new Error('Failed to submit form');
+                }
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                alert('Sorry, there was an error submitting the form. Please try again later.');
+            }
+        });
+    }
+
     // Initial fetch of restaurants
     fetchRestaurants();
 }); 
