@@ -597,4 +597,230 @@ document.addEventListener('DOMContentLoaded', function() {
     if (window.location.href.includes('dashboard.html')) {
         fetchRestaurants();
     }
+
+    // Top 5 Lists Management
+    const topListsSection = document.getElementById('top-lists-section');
+    const topListForm = document.getElementById('top-list-form');
+    const addTopListBtn = document.getElementById('add-top-list-btn');
+    const cancelTopListFormBtn = document.getElementById('cancel-top-list-form');
+    const topListCategory = document.getElementById('top-list-category');
+    const topListLocation = document.getElementById('top-list-location');
+    const restaurantRankingContainer = document.getElementById('restaurant-ranking-container');
+
+    // Fetch and display Top 5 lists
+    async function fetchTopLists() {
+        try {
+            const response = await fetch('/api/top-lists');
+            if (!response.ok) throw new Error('Failed to fetch Top 5 lists');
+            
+            const lists = await response.json();
+            displayTopLists(lists);
+        } catch (error) {
+            showMessage('Failed to fetch Top 5 lists: ' + error.message, 'error');
+        }
+    }
+
+    // Display Top 5 lists in table
+    function displayTopLists(lists) {
+        const tbody = document.querySelector('#top-lists-table tbody');
+        tbody.innerHTML = '';
+
+        lists.forEach(list => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${list.category}</td>
+                <td>${list.location}</td>
+                <td>
+                    ${list.restaurants.length} restaurants
+                    <a href="/top-5/${list.slug}" class="preview-link" target="_blank">
+                        <i class="fas fa-external-link-alt"></i>
+                    </a>
+                </td>
+                <td>${new Date(list.lastUpdated).toLocaleDateString()}</td>
+                <td class="table-actions">
+                    <button class="edit-btn" data-id="${list.id}">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="delete-btn" data-id="${list.id}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        // Add event listeners to action buttons
+        tbody.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', () => editTopList(btn.dataset.id));
+        });
+
+        tbody.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', () => deleteTopList(btn.dataset.id));
+        });
+    }
+
+    // Show/hide Top 5 list form
+    if (addTopListBtn) {
+        addTopListBtn.addEventListener('click', async () => {
+            await populateRestaurantRankings();
+            document.getElementById('top-list-form-section').style.display = 'block';
+            addTopListBtn.style.display = 'none';
+        });
+    }
+
+    if (cancelTopListFormBtn) {
+        cancelTopListFormBtn.addEventListener('click', () => {
+            document.getElementById('top-list-form-section').style.display = 'none';
+            addTopListBtn.style.display = 'block';
+            topListForm.reset();
+        });
+    }
+
+    // Populate restaurant rankings
+    async function populateRestaurantRankings(selectedRestaurants = []) {
+        try {
+            const response = await fetch('/api/restaurants');
+            if (!response.ok) throw new Error('Failed to fetch restaurants');
+            
+            const restaurants = await response.json();
+            restaurantRankingContainer.innerHTML = '';
+
+            for (let i = 0; i < 5; i++) {
+                const rankDiv = document.createElement('div');
+                rankDiv.className = 'restaurant-ranking';
+                rankDiv.innerHTML = `
+                    <div class="rank-number">${i + 1}</div>
+                    <select class="restaurant-select" name="restaurant-${i + 1}" required>
+                        <option value="">Select Restaurant</option>
+                        ${restaurants.map(restaurant => `
+                            <option value="${restaurant.id}" ${selectedRestaurants[i]?.id === restaurant.id ? 'selected' : ''}>
+                                ${restaurant.name} ${restaurant.nameChinese ? `(${restaurant.nameChinese})` : ''}
+                            </option>
+                        `).join('')}
+                    </select>
+                `;
+                restaurantRankingContainer.appendChild(rankDiv);
+            }
+        } catch (error) {
+            showMessage('Failed to load restaurants: ' + error.message, 'error');
+        }
+    }
+
+    // Handle form submission
+    if (topListForm) {
+        topListForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const restaurants = Array.from(document.querySelectorAll('.restaurant-select'))
+                .map((select, index) => ({
+                    id: parseInt(select.value),
+                    rank: index + 1
+                }));
+
+            const formData = {
+                category: document.getElementById('new-list-category').value,
+                location: document.getElementById('new-list-location').value,
+                restaurants
+            };
+
+            try {
+                const method = topListForm.dataset.listId ? 'PUT' : 'POST';
+                const url = topListForm.dataset.listId ? 
+                    `/api/top-lists/${topListForm.dataset.listId}` : 
+                    '/api/top-lists';
+
+                const response = await fetch(url, {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) throw new Error('Failed to save Top 5 list');
+
+                showMessage(`Top 5 list ${method === 'PUT' ? 'updated' : 'created'} successfully!`, 'success');
+                document.getElementById('top-list-form-section').style.display = 'none';
+                addTopListBtn.style.display = 'block';
+                topListForm.reset();
+                delete topListForm.dataset.listId;
+                fetchTopLists();
+            } catch (error) {
+                showMessage('Failed to save Top 5 list: ' + error.message, 'error');
+            }
+        });
+    }
+
+    // Edit Top 5 list
+    async function editTopList(id) {
+        try {
+            const response = await fetch(`/api/top-lists/${id}`);
+            if (!response.ok) throw new Error('Failed to fetch Top 5 list');
+            
+            const list = await response.json();
+            
+            document.getElementById('new-list-category').value = list.category;
+            document.getElementById('new-list-location').value = list.location;
+            
+            await populateRestaurantRankings(list.restaurants);
+            
+            document.getElementById('top-list-form-title').textContent = 'Edit Top 5 List';
+            document.querySelector('#top-list-form button[type="submit"]').textContent = 'Update List';
+            topListForm.dataset.listId = id;
+            
+            document.getElementById('top-list-form-section').style.display = 'block';
+            addTopListBtn.style.display = 'none';
+        } catch (error) {
+            showMessage('Failed to edit Top 5 list: ' + error.message, 'error');
+        }
+    }
+
+    // Delete Top 5 list
+    async function deleteTopList(id) {
+        if (confirm('Are you sure you want to delete this Top 5 list?')) {
+            try {
+                const response = await fetch(`/api/top-lists/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) throw new Error('Failed to delete Top 5 list');
+
+                showMessage('Top 5 list deleted successfully!', 'success');
+                fetchTopLists();
+            } catch (error) {
+                showMessage('Failed to delete Top 5 list: ' + error.message, 'error');
+            }
+        }
+    }
+
+    // Filter Top 5 lists
+    function filterTopLists() {
+        const category = topListCategory.value;
+        const location = topListLocation.value;
+        
+        fetch('/api/top-lists')
+            .then(response => response.json())
+            .then(lists => {
+                const filtered = lists.filter(list => {
+                    const categoryMatch = category === 'all' || list.category === category;
+                    const locationMatch = location === 'all' || list.location === location;
+                    return categoryMatch && locationMatch;
+                });
+                displayTopLists(filtered);
+            })
+            .catch(error => {
+                showMessage('Failed to filter Top 5 lists: ' + error.message, 'error');
+            });
+    }
+
+    // Add event listeners for filters
+    if (topListCategory && topListLocation) {
+        topListCategory.addEventListener('change', filterTopLists);
+        topListLocation.addEventListener('change', filterTopLists);
+    }
+
+    // Initial fetch of Top 5 lists if on dashboard
+    if (window.location.href.includes('dashboard.html')) {
+        fetchTopLists();
+    }
 }); 

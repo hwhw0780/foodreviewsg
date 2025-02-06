@@ -17,6 +17,7 @@
         <div class="nav-links">
             <a href="#" class="active"><i class="fas fa-chart-line"></i> Dashboard</a>
             <a href="#restaurants"><i class="fas fa-utensils"></i> Restaurants</a>
+            <a href="#top-lists"><i class="fas fa-list-ol"></i> Top 5 Lists</a>
             <a href="#reviews"><i class="fas fa-star"></i> Reviews</a>
             <a href="#users"><i class="fas fa-users"></i> Users</a>
             <a href="#" id="logout-btn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
@@ -280,6 +281,147 @@
                     <div id="preview-photos" class="preview-photos-grid"></div>
                 </div>
             </div>
+        </section>
+
+        <!-- Top 5 Lists Management -->
+        <section class="admin-section" id="top-lists-section">
+            <h2>Top 5 Lists Management</h2>
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <label for="top-list-category">Category:</label>
+                    <select id="top-list-category">
+                        <option value="all">All Categories</option>
+                        <option value="chinese">Chinese (中餐)</option>
+                        <option value="chicken-rice">Chicken Rice (海南鸡饭)</option>
+                        <option value="dim-sum">Dim Sum (点心)</option>
+                        <option value="malay">Malay</option>
+                        <option value="indian">Indian</option>
+                        <option value="japanese">Japanese (日本料理)</option>
+                        <option value="korean">Korean (韩国料理)</option>
+                        <option value="western">Western (西餐)</option>
+                        <option value="hotpot">Hotpot (火锅)</option>
+                        <option value="seafood">Seafood (海鲜)</option>
+                        <option value="dessert">Dessert (甜点)</option>
+                        <option value="cafe">Café (咖啡馆)</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="top-list-location">Location:</label>
+                    <select id="top-list-location">
+                        <option value="all">All Locations</option>
+                        <option value="ang-mo-kio">Ang Mo Kio</option>
+                        <option value="bedok">Bedok</option>
+                        <option value="bishan">Bishan</option>
+                        <option value="bugis">Bugis</option>
+                        <option value="chinatown">Chinatown</option>
+                        <option value="city-hall">City Hall</option>
+                        <option value="clementi">Clementi</option>
+                        <option value="dhoby-ghaut">Dhoby Ghaut</option>
+                        <option value="jurong-east">Jurong East</option>
+                        <option value="jurong-west">Jurong West</option>
+                        <option value="kallang">Kallang</option>
+                        <option value="marina-bay">Marina Bay</option>
+                        <option value="novena">Novena</option>
+                        <option value="orchard">Orchard</option>
+                        <option value="pasir-ris">Pasir Ris</option>
+                        <option value="paya-lebar">Paya Lebar</option>
+                        <option value="punggol">Punggol</option>
+                        <option value="raffles-place">Raffles Place</option>
+                        <option value="serangoon">Serangoon</option>
+                        <option value="sengkang">Sengkang</option>
+                        <option value="sembawang">Sembawang</option>
+                        <option value="tampines">Tampines</option>
+                        <option value="toa-payoh">Toa Payoh</option>
+                        <option value="woodlands">Woodlands</option>
+                        <option value="yishun">Yishun</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="top-lists-table-container">
+                <table id="top-lists-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Location</th>
+                            <th>Restaurants</th>
+                            <th>Last Updated</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <button id="add-top-list-btn" class="admin-btn">Create New Top 5 List</button>
+        </section>
+
+        <!-- Add Top 5 List Form -->
+        <section class="admin-section" id="top-list-form-section" style="display: none;">
+            <h2 id="top-list-form-title">Create New Top 5 List</h2>
+            <form id="top-list-form" class="top-list-form">
+                <div class="form-group">
+                    <label for="new-list-category">Category*</label>
+                    <select id="new-list-category" required>
+                        <option value="">Select Category</option>
+                        <option value="chinese">Chinese (中餐)</option>
+                        <option value="chicken-rice">Chicken Rice (海南鸡饭)</option>
+                        <option value="dim-sum">Dim Sum (点心)</option>
+                        <option value="malay">Malay</option>
+                        <option value="indian">Indian</option>
+                        <option value="japanese">Japanese (日本料理)</option>
+                        <option value="korean">Korean (韩国料理)</option>
+                        <option value="western">Western (西餐)</option>
+                        <option value="hotpot">Hotpot (火锅)</option>
+                        <option value="seafood">Seafood (海鲜)</option>
+                        <option value="dessert">Dessert (甜点)</option>
+                        <option value="cafe">Café (咖啡馆)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="new-list-location">Location*</label>
+                    <select id="new-list-location" required>
+                        <option value="">Select Location</option>
+                        <option value="ang-mo-kio">Ang Mo Kio</option>
+                        <option value="bedok">Bedok</option>
+                        <option value="bishan">Bishan</option>
+                        <option value="bugis">Bugis</option>
+                        <option value="chinatown">Chinatown</option>
+                        <option value="city-hall">City Hall</option>
+                        <option value="clementi">Clementi</option>
+                        <option value="dhoby-ghaut">Dhoby Ghaut</option>
+                        <option value="jurong-east">Jurong East</option>
+                        <option value="jurong-west">Jurong West</option>
+                        <option value="kallang">Kallang</option>
+                        <option value="marina-bay">Marina Bay</option>
+                        <option value="novena">Novena</option>
+                        <option value="orchard">Orchard</option>
+                        <option value="pasir-ris">Pasir Ris</option>
+                        <option value="paya-lebar">Paya Lebar</option>
+                        <option value="punggol">Punggol</option>
+                        <option value="raffles-place">Raffles Place</option>
+                        <option value="serangoon">Serangoon</option>
+                        <option value="sengkang">Sengkang</option>
+                        <option value="sembawang">Sembawang</option>
+                        <option value="tampines">Tampines</option>
+                        <option value="toa-payoh">Toa Payoh</option>
+                        <option value="woodlands">Woodlands</option>
+                        <option value="yishun">Yishun</option>
+                    </select>
+                </div>
+                <div class="form-group full-width">
+                    <h3>Select Top 5 Restaurants</h3>
+                    <div id="restaurant-ranking-container">
+                        <!-- Will be populated with restaurant selection dropdowns -->
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="admin-btn">Create List</button>
+                    <button type="button" class="admin-btn secondary" id="cancel-top-list-form">Cancel</button>
+                </div>
+            </form>
         </section>
     </div>
 
