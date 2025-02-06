@@ -259,6 +259,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         function updateCustomReviews() {
+            const customReviewsContainer = document.getElementById('custom-reviews-container');
+            if (!customReviewsContainer) return;
+
             customReviews = Array.from(customReviewsContainer.querySelectorAll('.review-item')).map(item => ({
                 author: item.querySelector('.review-author').value,
                 rating: parseInt(item.querySelector('.review-rating').value),
@@ -357,43 +360,60 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw new Error('Restaurant not found');
             }
 
-            // Populate form
-            document.getElementById('restaurant-name').value = restaurant.name;
+            // Show form
+            const restaurantFormSection = document.getElementById('restaurant-form-section');
+            const previewSection = document.getElementById('preview-section');
+            const addRestaurantBtn = document.getElementById('add-restaurant-btn');
+            
+            if (restaurantFormSection && previewSection && addRestaurantBtn) {
+                restaurantFormSection.style.display = 'block';
+                previewSection.style.display = 'block';
+                addRestaurantBtn.style.display = 'none';
+            }
+
+            // Populate form fields
+            document.getElementById('restaurant-name').value = restaurant.name || '';
             document.getElementById('restaurant-name-chinese').value = restaurant.nameChinese || '';
-            document.getElementById('restaurant-category').value = restaurant.category;
+            document.getElementById('restaurant-category').value = restaurant.category || '';
             document.getElementById('restaurant-website').value = restaurant.website || '';
             document.getElementById('restaurant-phone').value = restaurant.phone || '';
-            document.getElementById('restaurant-location').value = restaurant.location;
-            document.getElementById('restaurant-address').value = restaurant.address;
-            document.getElementById('price-range').value = restaurant.priceRange;
+            document.getElementById('restaurant-location').value = restaurant.location || '';
+            document.getElementById('restaurant-address').value = restaurant.address || '';
+            document.getElementById('price-range').value = restaurant.priceRange || 1;
+            document.getElementById('restaurant-rating').value = restaurant.rating || 0;
+            document.getElementById('restaurant-reviews').value = restaurant.reviewCount || 0;
             document.getElementById('menu-url').value = restaurant.menuUrl || '';
             document.getElementById('booking-url').value = restaurant.bookingUrl || '';
             document.getElementById('google-review-url').value = restaurant.googleReviewUrl || '';
             document.getElementById('facebook-url').value = restaurant.facebookUrl || '';
             document.getElementById('xhs-url').value = restaurant.xhsUrl || '';
-            
-            // Clear and populate custom reviews
-            customReviewsContainer.innerHTML = '';
-            if (restaurant.customReviews) {
-                restaurant.customReviews.forEach(review => {
-                    customReviewsContainer.appendChild(createReviewElement(review));
-                });
-            }
-            updateCustomReviews();
 
-            // Show form
-            restaurantFormSection.style.display = 'block';
-            previewSection.style.display = 'block';
-            addRestaurantBtn.style.display = 'none';
+            // Clear and populate custom reviews
+            const customReviewsContainer = document.getElementById('custom-reviews-container');
+            if (customReviewsContainer) {
+                customReviewsContainer.innerHTML = '';
+                if (restaurant.customReviews && Array.isArray(restaurant.customReviews)) {
+                    restaurant.customReviews.forEach(review => {
+                        customReviewsContainer.appendChild(createReviewElement(review));
+                    });
+                }
+                updateCustomReviews();
+            }
 
             // Update form title and submit button
-            document.getElementById('form-title').textContent = 'Edit Restaurant';
-            const submitBtn = addRestaurantForm.querySelector('button[type="submit"]');
-            submitBtn.textContent = 'Update Restaurant';
+            const formTitle = document.getElementById('form-title');
+            const submitBtn = document.querySelector('#add-restaurant-form button[type="submit"]');
+            
+            if (formTitle) formTitle.textContent = 'Edit Restaurant';
+            if (submitBtn) submitBtn.textContent = 'Update Restaurant';
+
+            // Store the restaurant ID for the update operation
+            document.getElementById('add-restaurant-form').dataset.restaurantId = id;
 
             // Scroll to form
             restaurantFormSection.scrollIntoView({ behavior: 'smooth' });
         } catch (error) {
+            console.error('Edit restaurant error:', error);
             showMessage('Failed to edit restaurant: ' + error.message, 'error');
         }
     }
