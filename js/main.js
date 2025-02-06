@@ -35,6 +35,11 @@ document.addEventListener('DOMContentLoaded', function() {
         'vegetarian': 'Vegetarian (素食)'
     };
 
+    // Function to get category display text
+    function getCategoryText(category) {
+        return categoryNames[category] || category.charAt(0).toUpperCase() + category.slice(1).replace(/-/g, ' ');
+    }
+
     // Sample restaurant data
     const sampleRestaurants = [];
 
