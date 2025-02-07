@@ -26,15 +26,21 @@ const TopList = sequelize.define('TopList', {
         allowNull: false,
         validate: {
             isValidRestaurantArray(value) {
-                if (!Array.isArray(value) || value.length !== 5) {
-                    throw new Error('Must contain exactly 5 restaurants');
+                if (!Array.isArray(value)) {
+                    throw new Error('Must be an array of restaurants');
+                }
+                if (value.length === 0) {
+                    throw new Error('Must include at least one restaurant');
+                }
+                if (value.length > 5) {
+                    throw new Error('Cannot include more than 5 restaurants');
                 }
                 value.forEach((restaurant, index) => {
                     if (!restaurant.id || !restaurant.rank) {
                         throw new Error('Each restaurant must have an id and rank');
                     }
                     if (restaurant.rank !== index + 1) {
-                        throw new Error('Ranks must be 1 through 5 in order');
+                        throw new Error('Ranks must be sequential starting from 1');
                     }
                 });
             }

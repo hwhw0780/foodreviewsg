@@ -683,27 +683,52 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!response.ok) throw new Error('Failed to fetch restaurants');
             
             const restaurants = await response.json();
-            restaurantRankingContainer.innerHTML = '';
+            const container = document.getElementById('restaurant-ranking-container');
+            container.innerHTML = '';
 
+            // Create 5 ranking slots
             for (let i = 0; i < 5; i++) {
                 const rankDiv = document.createElement('div');
                 rankDiv.className = 'restaurant-ranking';
+                
+                // Find the restaurant for this rank
+                const selectedRestaurant = selectedRestaurants.find(r => r.rank === (i + 1));
+                
                 rankDiv.innerHTML = `
                     <div class="rank-number">${i + 1}</div>
-                    <select class="restaurant-select" name="restaurant-${i + 1}" required>
-                        <option value="">Select Restaurant</option>
+                    <select class="restaurant-select" name="restaurant-${i + 1}">
+                        <option value="">Select Restaurant (Optional)</option>
                         ${restaurants.map(restaurant => `
-                            <option value="${restaurant.id}" ${selectedRestaurants[i]?.id === restaurant.id ? 'selected' : ''}>
+                            <option value="${restaurant.id}" 
+                                ${selectedRestaurant?.id === restaurant.id ? 'selected' : ''}>
                                 ${restaurant.name} ${restaurant.nameChinese ? `(${restaurant.nameChinese})` : ''}
                             </option>
                         `).join('')}
                     </select>
+                    ${i > 0 ? `<button type="button" class="remove-rank-btn" onclick="removeRank(this)">
+                        <i class="fas fa-times"></i>
+                    </button>` : ''}
                 `;
-                restaurantRankingContainer.appendChild(rankDiv);
+                container.appendChild(rankDiv);
             }
         } catch (error) {
             showMessage('Failed to load restaurants: ' + error.message, 'error');
         }
+    }
+
+    // Remove a rank
+    function removeRank(button) {
+        const rankingDiv = button.closest('.restaurant-ranking');
+        rankingDiv.remove();
+        updateRankNumbers();
+    }
+
+    // Update rank numbers after removal
+    function updateRankNumbers() {
+        const rankings = document.querySelectorAll('.restaurant-ranking');
+        rankings.forEach((ranking, index) => {
+            ranking.querySelector('.rank-number').textContent = index + 1;
+        });
     }
 
     // Handle form submission
@@ -711,11 +736,18 @@ document.addEventListener('DOMContentLoaded', function() {
         topListForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
+            // Get all selected restaurants (excluding empty selections)
             const restaurants = Array.from(document.querySelectorAll('.restaurant-select'))
                 .map((select, index) => ({
                     id: parseInt(select.value),
                     rank: index + 1
-                }));
+                }))
+                .filter(restaurant => !isNaN(restaurant.id) && restaurant.id > 0);
+
+            if (restaurants.length === 0) {
+                showMessage('Please select at least one restaurant', 'error');
+                return;
+            }
 
             const formData = {
                 category: document.getElementById('new-list-category').value,
@@ -737,11 +769,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     body: JSON.stringify(formData)
                 });
 
-                if (!response.ok) throw new Error('Failed to save Top 5 list');
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Failed to save Top 5 list');
+                }
 
                 showMessage(`Top 5 list ${method === 'PUT' ? 'updated' : 'created'} successfully!`, 'success');
                 document.getElementById('top-list-form-section').style.display = 'none';
-                addTopListBtn.style.display = 'block';
+                document.getElementById('add-top-list-btn').style.display = 'block';
                 topListForm.reset();
                 delete topListForm.dataset.listId;
                 fetchTopLists();
@@ -759,17 +794,25 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const list = await response.json();
             
+            // Set form values
             document.getElementById('new-list-category').value = list.category;
             document.getElementById('new-list-location').value = list.location;
             
+            // Populate restaurant rankings with existing selections
             await populateRestaurantRankings(list.restaurants);
             
+            // Update form title and button
             document.getElementById('top-list-form-title').textContent = 'Edit Top 5 List';
-            document.querySelector('#top-list-form button[type="submit"]').textContent = 'Update List';
-            topListForm.dataset.listId = id;
+            const submitButton = document.querySelector('#top-list-form button[type="submit"]');
+            submitButton.textContent = 'Update List';
             
+            // Store the list ID in the form
+            const form = document.getElementById('top-list-form');
+            form.dataset.listId = id;
+            
+            // Show the form section
             document.getElementById('top-list-form-section').style.display = 'block';
-            addTopListBtn.style.display = 'none';
+            document.getElementById('add-top-list-btn').style.display = 'none';
         } catch (error) {
             showMessage('Failed to edit Top 5 list: ' + error.message, 'error');
         }
