@@ -46,7 +46,12 @@ router.get('/', async (req, res) => {
 // Get Top 5 list by ID
 router.get('/:id', async (req, res) => {
     try {
-        const list = await TopList.findByPk(req.params.id);
+        const id = parseInt(req.params.id);
+        if (isNaN(id)) {
+            return res.status(400).json({ error: 'Invalid list ID. ID must be a number.' });
+        }
+
+        const list = await TopList.findByPk(id);
         
         if (!list) {
             return res.status(404).json({ error: 'List not found' });
@@ -70,7 +75,7 @@ router.get('/:id', async (req, res) => {
         res.json(fullList);
     } catch (error) {
         console.error('Error fetching Top 5 list:', error);
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 
@@ -109,13 +114,28 @@ router.get('/slug/:slug', async (req, res) => {
 // Update a Top 5 list
 router.put('/:id', async (req, res) => {
     try {
-        const list = await TopList.findByPk(req.params.id);
+        const id = parseInt(req.params.id);
+        if (isNaN(id)) {
+            return res.status(400).json({ error: 'Invalid list ID. ID must be a number.' });
+        }
+
+        const list = await TopList.findByPk(id);
         if (!list) {
             return res.status(404).json({ error: 'List not found' });
         }
 
         const { category, location, restaurants } = req.body;
-        
+
+        // Validate required fields
+        if (!category || !location || !restaurants) {
+            return res.status(400).json({ error: 'Category, location, and restaurants are required' });
+        }
+
+        // Validate restaurants array
+        if (!Array.isArray(restaurants) || restaurants.length === 0) {
+            return res.status(400).json({ error: 'At least one restaurant is required' });
+        }
+
         // Update slug if category or location changed
         let updates = {
             category,

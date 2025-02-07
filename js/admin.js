@@ -789,16 +789,24 @@ document.addEventListener('DOMContentLoaded', function() {
     // Edit Top 5 list
     async function editTopList(id) {
         try {
+            // Ensure id is a number
+            const numericId = parseInt(id);
+            if (isNaN(numericId)) {
+                throw new Error('Invalid list ID');
+            }
+
             // Fetch the list details
-            const response = await fetch(`/api/top-lists/${id}`);
+            const response = await fetch(`/api/top-lists/${numericId}`);
             if (!response.ok) {
-                throw new Error(`Failed to fetch list: ${response.statusText}`);
+                const errorData = await response.json();
+                throw new Error(errorData.error || `Failed to fetch list: ${response.statusText}`);
             }
             const list = await response.json();
 
             // Show the form section
             document.getElementById('top-list-form-section').style.display = 'block';
             document.getElementById('top-list-form-title').textContent = 'Edit Top 5 List';
+            document.getElementById('add-top-list-btn').style.display = 'none';
 
             // Set form values
             document.getElementById('new-list-category').value = list.category;
@@ -809,6 +817,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Update form submission handler
             const form = document.getElementById('top-list-form');
+            form.dataset.listId = numericId; // Store the ID in the form
             form.onsubmit = async (e) => {
                 e.preventDefault();
                 
@@ -833,7 +842,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         return;
                     }
 
-                    const updateResponse = await fetch(`/api/top-lists/${id}`, {
+                    const updateResponse = await fetch(`/api/top-lists/${numericId}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json'
@@ -848,6 +857,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     showMessage('Top 5 list updated successfully', 'success');
                     document.getElementById('top-list-form-section').style.display = 'none';
+                    document.getElementById('add-top-list-btn').style.display = 'block';
                     fetchTopLists(); // Refresh the list
                 } catch (error) {
                     console.error('Error updating list:', error);
