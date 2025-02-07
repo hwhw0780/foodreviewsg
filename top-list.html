@@ -28,7 +28,6 @@
         <header class="list-header">
             <h1 id="list-title"></h1>
             <p id="list-description"></p>
-            <div class="last-updated">Last updated: <span id="last-updated-date"></span></div>
         </header>
 
         <div class="restaurant-list">
@@ -47,6 +46,13 @@
                     <i class="fas fa-link"></i> Copy Link
                 </button>
             </div>
+        </div>
+
+        <!-- Restaurant Owner CTA Section -->
+        <div class="restaurant-owner-cta">
+            <h2>Are you a restaurant owner?</h2>
+            <p>Want to list your restaurant on Singapore's Best Food Platform?</p>
+            <a href="/#contact" class="cta-button">Learn More</a>
         </div>
     </div>
 
@@ -111,12 +117,6 @@
             // Update header
             document.getElementById('list-title').textContent = list.metaTitle;
             document.getElementById('list-description').textContent = list.metaDescription;
-            document.getElementById('last-updated-date').textContent = 
-                new Date(list.lastUpdated).toLocaleDateString('en-SG', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
 
             // Display restaurants
             const restaurantList = document.querySelector('.restaurant-list');

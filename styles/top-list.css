@@ -261,4 +261,41 @@
 .rank-3 .rank-badge {
     background: #cd7f32;
     color: white;
+}
+
+.restaurant-owner-cta {
+    text-align: center;
+    padding: 3rem 2rem;
+    margin: 2rem auto;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    max-width: 800px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.restaurant-owner-cta h2 {
+    color: #333;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.restaurant-owner-cta p {
+    color: #666;
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 12px 30px;
+    background-color: #e74c3c;
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+    background-color: #c0392b;
 } 
