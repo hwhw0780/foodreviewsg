@@ -85,8 +85,12 @@
         // Fetch and display the Top 5 list
         async function fetchTopList() {
             try {
-                const response = await fetch(`/api/top-lists/${slug}`);
-                if (!response.ok) throw new Error('List not found');
+                // Use the correct endpoint for fetching by slug
+                const response = await fetch(`/api/top-lists/slug/${slug}`);
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'List not found');
+                }
                 
                 const list = await response.json();
                 displayTopList(list);
@@ -96,6 +100,7 @@
                 document.querySelector('.top-list-container').innerHTML = `
                     <div class="error-message">
                         <h2>List not found</h2>
+                        <p>The requested Top 5 list could not be found.</p>
                         <a href="/" class="btn">Return to Home</a>
                     </div>
                 `;
