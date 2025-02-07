@@ -43,8 +43,39 @@ router.get('/', async (req, res) => {
     }
 });
 
+// Get Top 5 list by ID
+router.get('/:id', async (req, res) => {
+    try {
+        const list = await TopList.findByPk(req.params.id);
+        
+        if (!list) {
+            return res.status(404).json({ error: 'List not found' });
+        }
+
+        // Fetch full restaurant details
+        const restaurantIds = list.restaurants.map(r => r.id);
+        const restaurants = await Restaurant.findAll({
+            where: { id: { [Op.in]: restaurantIds } }
+        });
+
+        // Merge restaurant details with rankings
+        const fullList = {
+            ...list.toJSON(),
+            restaurants: list.restaurants.map(rankItem => ({
+                ...restaurants.find(r => r.id === rankItem.id)?.toJSON(),
+                rank: rankItem.rank
+            }))
+        };
+
+        res.json(fullList);
+    } catch (error) {
+        console.error('Error fetching Top 5 list:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // Get Top 5 list by slug
-router.get('/:slug', async (req, res) => {
+router.get('/slug/:slug', async (req, res) => {
     try {
         const list = await TopList.findOne({
             where: { slug: req.params.slug }
@@ -84,16 +115,25 @@ router.put('/:id', async (req, res) => {
         }
 
         const { category, location, restaurants } = req.body;
-        const updates = {
+        
+        // Update slug if category or location changed
+        let updates = {
             category,
             location,
             restaurants,
             lastUpdated: new Date()
         };
 
+        if (category !== list.category || location !== list.location) {
+            updates.slug = `top-5-${category.toLowerCase()}-${location.toLowerCase()}`.replace(/\s+/g, '-');
+            updates.metaTitle = `Top 5 ${category} Restaurants in ${location}, Singapore`;
+            updates.metaDescription = `Discover the best ${category} restaurants in ${location}, Singapore. Our carefully curated list of the top 5 ${category.toLowerCase()} dining spots in ${location}.`;
+        }
+
         await list.update(updates);
         res.json(list);
     } catch (error) {
+        console.error('Error updating Top 5 list:', error);
         res.status(400).json({ error: error.message });
     }
 });

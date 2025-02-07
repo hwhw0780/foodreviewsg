@@ -789,32 +789,74 @@ document.addEventListener('DOMContentLoaded', function() {
     // Edit Top 5 list
     async function editTopList(id) {
         try {
+            // Fetch the list details
             const response = await fetch(`/api/top-lists/${id}`);
-            if (!response.ok) throw new Error('Failed to fetch Top 5 list');
-            
+            if (!response.ok) {
+                throw new Error(`Failed to fetch list: ${response.statusText}`);
+            }
             const list = await response.json();
-            
+
+            // Show the form section
+            document.getElementById('top-list-form-section').style.display = 'block';
+            document.getElementById('top-list-form-title').textContent = 'Edit Top 5 List';
+
             // Set form values
             document.getElementById('new-list-category').value = list.category;
             document.getElementById('new-list-location').value = list.location;
-            
-            // Populate restaurant rankings with existing selections
+
+            // Populate restaurant rankings
             await populateRestaurantRankings(list.restaurants);
-            
-            // Update form title and button
-            document.getElementById('top-list-form-title').textContent = 'Edit Top 5 List';
-            const submitButton = document.querySelector('#top-list-form button[type="submit"]');
-            submitButton.textContent = 'Update List';
-            
-            // Store the list ID in the form
+
+            // Update form submission handler
             const form = document.getElementById('top-list-form');
-            form.dataset.listId = id;
-            
-            // Show the form section
-            document.getElementById('top-list-form-section').style.display = 'block';
-            document.getElementById('add-top-list-btn').style.display = 'none';
+            form.onsubmit = async (e) => {
+                e.preventDefault();
+                
+                try {
+                    const formData = {
+                        category: document.getElementById('new-list-category').value,
+                        location: document.getElementById('new-list-location').value,
+                        restaurants: Array.from(document.querySelectorAll('.restaurant-ranking'))
+                            .map((container, index) => {
+                                const select = container.querySelector('select');
+                                return select.value ? {
+                                    id: parseInt(select.value),
+                                    rank: index + 1
+                                } : null;
+                            })
+                            .filter(item => item !== null)
+                    };
+
+                    // Validate at least one restaurant is selected
+                    if (formData.restaurants.length === 0) {
+                        showMessage('Please select at least one restaurant', 'error');
+                        return;
+                    }
+
+                    const updateResponse = await fetch(`/api/top-lists/${id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    if (!updateResponse.ok) {
+                        const errorData = await updateResponse.json();
+                        throw new Error(errorData.error || 'Failed to update list');
+                    }
+
+                    showMessage('Top 5 list updated successfully', 'success');
+                    document.getElementById('top-list-form-section').style.display = 'none';
+                    fetchTopLists(); // Refresh the list
+                } catch (error) {
+                    console.error('Error updating list:', error);
+                    showMessage(error.message, 'error');
+                }
+            };
         } catch (error) {
-            showMessage('Failed to edit Top 5 list: ' + error.message, 'error');
+            console.error('Error in editTopList:', error);
+            showMessage(error.message, 'error');
         }
     }
 
