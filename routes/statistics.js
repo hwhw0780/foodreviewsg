@@ -24,25 +24,36 @@ const Statistics = sequelize.define('Statistics', {
 
 // Get current statistics
 router.get('/', async (req, res) => {
+    console.log('[Statistics] GET request received');
     try {
         let stats = await Statistics.findOne();
+        console.log('[Statistics] Current stats from DB:', stats ? stats.toJSON() : 'No stats found');
+        
         if (!stats) {
+            console.log('[Statistics] No stats found, creating default stats');
             stats = await Statistics.create({});
+            console.log('[Statistics] Created default stats:', stats.toJSON());
         }
+        
         res.json(stats);
     } catch (error) {
+        console.error('[Statistics] Error fetching statistics:', error);
         res.status(500).json({ error: 'Failed to fetch statistics' });
     }
 });
 
 // Update statistics
 router.post('/', async (req, res) => {
+    console.log('[Statistics] POST request received with body:', req.body);
     try {
         const { 'daily-users': dailyUsers, 'daily-bookings': dailyBookings, 
                 'total-restaurants': totalRestaurants, 'total-reviews': totalReviews } = req.body;
 
         let stats = await Statistics.findOne();
+        console.log('[Statistics] Current stats before update:', stats ? stats.toJSON() : 'No stats found');
+
         if (!stats) {
+            console.log('[Statistics] Creating new statistics record');
             stats = await Statistics.create({
                 dailyUsers,
                 dailyBookings,
@@ -50,6 +61,7 @@ router.post('/', async (req, res) => {
                 totalReviews
             });
         } else {
+            console.log('[Statistics] Updating existing statistics');
             await stats.update({
                 dailyUsers,
                 dailyBookings,
@@ -57,9 +69,12 @@ router.post('/', async (req, res) => {
                 totalReviews
             });
         }
+
+        console.log('[Statistics] Updated stats:', stats.toJSON());
         res.json(stats);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to update statistics' });
+        console.error('[Statistics] Error updating statistics:', error);
+        res.status(500).json({ error: 'Failed to update statistics: ' + error.message });
     }
 });
 

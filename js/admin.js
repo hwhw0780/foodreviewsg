@@ -921,62 +921,105 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to fetch and display current statistics
     async function fetchAndDisplayStatistics() {
+        console.log('[Admin] Fetching statistics...');
         try {
             const response = await fetch('/api/statistics');
+            console.log('[Admin] Statistics fetch response status:', response.status);
+            
             if (!response.ok) {
                 throw new Error('Failed to fetch statistics');
             }
+            
             const stats = await response.json();
+            console.log('[Admin] Received statistics:', stats);
             
             // Update input fields with current values
-            document.getElementById('daily-users-input').value = stats.dailyUsers || 0;
-            document.getElementById('daily-bookings-input').value = stats.dailyBookings || 0;
-            document.getElementById('total-restaurants-input').value = stats.totalRestaurants || 0;
-            document.getElementById('total-reviews-input').value = stats.totalReviews || 0;
+            const fields = {
+                'daily-users': document.getElementById('daily-users-input'),
+                'daily-bookings': document.getElementById('daily-bookings-input'),
+                'total-restaurants': document.getElementById('total-restaurants-input'),
+                'total-reviews': document.getElementById('total-reviews-input')
+            };
+
+            // Check if all elements exist
+            for (const [key, element] of Object.entries(fields)) {
+                if (!element) {
+                    console.error(`[Admin] Element not found: ${key}-input`);
+                }
+            }
+
+            // Update values if elements exist
+            if (fields['daily-users']) fields['daily-users'].value = stats.dailyUsers || 0;
+            if (fields['daily-bookings']) fields['daily-bookings'].value = stats.dailyBookings || 0;
+            if (fields['total-restaurants']) fields['total-restaurants'].value = stats.totalRestaurants || 0;
+            if (fields['total-reviews']) fields['total-reviews'].value = stats.totalReviews || 0;
+
+            console.log('[Admin] Statistics displayed successfully');
         } catch (error) {
-            console.error('Error fetching statistics:', error);
+            console.error('[Admin] Error fetching statistics:', error);
             showMessage('Failed to load statistics', 'error');
         }
     }
 
     // Initialize page
     document.addEventListener('DOMContentLoaded', async () => {
+        console.log('[Admin] Page loaded, initializing...');
+        
         // Fetch current statistics
+        console.log('[Admin] Fetching initial statistics...');
         await fetchAndDisplayStatistics();
 
-        // Fetch restaurants
-        await fetchRestaurants();
-        displayRestaurants();
-
-        // Fetch top lists
-        await fetchTopLists();
-        displayTopLists();
-
         // Add event listener for statistics update
-        document.getElementById('update-stats-btn').addEventListener('click', async () => {
-            try {
-                const response = await fetch('/api/statistics', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
+        const updateButton = document.getElementById('update-stats-btn');
+        if (!updateButton) {
+            console.error('[Admin] Update statistics button not found');
+        } else {
+            updateButton.addEventListener('click', async () => {
+                console.log('[Admin] Update statistics button clicked');
+                try {
+                    const statsData = {
                         'daily-users': parseInt(document.getElementById('daily-users-input').value),
                         'daily-bookings': parseInt(document.getElementById('daily-bookings-input').value),
                         'total-restaurants': parseInt(document.getElementById('total-restaurants-input').value),
                         'total-reviews': parseInt(document.getElementById('total-reviews-input').value)
-                    })
-                });
+                    };
+                    
+                    console.log('[Admin] Sending statistics update:', statsData);
+                    
+                    const response = await fetch('/api/statistics', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(statsData)
+                    });
 
-                if (!response.ok) {
-                    throw new Error('Failed to update statistics');
+                    console.log('[Admin] Update response status:', response.status);
+
+                    if (!response.ok) {
+                        throw new Error('Failed to update statistics');
+                    }
+
+                    const result = await response.json();
+                    console.log('[Admin] Update successful:', result);
+                    showMessage('Statistics updated successfully', 'success');
+                } catch (error) {
+                    console.error('[Admin] Error updating statistics:', error);
+                    showMessage('Failed to update statistics', 'error');
                 }
+            });
+        }
 
-                showMessage('Statistics updated successfully', 'success');
-            } catch (error) {
-                console.error('Error updating statistics:', error);
-                showMessage('Failed to update statistics', 'error');
-            }
-        });
+        // Fetch restaurants
+        console.log('[Admin] Fetching restaurants...');
+        await fetchRestaurants();
+        displayRestaurants();
+
+        // Fetch top lists
+        console.log('[Admin] Fetching top lists...');
+        await fetchTopLists();
+        displayTopLists();
+        
+        console.log('[Admin] Initialization complete');
     });
 }); 
