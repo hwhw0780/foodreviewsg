@@ -48,6 +48,11 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// Serve join page
+app.get('/join.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'join.html'));
+});
+
 // Serve dynamic Top 5 list pages
 app.get('/top-5/:slug', async (req, res) => {
     try {
