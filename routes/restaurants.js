@@ -1,30 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const path = require('path');
 const Restaurant = require('../models/Restaurant');
-const fs = require('fs');
 const { Op } = require('sequelize');
 const sequelize = require('sequelize');
+const { uploadToS3, deleteFromS3 } = require('../config/s3');
 
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        // Ensure the uploads directory exists
-        const uploadDir = path.join(__dirname, '..', 'uploads');
-        if (!fs.existsSync(uploadDir)) {
-            fs.mkdirSync(uploadDir, { recursive: true });
-        }
-        cb(null, uploadDir);
-    },
-    filename: function (req, file, cb) {
-        // Generate a unique filename
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        const ext = path.extname(file.originalname);
-        cb(null, file.fieldname + '-' + uniqueSuffix + ext);
-    }
-});
-
+// Configure multer for memory storage
+const storage = multer.memoryStorage();
 const upload = multer({ 
     storage: storage,
     fileFilter: function (req, file, cb) {
@@ -144,11 +127,25 @@ router.post('/', upload.fields([
             }
         }
 
+        // Upload images to S3
+        let bannerImageUrl = null;
+        let photoUrls = [];
+
+        if (req.files?.['bannerImage']) {
+            bannerImageUrl = await uploadToS3(req.files['bannerImage'][0], 'banners');
+        }
+
+        if (req.files?.['photos']) {
+            photoUrls = await Promise.all(
+                req.files['photos'].map(photo => uploadToS3(photo, 'photos'))
+            );
+        }
+
         const restaurantData = {
             ...req.body,
             customReviews: req.body.customReviews ? JSON.parse(req.body.customReviews) : [],
-            bannerImage: req.files?.['bannerImage'] ? `/uploads/${path.basename(req.files['bannerImage'][0].path)}` : null,
-            photos: req.files?.['photos'] ? req.files['photos'].map(file => `/uploads/${path.basename(file.path)}`) : []
+            bannerImage: bannerImageUrl,
+            photos: photoUrls
         };
 
         console.log('Creating restaurant with data:', restaurantData);
@@ -206,53 +203,47 @@ router.put('/:id', upload.fields([
 
         // Handle banner image
         if (req.files?.['bannerImage']) {
-            // New banner image uploaded
-            updateData.bannerImage = `/uploads/${path.basename(req.files['bannerImage'][0].path)}`;
-            // Delete old banner image
+            // Upload new banner image
+            updateData.bannerImage = await uploadToS3(req.files['bannerImage'][0], 'banners');
+            
+            // Delete old banner image if exists
             if (restaurant.bannerImage) {
-                const oldPath = path.join(__dirname, '..', restaurant.bannerImage);
-                if (fs.existsSync(oldPath)) {
-                    fs.unlinkSync(oldPath);
-                }
+                const key = restaurant.bannerImage.split('/').pop();
+                await deleteFromS3(`banners/${key}`);
             }
         } else if (!req.body.keepExistingBanner) {
-            // No new image and not keeping existing - remove banner
-            updateData.bannerImage = null;
+            // Delete old banner image if exists
             if (restaurant.bannerImage) {
-                const oldPath = path.join(__dirname, '..', restaurant.bannerImage);
-                if (fs.existsSync(oldPath)) {
-                    fs.unlinkSync(oldPath);
-                }
+                const key = restaurant.bannerImage.split('/').pop();
+                await deleteFromS3(`banners/${key}`);
             }
+            updateData.bannerImage = null;
         }
-        // If keepExistingBanner is true, don't update bannerImage field
 
         // Handle photos
         if (req.files?.['photos']) {
-            // New photos uploaded
-            updateData.photos = req.files['photos'].map(file => `/uploads/${path.basename(file.path)}`);
+            // Upload new photos
+            updateData.photos = await Promise.all(
+                req.files['photos'].map(photo => uploadToS3(photo, 'photos'))
+            );
+            
             // Delete old photos
             if (restaurant.photos && Array.isArray(restaurant.photos)) {
-                restaurant.photos.forEach(photo => {
-                    const oldPath = path.join(__dirname, '..', photo);
-                    if (fs.existsSync(oldPath)) {
-                        fs.unlinkSync(oldPath);
-                    }
-                });
+                await Promise.all(restaurant.photos.map(async (photo) => {
+                    const key = photo.split('/').pop();
+                    await deleteFromS3(`photos/${key}`);
+                }));
             }
         } else if (!req.body.keepExistingPhotos) {
-            // No new photos and not keeping existing - remove all photos
-            updateData.photos = [];
+            // Delete old photos
             if (restaurant.photos && Array.isArray(restaurant.photos)) {
-                restaurant.photos.forEach(photo => {
-                    const oldPath = path.join(__dirname, '..', photo);
-                    if (fs.existsSync(oldPath)) {
-                        fs.unlinkSync(oldPath);
-                    }
-                });
+                await Promise.all(restaurant.photos.map(async (photo) => {
+                    const key = photo.split('/').pop();
+                    await deleteFromS3(`photos/${key}`);
+                }));
             }
+            updateData.photos = [];
         }
-        // If keepExistingPhotos is true, don't update photos field
 
         console.log('Updating restaurant with data:', updateData);
 
@@ -306,6 +297,20 @@ router.delete('/:id', async (req, res) => {
         if (!restaurant) {
             return res.status(404).json({ error: 'Restaurant not found' });
         }
+
+        // Delete images from S3
+        if (restaurant.bannerImage) {
+            const key = restaurant.bannerImage.split('/').pop();
+            await deleteFromS3(`banners/${key}`);
+        }
+
+        if (restaurant.photos && Array.isArray(restaurant.photos)) {
+            await Promise.all(restaurant.photos.map(async (photo) => {
+                const key = photo.split('/').pop();
+                await deleteFromS3(`photos/${key}`);
+            }));
+        }
+
         await restaurant.destroy();
         res.json({ message: 'Restaurant deleted successfully' });
     } catch (error) {
