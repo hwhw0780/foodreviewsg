@@ -62,12 +62,12 @@ router.post('/', async (req, res) => {
             });
         } else {
             console.log('[Statistics] Updating existing statistics');
-            await stats.update({
-                dailyUsers,
-                dailyBookings,
-                totalRestaurants,
-                totalReviews
-            });
+            stats = await stats.update({
+                dailyUsers: dailyUsers || 0,
+                dailyBookings: dailyBookings || 0,
+                totalRestaurants: totalRestaurants || 0,
+                totalReviews: totalReviews || 0
+            }, { returning: true });
         }
 
         console.log('[Statistics] Updated stats:', stats.toJSON());

@@ -978,11 +978,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('[Admin] Update statistics button clicked');
                 try {
                     const statsData = {
-                        'daily-users': parseInt(document.getElementById('daily-users-input').value),
-                        'daily-bookings': parseInt(document.getElementById('daily-bookings-input').value),
-                        'total-restaurants': parseInt(document.getElementById('total-restaurants-input').value),
-                        'total-reviews': parseInt(document.getElementById('total-reviews-input').value)
+                        'daily-users': parseInt(document.getElementById('daily-users-input').value) || 0,
+                        'daily-bookings': parseInt(document.getElementById('daily-bookings-input').value) || 0,
+                        'total-restaurants': parseInt(document.getElementById('total-restaurants-input').value) || 0,
+                        'total-reviews': parseInt(document.getElementById('total-reviews-input').value) || 0
                     };
+                    
+                    // Validate that all required fields are present
+                    const requiredFields = ['daily-users', 'daily-bookings', 'total-restaurants', 'total-reviews'];
+                    const missingFields = requiredFields.filter(field => statsData[field] === undefined);
+                    
+                    if (missingFields.length > 0) {
+                        throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
+                    }
                     
                     console.log('[Admin] Sending statistics update:', statsData);
                     
