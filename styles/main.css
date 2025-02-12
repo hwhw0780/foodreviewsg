@@ -1334,20 +1334,20 @@ footer {
 }
 
 .xhs-btn {
-    background-color: #ffffff;
+    background-color: #fff2f2;
     padding: 0.8rem;
-    border: 1px solid #ddd;
+    border: 1px solid #ffcdd2;
 }
 
 .xhs-icon {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     object-fit: contain;
 }
 
 .action-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 /* Responsive styles for action buttons */
