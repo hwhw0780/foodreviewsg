@@ -61,21 +61,11 @@ app.get('/privacy-policy.html', (req, res) => {
 // Serve dynamic Top 5 list pages
 app.get('/top-5/:slug', async (req, res) => {
     try {
-        // Check if the list exists before serving the page
-        const list = await TopList.findOne({
-            where: { slug: req.params.slug }
-        });
-
-        if (!list) {
-            // If list doesn't exist, redirect to home page
-            return res.redirect('/?error=list-not-found');
-        }
-
-        // If list exists, serve the page
+        // Always serve the page and let the client-side handle the data fetching and error display
         res.sendFile(path.join(__dirname, 'top-list.html'));
     } catch (error) {
         console.error('Error serving top-5 list page:', error);
-        res.redirect('/?error=server-error');
+        res.status(500).send('Server error');
     }
 });
 

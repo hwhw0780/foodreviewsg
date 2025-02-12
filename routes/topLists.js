@@ -43,6 +43,39 @@ router.get('/', async (req, res) => {
     }
 });
 
+// Get Top 5 list by slug
+router.get('/slug/:slug', async (req, res) => {
+    try {
+        const list = await TopList.findOne({
+            where: { slug: req.params.slug }
+        });
+        
+        if (!list) {
+            return res.status(404).json({ error: 'List not found' });
+        }
+
+        // Fetch full restaurant details
+        const restaurantIds = list.restaurants.map(r => r.id);
+        const restaurants = await Restaurant.findAll({
+            where: { id: { [Op.in]: restaurantIds } }
+        });
+
+        // Merge restaurant details with rankings
+        const fullList = {
+            ...list.toJSON(),
+            restaurants: list.restaurants.map(rankItem => ({
+                ...restaurants.find(r => r.id === rankItem.id)?.toJSON(),
+                rank: rankItem.rank
+            }))
+        };
+
+        res.json(fullList);
+    } catch (error) {
+        console.error('Error fetching Top 5 list by slug:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // Get Top 5 list by ID
 router.get('/:id', async (req, res) => {
     try {
@@ -76,38 +109,6 @@ router.get('/:id', async (req, res) => {
     } catch (error) {
         console.error('Error fetching Top 5 list:', error);
         res.status(500).json({ error: 'Internal server error' });
-    }
-});
-
-// Get Top 5 list by slug
-router.get('/slug/:slug', async (req, res) => {
-    try {
-        const list = await TopList.findOne({
-            where: { slug: req.params.slug }
-        });
-
-        if (!list) {
-            return res.status(404).json({ error: 'List not found' });
-        }
-
-        // Fetch full restaurant details
-        const restaurantIds = list.restaurants.map(r => r.id);
-        const restaurants = await Restaurant.findAll({
-            where: { id: { [Op.in]: restaurantIds } }
-        });
-
-        // Merge restaurant details with rankings
-        const fullList = {
-            ...list.toJSON(),
-            restaurants: list.restaurants.map(rankItem => ({
-                ...restaurants.find(r => r.id === rankItem.id)?.toJSON(),
-                rank: rankItem.rank
-            }))
-        };
-
-        res.json(fullList);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
     }
 });
 

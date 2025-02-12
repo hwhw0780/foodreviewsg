@@ -27,8 +27,8 @@
     <div class="top-list-container">
         <div class="top-list-header">
             <div class="year-tag">2025</div>
-            <h1>Top 5 Indian Restaurants in City-Hall, Singapore</h1>
-            <p>Discover the best Indian restaurants in City-Hall, Singapore. Our carefully curated list of the top 5 Indian dining spots in City-Hall.</p>
+            <h1 id="list-title">Top 5 Indian Restaurants in City-Hall, Singapore</h1>
+            <p id="list-description">Discover the best Indian restaurants in City-Hall, Singapore. Our carefully curated list of the top 5 Indian dining spots in City-Hall.</p>
         </div>
 
         <div class="restaurant-list">
@@ -139,8 +139,11 @@
 
         function displayTopList(list) {
             // Update header
-            document.getElementById('list-title').textContent = list.metaTitle;
-            document.getElementById('list-description').textContent = list.metaDescription;
+            const titleElement = document.getElementById('list-title');
+            const descriptionElement = document.getElementById('list-description');
+            
+            if (titleElement) titleElement.textContent = list.metaTitle;
+            if (descriptionElement) descriptionElement.textContent = list.metaDescription;
 
             // Display restaurants
             const restaurantList = document.querySelector('.restaurant-list');
