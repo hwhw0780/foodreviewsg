@@ -1334,8 +1334,9 @@ footer {
 }
 
 .xhs-btn {
-    background-color: #000000;
+    background-color: #ffffff;
     padding: 0.8rem;
+    border: 1px solid #ddd;
 }
 
 .xhs-icon {
