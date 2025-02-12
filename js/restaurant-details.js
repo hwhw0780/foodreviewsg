@@ -24,6 +24,22 @@ async function fetchRestaurantDetails() {
     }
 }
 
+// Function to get price range text with dollar amounts
+function getPriceRangeText(priceRange) {
+    switch(priceRange) {
+        case 1:
+            return '$ (Below $15)';
+        case 2:
+            return '$$ ($15-$30)';
+        case 3:
+            return '$$$ ($31-$50)';
+        case 4:
+            return '$$$$ (Above $50)';
+        default:
+            return 'Price not available';
+    }
+}
+
 // Function to display restaurant details
 function displayRestaurantDetails(restaurant) {
     // Update banner image
@@ -31,7 +47,7 @@ function displayRestaurantDetails(restaurant) {
     
     // Update main info
     document.querySelector('.main-info h1').textContent = restaurant.name;
-    document.querySelector('.chinese-name').textContent = restaurant.chineseName || '';
+    document.querySelector('.chinese-name').textContent = restaurant.nameChinese || '';
     document.querySelector('.category-location').innerHTML = `
         ${restaurant.category} <span class="separator">•</span> ${restaurant.location}
     `;
@@ -44,22 +60,30 @@ function displayRestaurantDetails(restaurant) {
         <div class="stars">${stars}</div>
         <div class="review-count">(${restaurant.reviewCount} reviews)</div>
         <span class="separator">•</span>
-        <div class="price-range">${'$'.repeat(restaurant.priceRange)}</div>
+        <div class="price-range">${getPriceRangeText(restaurant.priceRange)}</div>
     `;
 
     // Update action buttons
     if (restaurant.menuUrl) {
-        document.querySelector('.menu-btn').href = restaurant.menuUrl;
+        const menuBtn = document.querySelector('.menu-btn');
+        menuBtn.href = restaurant.menuUrl;
+        menuBtn.style.display = 'flex';
     }
     if (restaurant.bookingUrl) {
-        document.querySelector('.booking-btn').href = restaurant.bookingUrl;
+        const bookingBtn = document.querySelector('.booking-btn');
+        bookingBtn.href = restaurant.bookingUrl;
+        bookingBtn.style.display = 'flex';
     }
     if (restaurant.googleReviewUrl) {
-        document.querySelector('.google-btn').href = restaurant.googleReviewUrl;
+        const googleBtn = document.querySelector('.google-btn');
+        googleBtn.href = restaurant.googleReviewUrl;
+        googleBtn.style.display = 'flex';
     }
 
     // Update contact info
     const contactInfo = document.querySelector('.contact-info');
+    contactInfo.innerHTML = ''; // Clear existing content
+
     if (restaurant.phone) {
         contactInfo.innerHTML += `
             <div class="info-item">
@@ -68,6 +92,7 @@ function displayRestaurantDetails(restaurant) {
             </div>
         `;
     }
+
     if (restaurant.website) {
         contactInfo.innerHTML += `
             <div class="info-item">
@@ -75,6 +100,42 @@ function displayRestaurantDetails(restaurant) {
                 <a href="${restaurant.website}" target="_blank">${restaurant.website}</a>
             </div>
         `;
+    }
+
+    // Add address
+    if (restaurant.address) {
+        contactInfo.innerHTML += `
+            <div class="info-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>${restaurant.address}</span>
+            </div>
+        `;
+    }
+
+    // Add Facebook and XHS links
+    const socialLinks = document.createElement('div');
+    socialLinks.className = 'social-links';
+    
+    if (restaurant.facebookUrl) {
+        socialLinks.innerHTML += `
+            <a href="${restaurant.facebookUrl}" target="_blank" class="social-link facebook">
+                <i class="fab fa-facebook"></i>
+                <span>Facebook Page</span>
+            </a>
+        `;
+    }
+
+    if (restaurant.xhsUrl) {
+        socialLinks.innerHTML += `
+            <a href="${restaurant.xhsUrl}" target="_blank" class="social-link xhs">
+                <img src="/images/xhs-icon.png" alt="XHS" class="xhs-icon">
+                <span>小红书</span>
+            </a>
+        `;
+    }
+
+    if (socialLinks.innerHTML) {
+        contactInfo.appendChild(socialLinks);
     }
 
     // Update photos grid
@@ -86,6 +147,7 @@ function displayRestaurantDetails(restaurant) {
                      onclick="openPhotoModal('${photo}')"
                 />
             `).join('');
+        document.querySelector('.photos-section').style.display = 'block';
     } else {
         document.querySelector('.photos-section').style.display = 'none';
     }
@@ -105,6 +167,7 @@ function displayRestaurantDetails(restaurant) {
                     <div class="review-comment">${review.comment}</div>
                 </div>
             `).join('');
+        document.querySelector('.reviews-section').style.display = 'block';
     } else {
         document.querySelector('.reviews-section').style.display = 'none';
     }

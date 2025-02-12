@@ -64,7 +64,7 @@
 
 .price-range {
     color: #2ecc71;
-    font-size: 1.1rem;
+    font-weight: 500;
 }
 
 /* Action Buttons */
@@ -112,8 +112,12 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
     color: #666;
+}
+
+.info-item:last-child {
+    margin-bottom: 0;
 }
 
 .info-item a {
@@ -199,6 +203,44 @@
     white-space: pre-line;
 }
 
+/* Social Links */
+.social-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    text-decoration: none;
+    color: white;
+    transition: opacity 0.3s ease;
+}
+
+.social-link:hover {
+    opacity: 0.9;
+}
+
+.social-link.facebook {
+    background-color: #1877f2;
+}
+
+.social-link.xhs {
+    background-color: #fe2c55;
+}
+
+.xhs-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .banner-section {
@@ -225,5 +267,13 @@
 
     .photos-grid {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+
+    .social-links {
+        flex-direction: column;
+    }
+
+    .social-link {
+        justify-content: center;
     }
 } 
