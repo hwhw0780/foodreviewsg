@@ -67,7 +67,15 @@ router.post('/', async (req, res) => {
             stats = await Statistics.create(values);
         } else {
             console.log('[Statistics] Updating existing statistics');
-            stats = await stats.update(values, { returning: true });
+            // Only update fields that are provided in the request
+            const updateValues = {};
+            if ('daily-users' in req.body) updateValues.dailyUsers = values.dailyUsers;
+            if ('daily-bookings' in req.body) updateValues.dailyBookings = values.dailyBookings;
+            if ('total-restaurants' in req.body) updateValues.totalRestaurants = values.totalRestaurants;
+            if ('total-reviews' in req.body) updateValues.totalReviews = values.totalReviews;
+
+            console.log('[Statistics] Update values:', updateValues);
+            stats = await stats.update(updateValues, { returning: true });
         }
 
         const updatedStats = await Statistics.findOne();
