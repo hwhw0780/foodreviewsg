@@ -935,24 +935,22 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Update input fields with current values
             const fields = {
-                'daily-users': document.getElementById('daily-users-input'),
-                'daily-bookings': document.getElementById('daily-bookings-input'),
-                'total-restaurants': document.getElementById('total-restaurants-input'),
-                'total-reviews': document.getElementById('total-reviews-input')
+                'daily-users': { element: document.getElementById('daily-users-input'), value: stats.dailyUsers },
+                'daily-bookings': { element: document.getElementById('daily-bookings-input'), value: stats.dailyBookings },
+                'total-restaurants': { element: document.getElementById('total-restaurants-input'), value: stats.totalRestaurants },
+                'total-reviews': { element: document.getElementById('total-reviews-input'), value: stats.totalReviews }
             };
 
-            // Check if all elements exist
-            for (const [key, element] of Object.entries(fields)) {
-                if (!element) {
+            // Check if all elements exist and update their values
+            for (const [key, field] of Object.entries(fields)) {
+                if (!field.element) {
                     console.error(`[Admin] Element not found: ${key}-input`);
+                } else {
+                    // Ensure we're setting a number value (0 if null/undefined)
+                    field.element.value = field.value || 0;
+                    console.log(`[Admin] Setting ${key} to:`, field.element.value);
                 }
             }
-
-            // Update values if elements exist
-            if (fields['daily-users']) fields['daily-users'].value = stats.dailyUsers || 0;
-            if (fields['daily-bookings']) fields['daily-bookings'].value = stats.dailyBookings || 0;
-            if (fields['total-restaurants']) fields['total-restaurants'].value = stats.totalRestaurants || 0;
-            if (fields['total-reviews']) fields['total-reviews'].value = stats.totalReviews || 0;
 
             console.log('[Admin] Statistics displayed successfully');
         } catch (error) {
@@ -984,15 +982,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         'total-reviews': parseInt(document.getElementById('total-reviews-input').value) || 0
                     };
                     
-                    // Validate that all required fields are present
-                    const requiredFields = ['daily-users', 'daily-bookings', 'total-restaurants', 'total-reviews'];
-                    const missingFields = requiredFields.filter(field => statsData[field] === undefined);
-                    
-                    if (missingFields.length > 0) {
-                        throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
-                    }
-                    
-                    console.log('[Admin] Sending statistics update:', statsData);
+                    // Log the values being sent
+                    console.log('[Admin] Current form values:', {
+                        'daily-users': document.getElementById('daily-users-input').value,
+                        'daily-bookings': document.getElementById('daily-bookings-input').value,
+                        'total-restaurants': document.getElementById('total-restaurants-input').value,
+                        'total-reviews': document.getElementById('total-reviews-input').value
+                    });
+                    console.log('[Admin] Parsed values to send:', statsData);
                     
                     const response = await fetch('/api/statistics', {
                         method: 'POST',
@@ -1010,6 +1007,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     const result = await response.json();
                     console.log('[Admin] Update successful:', result);
+                    
+                    // Refresh the displayed statistics after update
+                    await fetchAndDisplayStatistics();
+                    
                     showMessage('Statistics updated successfully', 'success');
                 } catch (error) {
                     console.error('[Admin] Error updating statistics:', error);

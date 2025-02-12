@@ -49,29 +49,30 @@ router.post('/', async (req, res) => {
         const { 'daily-users': dailyUsers, 'daily-bookings': dailyBookings, 
                 'total-restaurants': totalRestaurants, 'total-reviews': totalReviews } = req.body;
 
+        // Convert values to numbers and default to 0 if invalid
+        const values = {
+            dailyUsers: Number(dailyUsers) || 0,
+            dailyBookings: Number(dailyBookings) || 0,
+            totalRestaurants: Number(totalRestaurants) || 0,
+            totalReviews: Number(totalReviews) || 0
+        };
+
+        console.log('[Statistics] Parsed values:', values);
+
         let stats = await Statistics.findOne();
         console.log('[Statistics] Current stats before update:', stats ? stats.toJSON() : 'No stats found');
 
         if (!stats) {
             console.log('[Statistics] Creating new statistics record');
-            stats = await Statistics.create({
-                dailyUsers,
-                dailyBookings,
-                totalRestaurants,
-                totalReviews
-            });
+            stats = await Statistics.create(values);
         } else {
             console.log('[Statistics] Updating existing statistics');
-            stats = await stats.update({
-                dailyUsers: dailyUsers || 0,
-                dailyBookings: dailyBookings || 0,
-                totalRestaurants: totalRestaurants || 0,
-                totalReviews: totalReviews || 0
-            }, { returning: true });
+            stats = await stats.update(values, { returning: true });
         }
 
-        console.log('[Statistics] Updated stats:', stats.toJSON());
-        res.json(stats);
+        const updatedStats = await Statistics.findOne();
+        console.log('[Statistics] Final stats after update:', updatedStats.toJSON());
+        res.json(updatedStats);
     } catch (error) {
         console.error('[Statistics] Error updating statistics:', error);
         res.status(500).json({ error: 'Failed to update statistics: ' + error.message });
