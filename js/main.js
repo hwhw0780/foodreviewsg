@@ -493,58 +493,57 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Statistics Animation
-    function animateValue(element, start, end, duration) {
-        let startTimestamp = null;
-        const step = (timestamp) => {
-            if (!startTimestamp) startTimestamp = timestamp;
-            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-            const currentValue = Math.floor(progress * (end - start) + start);
-            element.textContent = currentValue.toLocaleString();
-            if (progress < 1) {
-                window.requestAnimationFrame(step);
-            }
-        };
-        window.requestAnimationFrame(step);
+    // Statistics configuration
+    const statisticsConfig = {
+        'daily-users': { min: 850, max: 1230 },
+        'daily-bookings': { min: 35, max: 110 },
+        'total-restaurants': { value: 400 },
+        'total-reviews': { value: 200000 }
+    };
+
+    let lastHourlyUpdate = null;
+
+    // Function to generate random number within range
+    function getRandomInRange(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    // Animate statistics when they come into view
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const statElements = document.querySelectorAll('.stat-number');
-                statElements.forEach(stat => {
-                    const finalValue = parseInt(stat.textContent.replace(/,/g, ''));
-                    animateValue(stat, 0, finalValue, 2000);
-                });
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.1 });
-
-    const statsSection = document.querySelector('.statistics');
-    if (statsSection) {
-        observer.observe(statsSection);
+    // Function to get current statistics values
+    function getCurrentStatistics() {
+        const now = new Date();
+        const currentHour = now.getHours();
+        
+        // Check if we need to generate new random values
+        if (!lastHourlyUpdate || lastHourlyUpdate.getHours() !== currentHour) {
+            lastHourlyUpdate = now;
+            
+            // Generate new random values for hourly changing stats
+            window.currentStats = {
+                'daily-users': getRandomInRange(statisticsConfig['daily-users'].min, statisticsConfig['daily-users'].max),
+                'daily-bookings': getRandomInRange(statisticsConfig['daily-bookings'].min, statisticsConfig['daily-bookings'].max),
+                'total-restaurants': statisticsConfig['total-restaurants'].value,
+                'total-reviews': statisticsConfig['total-reviews'].value
+            };
+        }
+        
+        return window.currentStats;
     }
 
-    // Function to fetch statistics from the server
+    // Function to fetch statistics
     async function fetchStatistics() {
         try {
-            const response = await fetch('/api/statistics');
-            if (!response.ok) {
-                throw new Error('Failed to fetch statistics');
-            }
-            const stats = await response.json();
+            // Get current statistics based on time
+            const stats = getCurrentStatistics();
             
-            // Update the statistics using the existing updateStatistics function
+            // Update the statistics display
             window.updateStatistics({
-                'daily-users': stats.dailyUsers,
-                'daily-bookings': stats.dailyBookings,
-                'total-restaurants': stats.totalRestaurants,
-                'total-reviews': stats.totalReviews
+                'daily-users': stats['daily-users'],
+                'daily-bookings': stats['daily-bookings'],
+                'total-restaurants': stats['total-restaurants'] + '+',
+                'total-reviews': stats['total-reviews'].toLocaleString() + '+'
             });
         } catch (error) {
-            console.error('Error fetching statistics:', error);
+            console.error('Error updating statistics:', error);
         }
     }
 
@@ -559,21 +558,44 @@ document.addEventListener('DOMContentLoaded', function() {
 
         for (const [key, element] of Object.entries(elements)) {
             if (element && typeof stats[key] !== 'undefined') {
-                const currentValue = parseInt(element.textContent.replace(/,/g, '')) || 0;
-                const newValue = parseInt(stats[key]) || 0;
+                const currentValue = parseInt(element.textContent.replace(/[^0-9]/g, '')) || 0;
+                const newValue = typeof stats[key] === 'string' ? 
+                    parseInt(stats[key].replace(/[^0-9]/g, '')) : 
+                    stats[key];
+                
                 if (currentValue !== newValue) {
-                    animateValue(element, currentValue, newValue, 1000);
+                    if (typeof stats[key] === 'string' && stats[key].includes('+')) {
+                        // For values with '+' suffix
+                        animateValue(element, currentValue, newValue, 1000, true);
+                    } else {
+                        animateValue(element, currentValue, newValue, 1000, false);
+                    }
                 }
             }
         }
     };
 
+    // Updated animateValue function to handle '+' suffix
+    function animateValue(element, start, end, duration, addPlusSuffix = false) {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            const currentValue = Math.floor(progress * (end - start) + start);
+            element.textContent = currentValue.toLocaleString() + (addPlusSuffix ? '+' : '');
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+
     // Initial fetch of restaurants and statistics
     fetchRestaurants();
     fetchStatistics();
 
-    // Set up periodic refresh of statistics
-    setInterval(fetchStatistics, 30000); // Refresh every 30 seconds
+    // Set up periodic refresh of statistics (check every minute for hourly updates)
+    setInterval(fetchStatistics, 60000); // Check every minute
 
     // Partner form submission handler
     const partnerForm = document.getElementById('partner-contact-form');

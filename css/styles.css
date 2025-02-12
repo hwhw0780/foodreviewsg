@@ -1,0 +1,11 @@
+.update-text {
+    font-size: 0.8em;
+    color: #666;
+    margin-top: 5px;
+    opacity: 0.8;
+}
+
+.stat-info {
+    text-align: center;
+    flex-grow: 1;
+} 

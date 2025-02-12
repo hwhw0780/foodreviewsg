@@ -852,6 +852,7 @@ footer {
     background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
     position: relative;
     overflow: hidden;
+    text-align: center;
 }
 
 .stats-header {
@@ -965,28 +966,29 @@ footer {
 }
 
 .stat-info {
-    position: relative;
-    z-index: 1;
+    text-align: center;
+    flex-grow: 1;
 }
 
-.stat-number {
-    font-size: 2.8rem;
+.stat-info .stat-number {
+    font-size: 2.5rem;
     font-weight: 700;
-    color: var(--text-dark);
-    margin-bottom: 0.5rem;
-    font-family: 'Playfair Display', serif;
-    background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #333;
+    margin-bottom: 5px;
 }
 
-.stat-label {
+.stat-info .stat-label {
     font-size: 1rem;
-    color: var(--text-light);
-    font-weight: 500;
-    max-width: 150px;
-    margin: 0 auto;
-    line-height: 1.4;
+    color: #666;
+    margin-bottom: 2px;
+}
+
+.stat-info .update-text {
+    font-size: 0.33em;
+    color: #e67e22;
+    margin-top: 2px;
+    opacity: 0.7;
+    font-weight: 300;
 }
 
 @media (max-width: 1200px) {
@@ -2239,4 +2241,17 @@ html {
     to {
         transform: scaleX(1);
     }
+}
+
+.update-text {
+    font-size: 0.13em;
+    color: #e67e22;
+    margin-top: 2px;
+    opacity: 0.7;
+    font-weight: 300;
+}
+
+.stat-info {
+    text-align: center;
+    flex-grow: 1;
 } 
