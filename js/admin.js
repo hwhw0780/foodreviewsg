@@ -918,4 +918,65 @@ document.addEventListener('DOMContentLoaded', function() {
     if (window.location.href.includes('dashboard.html')) {
         fetchTopLists();
     }
+
+    // Function to fetch and display current statistics
+    async function fetchAndDisplayStatistics() {
+        try {
+            const response = await fetch('/api/statistics');
+            if (!response.ok) {
+                throw new Error('Failed to fetch statistics');
+            }
+            const stats = await response.json();
+            
+            // Update input fields with current values
+            document.getElementById('daily-users-input').value = stats.dailyUsers || 0;
+            document.getElementById('daily-bookings-input').value = stats.dailyBookings || 0;
+            document.getElementById('total-restaurants-input').value = stats.totalRestaurants || 0;
+            document.getElementById('total-reviews-input').value = stats.totalReviews || 0;
+        } catch (error) {
+            console.error('Error fetching statistics:', error);
+            showMessage('Failed to load statistics', 'error');
+        }
+    }
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', async () => {
+        // Fetch current statistics
+        await fetchAndDisplayStatistics();
+
+        // Fetch restaurants
+        await fetchRestaurants();
+        displayRestaurants();
+
+        // Fetch top lists
+        await fetchTopLists();
+        displayTopLists();
+
+        // Add event listener for statistics update
+        document.getElementById('update-stats-btn').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/api/statistics', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        'daily-users': parseInt(document.getElementById('daily-users-input').value),
+                        'daily-bookings': parseInt(document.getElementById('daily-bookings-input').value),
+                        'total-restaurants': parseInt(document.getElementById('total-restaurants-input').value),
+                        'total-reviews': parseInt(document.getElementById('total-reviews-input').value)
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to update statistics');
+                }
+
+                showMessage('Statistics updated successfully', 'success');
+            } catch (error) {
+                console.error('Error updating statistics:', error);
+                showMessage('Failed to update statistics', 'error');
+            }
+        });
+    });
 }); 
