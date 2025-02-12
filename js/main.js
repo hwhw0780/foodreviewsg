@@ -527,7 +527,28 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(statsSection);
     }
 
-    // Function to update statistics (will be used by admin dashboard)
+    // Function to fetch statistics from the server
+    async function fetchStatistics() {
+        try {
+            const response = await fetch('/api/statistics');
+            if (!response.ok) {
+                throw new Error('Failed to fetch statistics');
+            }
+            const stats = await response.json();
+            
+            // Update the statistics using the existing updateStatistics function
+            window.updateStatistics({
+                'daily-users': stats.dailyUsers,
+                'daily-bookings': stats.dailyBookings,
+                'total-restaurants': stats.totalRestaurants,
+                'total-reviews': stats.totalReviews
+            });
+        } catch (error) {
+            console.error('Error fetching statistics:', error);
+        }
+    }
+
+    // Function to update statistics
     window.updateStatistics = function(stats) {
         const elements = {
             'daily-users': document.getElementById('daily-users'),
@@ -536,14 +557,23 @@ document.addEventListener('DOMContentLoaded', function() {
             'total-reviews': document.getElementById('total-reviews')
         };
 
-        for (const [key, value] of Object.entries(stats)) {
-            const element = elements[key];
-            if (element) {
-                const currentValue = parseInt(element.textContent.replace(/,/g, ''));
-                animateValue(element, currentValue, value, 1000);
+        for (const [key, element] of Object.entries(elements)) {
+            if (element && typeof stats[key] !== 'undefined') {
+                const currentValue = parseInt(element.textContent.replace(/,/g, '')) || 0;
+                const newValue = parseInt(stats[key]) || 0;
+                if (currentValue !== newValue) {
+                    animateValue(element, currentValue, newValue, 1000);
+                }
             }
         }
     };
+
+    // Initial fetch of restaurants and statistics
+    fetchRestaurants();
+    fetchStatistics();
+
+    // Set up periodic refresh of statistics
+    setInterval(fetchStatistics, 30000); // Refresh every 30 seconds
 
     // Partner form submission handler
     const partnerForm = document.getElementById('partner-contact-form');
@@ -583,47 +613,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-
-    // Function to fetch statistics from the server
-    async function fetchStatistics() {
-        try {
-            const response = await fetch('/api/statistics');
-            if (!response.ok) {
-                throw new Error('Failed to fetch statistics');
-            }
-            const stats = await response.json();
-            
-            // Update the statistics using the existing updateStatistics function
-            window.updateStatistics({
-                'daily-users': stats.dailyUsers,
-                'daily-bookings': stats.dailyBookings,
-                'total-restaurants': stats.totalRestaurants,
-                'total-reviews': stats.totalReviews
-            });
-        } catch (error) {
-            console.error('Error fetching statistics:', error);
-        }
-    }
-
-    // Initial load
-    document.addEventListener('DOMContentLoaded', () => {
-        // Fetch statistics
-        fetchStatistics();
-
-        // Display sample restaurants initially
-        const restaurantGrid = document.querySelector('.restaurant-grid');
-        if (restaurantGrid) {
-            restaurantGrid.innerHTML = ''; // Clear example card
-            sampleRestaurants.forEach(restaurant => {
-                restaurantGrid.appendChild(createRestaurantCard(restaurant));
-            });
-        }
-
-        // ... rest of your initialization code ...
-    });
-
-    // Initial fetch of restaurants
-    fetchRestaurants();
 
     // Navigation functionality
     const homeLink = document.querySelector('nav a[href="#"]');
