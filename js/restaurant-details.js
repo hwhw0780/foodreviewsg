@@ -64,20 +64,31 @@ function displayRestaurantDetails(restaurant) {
     `;
 
     // Update action buttons
+    const actionButtons = document.querySelector('.action-buttons');
+    actionButtons.innerHTML = ''; // Clear existing buttons
+
     if (restaurant.menuUrl) {
-        const menuBtn = document.querySelector('.menu-btn');
-        menuBtn.href = restaurant.menuUrl;
-        menuBtn.style.display = 'flex';
+        actionButtons.innerHTML += `
+            <a href="${restaurant.menuUrl}" class="action-btn menu-btn" target="_blank">
+                <i class="fas fa-utensils"></i> View Menu
+            </a>
+        `;
     }
+
     if (restaurant.bookingUrl) {
-        const bookingBtn = document.querySelector('.booking-btn');
-        bookingBtn.href = restaurant.bookingUrl;
-        bookingBtn.style.display = 'flex';
+        actionButtons.innerHTML += `
+            <a href="${restaurant.bookingUrl}" class="action-btn booking-btn" target="_blank">
+                <i class="fas fa-calendar-alt"></i> Book a Table
+            </a>
+        `;
     }
+
     if (restaurant.googleReviewUrl) {
-        const googleBtn = document.querySelector('.google-btn');
-        googleBtn.href = restaurant.googleReviewUrl;
-        googleBtn.style.display = 'flex';
+        actionButtons.innerHTML += `
+            <a href="${restaurant.googleReviewUrl}" class="action-btn google-btn" target="_blank">
+                <i class="fab fa-google"></i> Google Reviews
+            </a>
+        `;
     }
 
     // Update contact info

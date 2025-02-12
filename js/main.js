@@ -584,14 +584,40 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Function to fetch statistics from the server
+    async function fetchStatistics() {
+        try {
+            const response = await fetch('/api/statistics');
+            if (!response.ok) {
+                throw new Error('Failed to fetch statistics');
+            }
+            const stats = await response.json();
+            
+            // Update the statistics using the existing updateStatistics function
+            window.updateStatistics({
+                'daily-users': stats.dailyUsers,
+                'daily-bookings': stats.dailyBookings,
+                'total-restaurants': stats.totalRestaurants,
+                'total-reviews': stats.totalReviews
+            });
+        } catch (error) {
+            console.error('Error fetching statistics:', error);
+        }
+    }
+
     // Initial load
     document.addEventListener('DOMContentLoaded', () => {
+        // Fetch statistics
+        fetchStatistics();
+
         // Display sample restaurants initially
         const restaurantGrid = document.querySelector('.restaurant-grid');
-        restaurantGrid.innerHTML = ''; // Clear example card
-        sampleRestaurants.forEach(restaurant => {
-            restaurantGrid.appendChild(createRestaurantCard(restaurant));
-        });
+        if (restaurantGrid) {
+            restaurantGrid.innerHTML = ''; // Clear example card
+            sampleRestaurants.forEach(restaurant => {
+                restaurantGrid.appendChild(createRestaurantCard(restaurant));
+            });
+        }
 
         // ... rest of your initialization code ...
     });
