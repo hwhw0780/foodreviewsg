@@ -239,12 +239,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         ` : ''}
                         ${restaurant.facebookUrl ? `
                             <a href="${restaurant.facebookUrl}" target="_blank" class="action-btn facebook-btn">
-                                <i class="fab fa-facebook"></i>
+                                <img src="/images/facebook-icon.png" alt="Facebook" style="width: 24px; height: 24px; object-fit: contain;">
                             </a>
                         ` : ''}
                         ${restaurant.xhsUrl ? `
                             <a href="${restaurant.xhsUrl}" target="_blank" class="action-btn xhs-btn">
-                                <img src="/images/xhs-icon.png" alt="XHS" class="xhs-icon">
+                                <img src="/images/xhs-icon.png" alt="XHS" style="width: 24px; height: 24px; object-fit: contain;">
                             </a>
                         ` : ''}
                     </div>

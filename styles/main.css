@@ -1329,14 +1329,15 @@ footer {
 }
 
 .facebook-btn {
-    background-color: #1877f2;
+    background-color: white;
     padding: 0.8rem;
+    border: 1px solid #eee;
 }
 
 .xhs-btn {
-    background-color: #fff2f2;
+    background-color: white;
     padding: 0.8rem;
-    border: 1px solid #ffcdd2;
+    border: 1px solid #eee;
 }
 
 .xhs-icon {

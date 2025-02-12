@@ -118,18 +118,16 @@ function displayRestaurantDetails(restaurant) {
     
     if (restaurant.facebookUrl) {
         socialLinks.innerHTML += `
-            <a href="${restaurant.facebookUrl}" target="_blank" class="social-link facebook">
-                <i class="fab fa-facebook"></i>
-                <span>Facebook Page</span>
+            <a href="${restaurant.facebookUrl}" target="_blank" class="social-link">
+                <img src="/images/facebook-icon.png" alt="Facebook" title="Visit our Facebook page">
             </a>
         `;
     }
 
     if (restaurant.xhsUrl) {
         socialLinks.innerHTML += `
-            <a href="${restaurant.xhsUrl}" target="_blank" class="social-link xhs">
-                <img src="/images/xhs-icon.png" alt="XHS" class="xhs-icon">
-                <span>小红书</span>
+            <a href="${restaurant.xhsUrl}" target="_blank" class="social-link">
+                <img src="/images/xhs-icon.png" alt="XHS" title="Visit our Xiaohongshu page">
             </a>
         `;
     }
