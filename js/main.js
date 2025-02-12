@@ -511,12 +511,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to get current statistics values
     function getCurrentStatistics() {
         const now = new Date();
-        const currentHour = now.getHours();
+        const lastUpdateStr = localStorage.getItem('lastStatisticsUpdate');
+        const lastUpdate = lastUpdateStr ? new Date(lastUpdateStr) : null;
         
-        // Check if we need to generate new random values
-        if (!lastHourlyUpdate || lastHourlyUpdate.getHours() !== currentHour) {
-            lastHourlyUpdate = now;
-            
+        // Check if we need to generate new random values (if it's a new hour or no previous update)
+        if (!lastUpdate || lastUpdate.getHours() !== now.getHours() || lastUpdate.getDate() !== now.getDate()) {
             // Generate new random values for hourly changing stats
             window.currentStats = {
                 'daily-users': getRandomInRange(statisticsConfig['daily-users'].min, statisticsConfig['daily-users'].max),
@@ -524,6 +523,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 'total-restaurants': statisticsConfig['total-restaurants'].value,
                 'total-reviews': statisticsConfig['total-reviews'].value
             };
+            
+            // Store the new values and update time in localStorage
+            localStorage.setItem('currentStats', JSON.stringify(window.currentStats));
+            localStorage.setItem('lastStatisticsUpdate', now.toISOString());
+        } else {
+            // Use the stored values
+            const storedStats = localStorage.getItem('currentStats');
+            if (storedStats) {
+                window.currentStats = JSON.parse(storedStats);
+            }
         }
         
         return window.currentStats;
