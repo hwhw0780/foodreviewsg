@@ -53,6 +53,11 @@ app.get('/join.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'join.html'));
 });
 
+// Serve privacy policy page
+app.get('/privacy-policy.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'privacy-policy.html'));
+});
+
 // Serve dynamic Top 5 list pages
 app.get('/top-5/:slug', async (req, res) => {
     try {
