@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join SG Best Food - Partner With Us</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .join-section {
+            padding: 6rem 2rem;
+            background: linear-gradient(135deg, #fff5f5 0%, #fff 100%);
+            min-height: calc(100vh - 80px);
+        }
+
+        .join-content {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .join-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .join-header h1 {
+            font-size: 2.5rem;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .join-header p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .package-details {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+
+        .package-details h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .benefits-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .benefits-list li {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+
+        .benefits-list li i {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        .join-form {
+            margin-top: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+        }
+
+        .submit-section {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .price-tag {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        #paypal-button-container {
+            max-width: 300px;
+            margin: 1rem auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar scrolled">
+        <div class="nav-brand">
+            <a href="index.html">SG Best Food</a>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="index.html#about">About</a>
+            <a href="index.html#contact">Contact</a>
+        </div>
+    </nav>
+
+    <!-- Join Section -->
+    <section class="join-section">
+        <div class="join-content">
+            <div class="join-header">
+                <h1>Join SG Best Food</h1>
+                <p>Partner with us to boost your restaurant's visibility and reach thousands of potential customers.</p>
+            </div>
+
+            <div class="package-details">
+                <h2>Premium Partner Package</h2>
+                <ul class="benefits-list">
+                    <li><i class="fas fa-crown"></i> Premium listing position on our platform</li>
+                    <li><i class="fas fa-calendar-check"></i> Direct booking integration</li>
+                    <li><i class="fas fa-users"></i> Access to 15,000+ daily visitors</li>
+                    <li><i class="fab fa-google"></i> Enhanced exposure through Google Ads</li>
+                    <li><i class="fas fa-star"></i> Equal exposure opportunity with branded restaurants</li>
+                </ul>
+                <div class="price-tag">$49/month</div>
+            </div>
+
+            <form id="partner-form" class="join-form">
+                <div class="form-group">
+                    <label for="restaurant-name">Restaurant Name*</label>
+                    <input type="text" id="restaurant-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="contact-name">Contact Person Name*</label>
+                    <input type="text" id="contact-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address*</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Contact Phone*</label>
+                    <input type="tel" id="phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="website">Restaurant Website</label>
+                    <input type="url" id="website" placeholder="https://example.com">
+                </div>
+                <div class="form-group">
+                    <label for="google-link">Google Maps Link</label>
+                    <input type="url" id="google-link" placeholder="https://www.google.com/maps/...">
+                </div>
+
+                <div class="submit-section">
+                    <div id="paypal-button-container-P-74720454846049454M6WGRLY"></div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About SG Best Food</h3>
+                <p>Your trusted platform for discovering and reviewing the best restaurants in Singapore.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html#about">About Us</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                    <li><a href="#privacy">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <ul class="contact-info">
+                    <li><i class="fas fa-envelope"></i> info@sgbestfood.com</li>
+                    <li><i class="fas fa-map-marker-alt"></i> Singapore</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 SG Best Food. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://www.paypal.com/sdk/js?client-id=AcQq7vIblkzfjRS7iSkd85poMDZvczYHr-YSZUmDj-zIWWQv4IqDUFiDDEr2oL1gpsylMcXs1elncQAD&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('partner-form');
+            
+            paypal.Buttons({
+                style: {
+                    shape: 'rect',
+                    color: 'gold',
+                    layout: 'vertical',
+                    label: 'subscribe'
+                },
+                createSubscription: function(data, actions) {
+                    // Validate form before creating subscription
+                    if (!form.checkValidity()) {
+                        form.reportValidity();
+                        return false;
+                    }
+
+                    // Get form data
+                    const formData = {
+                        restaurantName: document.getElementById('restaurant-name').value,
+                        contactName: document.getElementById('contact-name').value,
+                        email: document.getElementById('email').value,
+                        phone: document.getElementById('phone').value,
+                        website: document.getElementById('website').value,
+                        googleLink: document.getElementById('google-link').value
+                    };
+
+                    // Store form data in localStorage to be sent after successful payment
+                    localStorage.setItem('partnerFormData', JSON.stringify(formData));
+
+                    return actions.subscription.create({
+                        plan_id: 'P-74720454846049454M6WGRLY'
+                    });
+                },
+                onApprove: async function(data, actions) {
+                    try {
+                        // Get stored form data
+                        const formData = JSON.parse(localStorage.getItem('partnerFormData'));
+                        
+                        // Send form data and subscription ID to your server
+                        const response = await fetch('/api/partner-signup', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                ...formData,
+                                subscriptionId: data.subscriptionID
+                            })
+                        });
+
+                        if (response.ok) {
+                            alert('Thank you for joining! We will contact you shortly to complete the onboarding process.');
+                            window.location.href = 'index.html';
+                        } else {
+                            throw new Error('Failed to process signup');
+                        }
+                    } catch (error) {
+                        console.error('Error processing signup:', error);
+                        alert('There was an error processing your signup. Our team will contact you shortly.');
+                    } finally {
+                        localStorage.removeItem('partnerFormData');
+                    }
+                }
+            }).render('#paypal-button-container-P-74720454846049454M6WGRLY');
+        });
+    </script>
+</body>
+</html> 

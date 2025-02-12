@@ -237,11 +237,41 @@
     flex-wrap: wrap;
 }
 
+.image-container {
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+
 .image-preview img {
     max-width: 100px;
     height: 100px;
     object-fit: cover;
     border-radius: 5px;
+}
+
+.delete-image-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+.delete-image-btn:hover {
+    background-color: #c0392b;
+    transform: scale(1.1);
 }
 
 .form-actions {

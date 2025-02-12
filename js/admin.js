@@ -186,6 +186,21 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
+        // Add delete button for banner image
+        function addDeleteButtonToBanner(bannerPreview) {
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'delete-image-btn';
+            deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+            deleteBtn.onclick = function(e) {
+                e.preventDefault();
+                bannerPreview.innerHTML = '';
+                previewBannerImage.src = '#';
+                // Set flag to delete banner
+                document.getElementById('delete-banner').value = 'true';
+            };
+            bannerPreview.appendChild(deleteBtn);
+        }
+
         // Handle multiple photos preview
         photosInput.addEventListener('change', function(e) {
             const files = Array.from(e.target.files);
@@ -196,9 +211,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     // Add to form preview
+                    const imgContainer = document.createElement('div');
+                    imgContainer.className = 'image-container';
                     const img = document.createElement('img');
                     img.src = e.target.result;
-                    photosPreview.appendChild(img);
+                    imgContainer.appendChild(img);
+                    photosPreview.appendChild(imgContainer);
                     
                     // Add to restaurant preview
                     const previewImg = document.createElement('img');
@@ -208,6 +226,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 reader.readAsDataURL(file);
             });
         });
+
+        // Add delete button for individual photos
+        function addDeleteButtonToPhoto(imgContainer, photoIndex) {
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'delete-image-btn';
+            deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+            deleteBtn.onclick = function(e) {
+                e.preventDefault();
+                imgContainer.remove();
+                // Add index to deleted photos array
+                const deletedPhotos = document.getElementById('deleted-photos').value;
+                const deletedIndexes = deletedPhotos ? JSON.parse(deletedPhotos) : [];
+                deletedIndexes.push(photoIndex);
+                document.getElementById('deleted-photos').value = JSON.stringify(deletedIndexes);
+            };
+            imgContainer.appendChild(deleteBtn);
+        }
 
         // Live preview updates
         const nameInput = document.getElementById('restaurant-name');
@@ -436,6 +471,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const previewBannerImage = document.getElementById('preview-banner-image');
             if (bannerPreview && restaurant.bannerImage) {
                 bannerPreview.innerHTML = `<img src="${restaurant.bannerImage}" alt="Banner Preview">`;
+                addDeleteButtonToBanner(bannerPreview);
             }
             if (previewBannerImage) {
                 previewBannerImage.src = restaurant.bannerImage || '#';
@@ -446,13 +482,17 @@ document.addEventListener('DOMContentLoaded', function() {
             const previewPhotosGrid = document.getElementById('preview-photos');
             if (photosPreview && restaurant.photos && Array.isArray(restaurant.photos)) {
                 photosPreview.innerHTML = restaurant.photos
-                    .map(photo => `<img src="${photo}" alt="Restaurant Photo">`)
-                    .join('');
-            }
-            if (previewPhotosGrid && restaurant.photos && Array.isArray(restaurant.photos)) {
-                previewPhotosGrid.innerHTML = restaurant.photos
-                    .map(photo => `<img src="${photo}" alt="Restaurant Photo">`)
-                    .join('');
+                    .map((photo, index) => `
+                        <div class="image-container">
+                            <img src="${photo}" alt="Restaurant Photo">
+                        </div>
+                    `).join('');
+                
+                // Add delete buttons to existing photos
+                const containers = photosPreview.querySelectorAll('.image-container');
+                containers.forEach((container, index) => {
+                    addDeleteButtonToPhoto(container, index);
+                });
             }
 
             // Clear and populate custom reviews
