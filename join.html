@@ -237,6 +237,22 @@
             position: relative;
             font-size: 0.9rem;
         }
+
+        .paypal-direct-link {
+            display: block;
+            text-align: center;
+            margin: 1rem 0;
+            text-decoration: none;
+        }
+
+        .paypal-direct-link img {
+            max-width: 200px;
+            height: auto;
+        }
+
+        .paypal-direct-link:hover {
+            opacity: 0.9;
+        }
     </style>
 </head>
 <body>
@@ -304,12 +320,14 @@
                         <div class="save-tag">Save $154!</div>
                         <div class="gst-notice">Price is excluded 9% GST</div>
                         <div class="paypal-button-container" style="display: none;">
-                            <div id="paypal-button-container-yearly"></div>
+                            <a href="https://www.paypal.com/ncp/payment/EKZWS9HZM7JF4" class="paypal-direct-link" target="_blank">
+                                <img src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/buy-logo-large.png" alt="Pay with PayPal" />
+                            </a>
                             <div class="divider">
                                 <span>or scan to pay</span>
                             </div>
                             <div class="qr-code-section">
-                                <img src="images/paypal-qr.png" alt="PayPal QR Code Payment">
+                                <img src="/images/paypal-qr.png" alt="PayPal QR Code Payment" onerror="this.style.display='none'">
                                 <p>Scan with your mobile device to pay</p>
                             </div>
                         </div>
@@ -364,37 +382,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('partner-form');
             
-            // Initialize Monthly Subscription Button
+            // Initialize Monthly Subscription Button only
             if (paypal.Buttons) {
-                // Initialize Yearly Payment Button
-                paypal.Buttons({
-                    style: {
-                        shape: 'rect',
-                        color: 'gold',
-                        layout: 'vertical',
-                        label: 'pay'
-                    },
-                    createOrder: function(data, actions) {
-                        if (!validateForm()) {
-                            return false;
-                        }
-                        return actions.order.create({
-                            purchase_units: [{
-                                amount: {
-                                    value: '350.00',
-                                    currency_code: 'SGD'
-                                },
-                                description: 'SG Best Food - Yearly Partner Package'
-                            }]
-                        });
-                    },
-                    onApprove: async function(data, actions) {
-                        const order = await actions.order.capture();
-                        await sendFormData('yearly', order.id);
-                    }
-                }).render('#paypal-button-container-yearly');
-
-                // Initialize Monthly Subscription Button
                 paypal.Buttons({
                     style: {
                         shape: 'rect',
