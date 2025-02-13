@@ -43,12 +43,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Category names mapping (English to display name)
     const categoryNames = {
         'all': 'Featured',
-        'chinese': 'Chinese (中餐)',
+        'chinese': 'Chinese (中国餐)',
         'chicken-rice': 'Chicken Rice (海南鸡饭)',
         'dim-sum': 'Dim Sum (点心)',
-        'malay': 'Malay',
-        'indian': 'Indian',
-        'local': 'Local (本地)',
+        'local': 'Local (本地煮炒)',
         'japanese': 'Japanese (日本料理)',
         'korean': 'Korean (韩国料理)',
         'western': 'Western (西餐)',
@@ -58,8 +56,11 @@ document.addEventListener('DOMContentLoaded', function() {
         'ice-cream': 'Ice Cream (冰淇淋)',
         'cafe': 'Café (咖啡馆)',
         'bubble-tea': 'Bubble Tea (珍珠奶茶)',
-        'bakery': 'Bakery (面包店)',
-        'vegetarian': 'Vegetarian (素食)'
+        'vegetarian': 'Vegetarian (素食)',
+        'frog-porridge': 'Frog Porridge (田鸡粥)',
+        'breakfast': 'Breakfast (早餐店)',
+        'mixed-rice': 'Mixed Rice (菜饭)',
+        'mala-pot': 'Mala Pot (麻辣香锅)'
     };
 
     // Function to get category display text
