@@ -190,6 +190,13 @@
             transform: translateY(-5px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
+
+        .gst-notice {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -255,12 +262,19 @@
                         <h3>Pay Yearly</h3>
                         <div class="price">$350</div>
                         <div class="save-tag">Save $154!</div>
-                        <div id="paypal-container-EKZWS9HZM7JF4" style="display: none;"></div>
+                        <div class="gst-notice">Price is excluded 9% GST</div>
+                        <style>.pp-EKZWS9HZM7JF4{text-align:center;border:none;border-radius:0.25rem;min-width:11.625rem;padding:0 2rem;height:2.625rem;font-weight:bold;background-color:#FFD140;color:#000000;font-family:"Helvetica Neue",Arial,sans-serif;font-size:1rem;line-height:1.25rem;cursor:pointer;}</style>
+                        <form action="https://www.paypal.com/ncp/payment/EKZWS9HZM7JF4" method="post" target="_blank" style="display:inline-grid;justify-items:center;align-content:start;gap:0.5rem;">
+                            <input class="pp-EKZWS9HZM7JF4" type="submit" value="Buy Now" />
+                            <img src=https://www.paypalobjects.com/images/Debit_Credit_APM.svg alt="cards" />
+                            <section> Powered by <img src="https://www.paypalobjects.com/paypal-ui/logos/svg/paypal-wordmark-color.svg" alt="paypal" style="height:0.875rem;vertical-align:middle;"/></section>
+                        </form>
                     </div>
                     <div class="payment-option monthly" onclick="selectPaymentOption('monthly')">
                         <h3>Pay Monthly</h3>
                         <div class="price">$42/month</div>
                         <div class="cancel-text">Cancel anytime</div>
+                        <div class="gst-notice">Price is excluded 9% GST</div>
                         <div id="paypal-button-container-P-0XW615804V1296820M6W2G4Y" style="display: none;"></div>
                     </div>
                 </div>
@@ -297,8 +311,8 @@
         </div>
     </footer>
 
-    <!-- Replace the two PayPal script tags with a single one that includes all needed components -->
-    <script src="https://www.paypal.com/sdk/js?client-id=AcQq7vIblkzfjRS7iSkd85poMDZvczYHr-YSZUmDj-zIWWQv4IqDUFiDDEr2oL1gpsylMcXs1elncQAD&vault=true&intent=subscription&components=buttons,hosted-buttons&currency=SGD"></script>
+    <!-- Replace the PayPal script tag with one that only includes needed components -->
+    <script src="https://www.paypal.com/sdk/js?client-id=AcQq7vIblkzfjRS7iSkd85poMDZvczYHr-YSZUmDj-zIWWQv4IqDUFiDDEr2oL1gpsylMcXs1elncQAD&vault=true&intent=subscription&components=buttons&currency=SGD"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -326,18 +340,6 @@
                     }
                 }).render('#paypal-button-container-P-0XW615804V1296820M6W2G4Y');
             }
-
-            // Initialize Yearly Payment Button
-            if (paypal.HostedButtons) {
-                paypal.HostedButtons({
-                    hostedButtonId: "EKZWS9HZM7JF4",
-                    onApprove: async function(data) {
-                        if (validateForm()) {
-                            await sendFormData('yearly', data.orderID);
-                        }
-                    }
-                }).render("#paypal-container-EKZWS9HZM7JF4");
-            }
         });
 
         function validateForm() {
@@ -357,16 +359,16 @@
         function selectPaymentOption(option) {
             // Reset both containers
             const monthlyContainer = document.getElementById('paypal-button-container-P-0XW615804V1296820M6W2G4Y');
-            const yearlyContainer = document.getElementById('paypal-container-EKZWS9HZM7JF4');
+            const yearlyForm = document.querySelector('.payment-option.yearly form');
             
             monthlyContainer.style.display = 'none';
-            yearlyContainer.style.display = 'none';
+            yearlyForm.style.display = 'none';
             
             // Show selected option
             if (option === 'monthly') {
                 monthlyContainer.style.display = 'block';
             } else {
-                yearlyContainer.style.display = 'block';
+                yearlyForm.style.display = 'inline-grid';
             }
 
             // Add active state to selected option
