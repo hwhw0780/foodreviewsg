@@ -197,6 +197,46 @@
             margin-top: 0.5rem;
             font-style: italic;
         }
+
+        .qr-code-section {
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .qr-code-section img {
+            max-width: 150px;
+            margin: 0.5rem auto;
+        }
+
+        .qr-code-section p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .divider {
+            margin: 1rem 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .divider::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #ddd;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 1rem;
+            color: var(--text-light);
+            position: relative;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 <body>
@@ -264,12 +304,14 @@
                         <div class="save-tag">Save $154!</div>
                         <div class="gst-notice">Price is excluded 9% GST</div>
                         <div class="paypal-button-container" style="display: none;">
-                            <style>.pp-EKZWS9HZM7JF4{text-align:center;border:none;border-radius:0.25rem;min-width:11.625rem;padding:0 2rem;height:2.625rem;font-weight:bold;background-color:#FFD140;color:#000000;font-family:"Helvetica Neue",Arial,sans-serif;font-size:1rem;line-height:1.25rem;cursor:pointer;}</style>
-                            <form action="https://www.paypal.com/ncp/payment/EKZWS9HZM7JF4" method="post" target="_blank" style="display:inline-grid;justify-items:center;align-content:start;gap:0.5rem;">
-                                <input class="pp-EKZWS9HZM7JF4" type="submit" value="Buy Now" />
-                                <img src=https://www.paypalobjects.com/images/Debit_Credit_APM.svg alt="cards" />
-                                <section> Powered by <img src="https://www.paypalobjects.com/paypal-ui/logos/svg/paypal-wordmark-color.svg" alt="paypal" style="height:0.875rem;vertical-align:middle;"/></section>
-                            </form>
+                            <div id="paypal-button-container-yearly"></div>
+                            <div class="divider">
+                                <span>or scan to pay</span>
+                            </div>
+                            <div class="qr-code-section">
+                                <img src="images/paypal-qr.png" alt="PayPal QR Code Payment">
+                                <p>Scan with your mobile device to pay</p>
+                            </div>
                         </div>
                     </div>
                     <div class="payment-option monthly" onclick="selectPaymentOption('monthly')">
@@ -324,6 +366,35 @@
             
             // Initialize Monthly Subscription Button
             if (paypal.Buttons) {
+                // Initialize Yearly Payment Button
+                paypal.Buttons({
+                    style: {
+                        shape: 'rect',
+                        color: 'gold',
+                        layout: 'vertical',
+                        label: 'pay'
+                    },
+                    createOrder: function(data, actions) {
+                        if (!validateForm()) {
+                            return false;
+                        }
+                        return actions.order.create({
+                            purchase_units: [{
+                                amount: {
+                                    value: '350.00',
+                                    currency_code: 'SGD'
+                                },
+                                description: 'SG Best Food - Yearly Partner Package'
+                            }]
+                        });
+                    },
+                    onApprove: async function(data, actions) {
+                        const order = await actions.order.capture();
+                        await sendFormData('yearly', order.id);
+                    }
+                }).render('#paypal-button-container-yearly');
+
+                // Initialize Monthly Subscription Button
                 paypal.Buttons({
                     style: {
                         shape: 'rect',
