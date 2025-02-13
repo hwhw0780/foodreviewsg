@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add ad indicator if restaurant has active ad status
         const adIndicator = restaurant.adStatus !== 'none' ? `
             <div class="ad-indicator">
-                Ads
+                Recommended
             </div>
         ` : '';
 
