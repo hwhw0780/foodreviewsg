@@ -184,6 +184,12 @@
                 width: 100%;
             }
         }
+
+        .payment-option.active {
+            border-color: var(--primary-color);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
@@ -291,43 +297,47 @@
         </div>
     </footer>
 
-    <script src="https://www.paypal.com/sdk/js?client-id=AcQq7vIblkzfjRS7iSkd85poMDZvczYHr-YSZUmDj-zIWWQv4IqDUFiDDEr2oL1gpsylMcXs1elncQAD&vault=true&intent=subscription"></script>
-    <script src="https://www.paypal.com/sdk/js?client-id=BAAUdEl1jUTpYe2K78opztkHHWcmxDOEMMcqc3JRXp_3GgmLhdYe-Ra_xIF-lda1od0ixr5TYN5uAkULvg&components=hosted-buttons&disable-funding=venmo&currency=SGD"></script>
+    <!-- Replace the two PayPal script tags with a single one that includes all needed components -->
+    <script src="https://www.paypal.com/sdk/js?client-id=AcQq7vIblkzfjRS7iSkd85poMDZvczYHr-YSZUmDj-zIWWQv4IqDUFiDDEr2oL1gpsylMcXs1elncQAD&vault=true&intent=subscription&components=buttons,hosted-buttons&currency=SGD"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('partner-form');
             
-            // Initialize PayPal buttons
-            paypal.Buttons({
-                style: {
-                    shape: 'rect',
-                    color: 'gold',
-                    layout: 'vertical',
-                    label: 'subscribe'
-                },
-                createSubscription: function(data, actions) {
-                    // Validate form before creating subscription
-                    if (!validateForm()) {
-                        return false;
+            // Initialize Monthly Subscription Button
+            if (paypal.Buttons) {
+                paypal.Buttons({
+                    style: {
+                        shape: 'rect',
+                        color: 'gold',
+                        layout: 'vertical',
+                        label: 'subscribe'
+                    },
+                    createSubscription: function(data, actions) {
+                        if (!validateForm()) {
+                            return false;
+                        }
+                        return actions.subscription.create({
+                            plan_id: 'P-0XW615804V1296820M6W2G4Y'
+                        });
+                    },
+                    onApprove: async function(data, actions) {
+                        await sendFormData('monthly', data.subscriptionID);
                     }
-                    return actions.subscription.create({
-                        plan_id: 'P-0XW615804V1296820M6W2G4Y'
-                    });
-                },
-                onApprove: async function(data, actions) {
-                    await sendFormData('monthly', data.subscriptionID);
-                }
-            }).render('#paypal-button-container-P-0XW615804V1296820M6W2G4Y');
+                }).render('#paypal-button-container-P-0XW615804V1296820M6W2G4Y');
+            }
 
-            paypal.HostedButtons({
-                hostedButtonId: "EKZWS9HZM7JF4",
-                onApprove: async function(data) {
-                    if (validateForm()) {
-                        await sendFormData('yearly', data.orderID);
+            // Initialize Yearly Payment Button
+            if (paypal.HostedButtons) {
+                paypal.HostedButtons({
+                    hostedButtonId: "EKZWS9HZM7JF4",
+                    onApprove: async function(data) {
+                        if (validateForm()) {
+                            await sendFormData('yearly', data.orderID);
+                        }
                     }
-                }
-            }).render("#paypal-container-EKZWS9HZM7JF4");
+                }).render("#paypal-container-EKZWS9HZM7JF4");
+            }
         });
 
         function validateForm() {
@@ -345,16 +355,25 @@
         }
 
         function selectPaymentOption(option) {
-            // Hide all PayPal buttons first
-            document.getElementById('paypal-button-container-P-0XW615804V1296820M6W2G4Y').style.display = 'none';
-            document.getElementById('paypal-container-EKZWS9HZM7JF4').style.display = 'none';
+            // Reset both containers
+            const monthlyContainer = document.getElementById('paypal-button-container-P-0XW615804V1296820M6W2G4Y');
+            const yearlyContainer = document.getElementById('paypal-container-EKZWS9HZM7JF4');
             
-            // Show selected option's PayPal button
+            monthlyContainer.style.display = 'none';
+            yearlyContainer.style.display = 'none';
+            
+            // Show selected option
             if (option === 'monthly') {
-                document.getElementById('paypal-button-container-P-0XW615804V1296820M6W2G4Y').style.display = 'block';
+                monthlyContainer.style.display = 'block';
             } else {
-                document.getElementById('paypal-container-EKZWS9HZM7JF4').style.display = 'block';
+                yearlyContainer.style.display = 'block';
             }
+
+            // Add active state to selected option
+            document.querySelectorAll('.payment-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            document.querySelector(`.payment-option.${option}`).classList.add('active');
         }
 
         async function sendFormData(planType, paymentId) {
