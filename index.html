@@ -3,51 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SG Best Food - Your Ultimate Singapore Food Guide | Recommend Food in SG</title>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
     
     <!-- SEO Meta Tags -->
-    <title>SG Best Food - Your Ultimate Singapore Food Guide & Restaurant Recommendations</title>
-    <meta name="description" content="Discover the best food in Singapore with SG Best Food. Expert restaurant recommendations, authentic local cuisine reviews, and top dining spots in Singapore. Your trusted guide for Chinese, Local, Japanese, Korean restaurants and more.">
-    <meta name="keywords" content="sg best food, recommend food in sg, singapore food guide, best restaurants singapore, local food singapore, food recommendations singapore, singapore dining guide">
+    <meta name="description" content="Discover the best food in Singapore with SG Best Food. Your trusted guide for restaurant recommendations, local cuisine, and authentic dining experiences in Singapore.">
+    <meta name="keywords" content="sg best food, recommend food in sg, singapore food guide, best restaurants singapore, local food singapore, food recommendations singapore">
+    
+    <!-- Open Graph Meta Tags for Social Sharing -->
+    <meta property="og:title" content="SG Best Food - Your Ultimate Singapore Food Guide">
+    <meta property="og:description" content="Discover the best food in Singapore. Your trusted guide for restaurant recommendations and authentic dining experiences.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sgbestfood.com/">
+    <meta property="og:site_name" content="SG Best Food">
     
     <!-- Canonical URL -->
-    <link rel="canonical" href="https://sgbestfood.com/" />
+    <link rel="canonical" href="https://sgbestfood.com/">
     
-    <!-- Open Graph Meta Tags for Social Media -->
-    <meta property="og:title" content="SG Best Food - Your Ultimate Singapore Food Guide" />
-    <meta property="og:description" content="Discover the best food in Singapore. Expert restaurant recommendations and authentic local cuisine reviews." />
-    <meta property="og:image" content="https://sgbestfood.com/images/og-image.jpg" />
-    <meta property="og:url" content="https://sgbestfood.com" />
-    <meta property="og:type" content="website" />
-    
-    <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="SG Best Food - Singapore's Best Restaurant Guide">
-    <meta name="twitter:description" content="Find the best restaurants and food recommendations in Singapore. Local expertise you can trust.">
-    <meta name="twitter:image" content="https://sgbestfood.com/images/twitter-card.jpg">
-    
-    <!-- Existing CSS links -->
     <link rel="stylesheet" href="styles/main.css">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
-    <!-- Schema.org markup for Google -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "SG Best Food",
-        "url": "https://sgbestfood.com",
-        "description": "Your ultimate guide to finding the best food and restaurants in Singapore",
-        "potentialAction": {
-            "@type": "SearchAction",
-            "target": "https://sgbestfood.com/search?q={search_term_string}",
-            "query-input": "required name=search_term_string"
-        }
-    }
-    </script>
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -71,7 +51,7 @@
         <!-- Hero Section -->
         <section class="hero">
             <div class="hero-content">
-                <h1>Discover Singapore's Best Food & Restaurants</h1>
+                <h1>Discover Singapore's Best Food Recommendations</h1>
                 <p class="hero-subtitle">Your trusted guide to the finest dining experiences in Singapore</p>
                 <div class="search-bar">
                     <input type="text" placeholder="Search for restaurants...">
@@ -80,65 +60,66 @@
             </div>
         </section>
 
-        <!-- Categories Section -->
-        <section class="categories">
-            <h2>Explore Food Categories</h2>
-            <p class="section-description">Find the perfect restaurant by cuisine type</p>
-            <div class="category-buttons">
-                <button class="category-btn active" data-category="all">
-                    <i class="fas fa-utensils"></i> All
-                </button>
-                <button class="category-btn" data-category="chinese">
-                    <i class="fas fa-bowl-rice"></i> Chinese (中国餐)
-                </button>
-                <button class="category-btn" data-category="chicken-rice">
-                    <i class="fas fa-drumstick-bite"></i> Chicken Rice (海南鸡饭)
-                </button>
-                <button class="category-btn" data-category="dim-sum">
-                    <i class="fas fa-cookie"></i> Dim Sum (点心)
-                </button>
-                <button class="category-btn" data-category="local">
-                    <i class="fas fa-home"></i> Local (本地煮炒)
-                </button>
-                <button class="category-btn" data-category="japanese">
-                    <i class="fas fa-fish"></i> Japanese (日本料理)
-                </button>
-                <button class="category-btn" data-category="korean">
-                    <i class="fas fa-seedling"></i> Korean (韩国料理)
-                </button>
-                <button class="category-btn" data-category="western">
-                    <i class="fas fa-hamburger"></i> Western (西餐)
-                </button>
-                <button class="category-btn" data-category="hotpot">
-                    <i class="fas fa-fire"></i> Hotpot (火锅)
-                </button>
-                <button class="category-btn" data-category="seafood">
-                    <i class="fas fa-fish"></i> Seafood (海鲜)
-                </button>
-                <button class="category-btn" data-category="dessert">
-                    <i class="fas fa-ice-cream"></i> Dessert (甜点)
-                </button>
-                <button class="category-btn" data-category="cafe">
-                    <i class="fas fa-coffee"></i> Café (咖啡馆)
-                </button>
-                <button class="category-btn" data-category="bubble-tea">
-                    <i class="fas fa-glass-whiskey"></i> Bubble Tea (珍珠奶茶)
-                </button>
-                <button class="category-btn" data-category="vegetarian">
-                    <i class="fas fa-leaf"></i> Vegetarian (素食)
-                </button>
-                <button class="category-btn" data-category="frog-porridge">
-                    <i class="fas fa-utensils"></i> Frog Porridge (田鸡粥)
-                </button>
-                <button class="category-btn" data-category="breakfast">
-                    <i class="fas fa-coffee"></i> Breakfast (早餐店)
-                </button>
-                <button class="category-btn" data-category="mixed-rice">
-                    <i class="fas fa-rice-ball"></i> Mixed Rice (菜饭)
-                </button>
-                <button class="category-btn" data-category="mala-pot">
-                    <i class="fas fa-pepper-hot"></i> Mala Pot (麻辣香锅)
-                </button>
+        <!-- Category Filter Section -->
+        <section class="category-filter">
+            <div class="category-container">
+                <h2>Browse by Category</h2>
+                <div class="category-buttons">
+                    <button class="category-btn active" data-category="all">
+                        <i class="fas fa-utensils"></i> All
+                    </button>
+                    <button class="category-btn" data-category="chinese">
+                        <i class="fas fa-bowl-rice"></i> Chinese (中国餐)
+                    </button>
+                    <button class="category-btn" data-category="chicken-rice">
+                        <i class="fas fa-drumstick-bite"></i> Chicken Rice (海南鸡饭)
+                    </button>
+                    <button class="category-btn" data-category="dim-sum">
+                        <i class="fas fa-cookie"></i> Dim Sum (点心)
+                    </button>
+                    <button class="category-btn" data-category="local">
+                        <i class="fas fa-home"></i> Local (本地煮炒)
+                    </button>
+                    <button class="category-btn" data-category="japanese">
+                        <i class="fas fa-fish"></i> Japanese (日本料理)
+                    </button>
+                    <button class="category-btn" data-category="korean">
+                        <i class="fas fa-seedling"></i> Korean (韩国料理)
+                    </button>
+                    <button class="category-btn" data-category="western">
+                        <i class="fas fa-hamburger"></i> Western (西餐)
+                    </button>
+                    <button class="category-btn" data-category="hotpot">
+                        <i class="fas fa-fire"></i> Hotpot (火锅)
+                    </button>
+                    <button class="category-btn" data-category="seafood">
+                        <i class="fas fa-fish"></i> Seafood (海鲜)
+                    </button>
+                    <button class="category-btn" data-category="dessert">
+                        <i class="fas fa-ice-cream"></i> Dessert (甜点)
+                    </button>
+                    <button class="category-btn" data-category="cafe">
+                        <i class="fas fa-coffee"></i> Café (咖啡馆)
+                    </button>
+                    <button class="category-btn" data-category="bubble-tea">
+                        <i class="fas fa-glass-whiskey"></i> Bubble Tea (珍珠奶茶)
+                    </button>
+                    <button class="category-btn" data-category="vegetarian">
+                        <i class="fas fa-leaf"></i> Vegetarian (素食)
+                    </button>
+                    <button class="category-btn" data-category="frog-porridge">
+                        <i class="fas fa-utensils"></i> Frog Porridge (田鸡粥)
+                    </button>
+                    <button class="category-btn" data-category="breakfast">
+                        <i class="fas fa-coffee"></i> Breakfast (早餐店)
+                    </button>
+                    <button class="category-btn" data-category="mixed-rice">
+                        <i class="fas fa-rice-ball"></i> Mixed Rice (菜饭)
+                    </button>
+                    <button class="category-btn" data-category="mala-pot">
+                        <i class="fas fa-pepper-hot"></i> Mala Pot (麻辣香锅)
+                    </button>
+                </div>
             </div>
         </section>
 
@@ -177,10 +158,9 @@
             </div>
         </section>
 
-        <!-- Featured Restaurants Section -->
-        <section class="featured-restaurants">
+        <!-- Restaurant Section -->
+        <section id="restaurants" class="restaurant-section">
             <h2 id="featured-title">Featured Restaurants in Singapore</h2>
-            <p class="section-description">Handpicked recommendations for the best dining experiences</p>
             <div class="restaurant-grid">
                 <!-- Example restaurant card (will be dynamically populated) -->
                 <div class="restaurant-card" data-category="chinese" data-location="serangoon">
@@ -219,7 +199,15 @@
 
         <!-- Statistics Section -->
         <section class="statistics">
-            <h2>Singapore's Leading Food Guide</h2>
+            <h2 class="visually-hidden">SG Best Food Statistics</h2>
+            <div class="stats-header">
+                <h2>Platform Statistics</h2>
+                <p>Join Singapore's fastest-growing food discovery platform</p>
+                <a href="#contact" class="advertise-btn">
+                    <i class="fas fa-bullhorn"></i>
+                    Advertise with us!
+                </a>
+            </div>
             <div class="stats-container">
                 <div class="stat-box">
                     <i class="fas fa-users"></i>
@@ -255,23 +243,37 @@
 
         <!-- About Section -->
         <section id="about" class="about-section">
-            <h2>About SG Best Food</h2>
+            <h2>About SG Best Food Guide</h2>
             <div class="about-content">
-                <p>Your ultimate guide to discovering the best restaurants and food spots in Singapore. From local delights to international cuisine, we help you find the perfect dining experience.</p>
-                <h3>Why Choose SG Best Food?</h3>
-                <ul>
-                    <li>Expert local recommendations</li>
-                    <li>Authentic reviews and ratings</li>
-                    <li>Updated daily with new restaurants</li>
-                    <li>Comprehensive cuisine categories</li>
-                </ul>
+                <div class="about-grid">
+                    <div class="about-item">
+                        <i class="fas fa-utensils"></i>
+                        <h3>Our Mission</h3>
+                        <p>To help food lovers discover the best dining experiences across Singapore, from local hawker gems to fine dining establishments.</p>
+                    </div>
+                    <div class="about-item">
+                        <i class="fas fa-star"></i>
+                        <h3>Advertising Opportunity</h3>
+                        <p>Help restaurants advertise and explore new opportunities, as we bring thousands of potential customers to your doorstep every day.</p>
+                    </div>
+                    <div class="about-item">
+                        <i class="fas fa-globe-asia"></i>
+                        <h3>Local Expertise</h3>
+                        <p>Our deep understanding of Singapore's diverse food culture ensures you get the most authentic recommendations.</p>
+                    </div>
+                    <div class="about-item">
+                        <i class="fas fa-handshake"></i>
+                        <h3>Community Driven</h3>
+                        <p>We work closely with local restaurants and food enthusiasts to build a vibrant food community in Singapore.</p>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <!-- Partner Section -->
-        <section id="contact" class="partner-section">
+        <!-- Contact Section -->
+        <section id="contact" class="contact-section">
+            <h2>Partner With Us</h2>
             <div class="partner-content">
-                <h2>Want to be part of Singapore's Best Food Platform?</h2>
                 <div class="partner-flex-container">
                     <div class="pricing-box">
                         <div class="package-header">
