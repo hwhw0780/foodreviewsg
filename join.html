@@ -120,6 +120,70 @@
             max-width: 300px;
             margin: 1rem auto;
         }
+
+        .payment-options {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+            justify-content: center;
+        }
+
+        .payment-option {
+            flex: 1;
+            max-width: 300px;
+            padding: 2rem;
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-option:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .payment-option h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        .payment-option .price {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .payment-option .save-tag {
+            background: #2ecc71;
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 15px;
+            display: inline-block;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .payment-option .cancel-text {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .payment-options {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .payment-option {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -152,7 +216,20 @@
                     <li><i class="fab fa-google"></i> Enhanced exposure through Google Ads</li>
                     <li><i class="fas fa-star"></i> Equal exposure opportunity with branded restaurants</li>
                 </ul>
-                <div class="price-tag">$39/month • Cancel anytime</div>
+                <div class="payment-options">
+                    <div class="payment-option yearly" onclick="selectPaymentOption('yearly')">
+                        <h3>Pay Yearly</h3>
+                        <div class="price">$350</div>
+                        <div class="save-tag">Save $154!</div>
+                        <div id="paypal-container-EKZWS9HZM7JF4" style="display: none;"></div>
+                    </div>
+                    <div class="payment-option monthly" onclick="selectPaymentOption('monthly')">
+                        <h3>Pay Monthly</h3>
+                        <div class="price">$42/month</div>
+                        <div class="cancel-text">Cancel anytime</div>
+                        <div id="paypal-button-container-P-0XW615804V1296820M6W2G4Y" style="display: none;"></div>
+                    </div>
+                </div>
             </div>
 
             <form id="partner-form" class="join-form">
@@ -179,10 +256,6 @@
                 <div class="form-group">
                     <label for="google-link">Google Maps Link</label>
                     <input type="url" id="google-link" placeholder="https://www.google.com/maps/...">
-                </div>
-
-                <div class="submit-section">
-                    <div id="paypal-button-container-P-74720454846049454M6WGRLY"></div>
                 </div>
             </form>
         </div>
@@ -217,11 +290,14 @@
         </div>
     </footer>
 
-    <script src="https://www.paypal.com/sdk/js?client-id=AcQq7vIblkzfjRS7iSkd85poMDZvczYHr-YSZUmDj-zIWWQv4IqDUFiDDEr2oL1gpsylMcXs1elncQAD&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=AcQq7vIblkzfjRS7iSkd85poMDZvczYHr-YSZUmDj-zIWWQv4IqDUFiDDEr2oL1gpsylMcXs1elncQAD&vault=true&intent=subscription"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=BAAUdEl1jUTpYe2K78opztkHHWcmxDOEMMcqc3JRXp_3GgmLhdYe-Ra_xIF-lda1od0ixr5TYN5uAkULvg&components=hosted-buttons&disable-funding=venmo&currency=SGD"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('partner-form');
             
+            // Initialize PayPal buttons
             paypal.Buttons({
                 style: {
                     shape: 'rect',
@@ -231,60 +307,86 @@
                 },
                 createSubscription: function(data, actions) {
                     // Validate form before creating subscription
-                    if (!form.checkValidity()) {
-                        form.reportValidity();
+                    if (!validateForm()) {
                         return false;
                     }
-
-                    // Get form data
-                    const formData = {
-                        restaurantName: document.getElementById('restaurant-name').value,
-                        contactName: document.getElementById('contact-name').value,
-                        email: document.getElementById('email').value,
-                        phone: document.getElementById('phone').value,
-                        website: document.getElementById('website').value,
-                        googleLink: document.getElementById('google-link').value
-                    };
-
-                    // Store form data in localStorage to be sent after successful payment
-                    localStorage.setItem('partnerFormData', JSON.stringify(formData));
-
                     return actions.subscription.create({
-                        plan_id: 'P-74720454846049454M6WGRLY'
+                        plan_id: 'P-0XW615804V1296820M6W2G4Y'
                     });
                 },
                 onApprove: async function(data, actions) {
-                    try {
-                        // Get stored form data
-                        const formData = JSON.parse(localStorage.getItem('partnerFormData'));
-                        
-                        // Send form data and subscription ID to your server
-                        const response = await fetch('/api/partner-signup', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                ...formData,
-                                subscriptionId: data.subscriptionID
-                            })
-                        });
+                    await sendFormData('monthly', data.subscriptionID);
+                    alert('Thank you for subscribing! We will contact you shortly.');
+                }
+            }).render('#paypal-button-container-P-0XW615804V1296820M6W2G4Y');
 
-                        if (response.ok) {
-                            alert('Thank you for joining! We will contact you shortly to complete the onboarding process.');
-                            window.location.href = 'index.html';
-                        } else {
-                            throw new Error('Failed to process signup');
-                        }
-                    } catch (error) {
-                        console.error('Error processing signup:', error);
-                        alert('There was an error processing your signup. Our team will contact you shortly.');
-                    } finally {
-                        localStorage.removeItem('partnerFormData');
+            paypal.HostedButtons({
+                hostedButtonId: "EKZWS9HZM7JF4",
+                onApprove: async function(data) {
+                    if (validateForm()) {
+                        await sendFormData('yearly', data.orderID);
+                        alert('Thank you for subscribing! We will contact you shortly.');
                     }
                 }
-            }).render('#paypal-button-container-P-74720454846049454M6WGRLY');
+            }).render("#paypal-container-EKZWS9HZM7JF4");
         });
+
+        function validateForm() {
+            const form = document.getElementById('partner-form');
+            const requiredFields = form.querySelectorAll('[required]');
+            
+            for (let field of requiredFields) {
+                if (!field.value) {
+                    alert('Please fill in all required fields before proceeding with payment.');
+                    field.focus();
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function selectPaymentOption(option) {
+            // Hide all PayPal buttons first
+            document.getElementById('paypal-button-container-P-0XW615804V1296820M6W2G4Y').style.display = 'none';
+            document.getElementById('paypal-container-EKZWS9HZM7JF4').style.display = 'none';
+            
+            // Show selected option's PayPal button
+            if (option === 'monthly') {
+                document.getElementById('paypal-button-container-P-0XW615804V1296820M6W2G4Y').style.display = 'block';
+            } else {
+                document.getElementById('paypal-container-EKZWS9HZM7JF4').style.display = 'block';
+            }
+        }
+
+        async function sendFormData(planType, paymentId) {
+            const formData = {
+                restaurantName: document.getElementById('restaurant-name').value,
+                contactName: document.getElementById('contact-name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                website: document.getElementById('website').value,
+                googleLink: document.getElementById('google-link').value,
+                planType: planType,
+                paymentId: paymentId
+            };
+
+            try {
+                const response = await fetch('/api/partner-signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to submit form');
+                }
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                alert('There was an error processing your subscription. Our team will contact you shortly.');
+            }
+        }
     </script>
 </body>
 </html> 

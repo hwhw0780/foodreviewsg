@@ -721,145 +721,173 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // AI Food Bot functionality
-    const aiBotButton = document.getElementById('ai-bot-button');
-    const foodPickerWheel = document.getElementById('food-picker-wheel');
-    const canvas = document.getElementById('wheelCanvas');
-    const spinButton = document.getElementById('spinButton');
-    const resultMessage = document.getElementById('result-message');
+    // Food recommendation system with animations
+    const moodFoodMap = {
+        casual: [
+            { category: 'Local', description: 'Comforting local delights', icon: 'fa-home' },
+            { category: 'Chicken Rice', description: 'Classic Hainanese chicken rice', icon: 'fa-drumstick-bite' },
+            { category: 'Café', description: 'Relaxing café experience', icon: 'fa-coffee' },
+            { category: 'Bubble Tea', description: 'Refreshing bubble tea', icon: 'fa-glass-whiskey' }
+        ],
+        fancy: [
+            { category: 'Japanese', description: 'Premium Japanese cuisine', icon: 'fa-fish' },
+            { category: 'Western', description: 'Fine Western dining', icon: 'fa-utensils' },
+            { category: 'Seafood', description: 'Fresh seafood delicacies', icon: 'fa-fish' },
+            { category: 'Korean', description: 'Modern Korean cuisine', icon: 'fa-fire' }
+        ],
+        spicy: [
+            { category: 'Indian', description: 'Flavorful Indian curry', icon: 'fa-pepper-hot' },
+            { category: 'Malay', description: 'Spicy Malay dishes', icon: 'fa-fire-alt' },
+            { category: 'Hotpot', description: 'Hot and spicy hotpot', icon: 'fa-fire' },
+            { category: 'Korean', description: 'Spicy Korean specialties', icon: 'fa-fire' }
+        ],
+        healthy: [
+            { category: 'Vegetarian', description: 'Nutritious vegetarian meals', icon: 'fa-leaf' },
+            { category: 'Japanese', description: 'Light and healthy Japanese', icon: 'fa-fish' },
+            { category: 'Seafood', description: 'Fresh seafood options', icon: 'fa-fish' },
+            { category: 'Local', description: 'Healthy local choices', icon: 'fa-carrot' }
+        ]
+    };
+
+    // Initialize food picker functionality with animations
+    const aiBot = document.querySelector('.ai-food-bot');
+    const foodCard = document.getElementById('food-picker-card');
+    const botButton = document.getElementById('ai-bot-button');
+    const closeButton = document.querySelector('.close-button');
+    const moodButtons = document.querySelectorAll('.mood-btn');
+    const recommendationResult = document.getElementById('recommendation-result');
+    const tryAgainButton = document.getElementById('try-again-btn');
+    const speechBubble = document.querySelector('.bot-speech-bubble');
+    let currentMood = null;
     let isSpinning = false;
 
-    const foodCategories = [
-        { name: 'Chinese', color: '#FF6B6B' },
-        { name: 'Indian', color: '#4ECDC4' },
-        { name: 'Japanese', color: '#45B7D1' },
-        { name: 'Korean', color: '#96CEB4' },
-        { name: 'Western', color: '#FFEEAD' },
-        { name: 'Local', color: '#D4A5A5' },
-        { name: 'Malay', color: '#9B9B9B' },
-        { name: 'Seafood', color: '#FFD93D' }
-    ];
+    // Initially hide the speech bubble
+    speechBubble.style.opacity = '0';
+    speechBubble.style.transform = 'translateY(10px)';
 
-    let wheelAngle = 0;
-    const ctx = canvas.getContext('2d');
+    // Show speech bubble after 30 seconds
+    setTimeout(() => {
+        speechBubble.style.opacity = '1';
+        speechBubble.style.transform = 'translateY(0)';
+    }, 30000);
 
-    function resizeCanvas() {
-        const dpr = window.devicePixelRatio || 1;
-        const rect = canvas.getBoundingClientRect();
-        canvas.width = rect.width * dpr;
-        canvas.height = rect.width * dpr; // Make it square
-        ctx.scale(dpr, dpr);
-        canvas.style.width = rect.width + 'px';
-        canvas.style.height = rect.width + 'px';
-    }
-
-    function drawWheel() {
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
-        const radius = Math.min(centerX, centerY) - 10;
-        const anglePerSegment = (2 * Math.PI) / foodCategories.length;
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.save();
-        ctx.translate(centerX, centerY);
-        ctx.rotate(wheelAngle);
-
-        foodCategories.forEach((category, index) => {
-            const startAngle = index * anglePerSegment;
-            const endAngle = startAngle + anglePerSegment;
-
-            // Draw segment
-            ctx.beginPath();
-            ctx.moveTo(0, 0);
-            ctx.arc(0, 0, radius, startAngle, endAngle);
-            ctx.closePath();
-            ctx.fillStyle = category.color;
-            ctx.fill();
-            ctx.stroke();
-
-            // Draw text
-            ctx.save();
-            ctx.rotate(startAngle + anglePerSegment / 2);
-            ctx.textAlign = 'right';
-            ctx.fillStyle = '#000';
-            ctx.font = 'bold 16px Arial';
-            ctx.fillText(category.name, radius - 20, 6);
-            ctx.restore();
-        });
-
-        // Draw center circle
-        ctx.beginPath();
-        ctx.arc(0, 0, 15, 0, 2 * Math.PI);
-        ctx.fillStyle = '#fff';
-        ctx.fill();
-        ctx.stroke();
-
-        ctx.restore();
-    }
-
-    function spinWheel() {
-        if (isSpinning) return;
-        isSpinning = true;
-        resultMessage.textContent = '';
-        spinButton.disabled = true;
-
-        const spinDuration = 3000; // 3 seconds
-        const startTime = Date.now();
-        const startAngle = wheelAngle;
-        const totalSpins = 5; // Number of full rotations
-        const extraSpinAngle = Math.random() * Math.PI * 2; // Random final position
-        const totalAngle = (Math.PI * 2 * totalSpins) + extraSpinAngle;
-
-        function animate() {
-            const now = Date.now();
-            const elapsed = now - startTime;
-            const progress = Math.min(elapsed / spinDuration, 1);
-
-            // Easing function for smooth deceleration
-            const easeOut = function(t) {
-                return 1 - Math.pow(1 - t, 3);
-            };
-
-            wheelAngle = startAngle + totalAngle * easeOut(progress);
-            drawWheel();
-
-            if (progress < 1) {
-                requestAnimationFrame(animate);
-            } else {
-                isSpinning = false;
-                spinButton.disabled = false;
-                
-                // Calculate which category was selected
-                const normalizedAngle = (wheelAngle % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
-                const segmentAngle = (Math.PI * 2) / foodCategories.length;
-                const selectedIndex = Math.floor(normalizedAngle / segmentAngle);
-                const selectedCategory = foodCategories[selectedIndex].name;
-                
-                resultMessage.textContent = `You should try ${selectedCategory} food!`;
-            }
-        }
-
-        animate();
-    }
-
-    // Toggle wheel visibility when bot is clicked
-    aiBotButton.addEventListener('click', () => {
-        const isVisible = foodPickerWheel.style.display !== 'none';
-        foodPickerWheel.style.display = isVisible ? 'none' : 'block';
-        if (!isVisible) {
-            resizeCanvas();
-            drawWheel();
-        }
+    // Add bounce animation to bot button
+    botButton.addEventListener('mouseover', () => {
+        botButton.style.transform = 'scale(1.1)';
     });
 
-    // Handle spin button click
-    spinButton.addEventListener('click', spinWheel);
+    botButton.addEventListener('mouseout', () => {
+        botButton.style.transform = 'scale(1)';
+    });
 
-    // Handle window resize
-    window.addEventListener('resize', () => {
-        if (foodPickerWheel.style.display !== 'none') {
-            resizeCanvas();
-            drawWheel();
+    // Toggle food picker card with animation
+    botButton.addEventListener('click', () => {
+        foodCard.style.display = 'block';
+        speechBubble.style.opacity = '0';
+        speechBubble.style.transform = 'translateY(10px)';
+        
+        setTimeout(() => {
+            foodCard.style.opacity = '1';
+            foodCard.style.transform = 'translateY(0)';
+        }, 50);
+        
+        recommendationResult.innerHTML = `
+            <div class="result-icon"><i class="fas fa-utensils"></i></div>
+            <p class="result-text">Select your mood for a food recommendation!</p>
+        `;
+        tryAgainButton.style.display = 'none';
+        moodButtons.forEach(btn => btn.classList.remove('active'));
+    });
+
+    closeButton.addEventListener('click', () => {
+        foodCard.style.opacity = '0';
+        foodCard.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            foodCard.style.display = 'none';
+            speechBubble.style.opacity = '1';
+            speechBubble.style.transform = 'translateY(0)';
+        }, 300);
+    });
+
+    // Spin animation function
+    function spinRecommendation(mood) {
+        if (isSpinning) return;
+        isSpinning = true;
+
+        const recommendations = moodFoodMap[mood];
+        let spinCount = 0;
+        const totalSpins = 20;
+        const spinInterval = 100;
+        let lastIndex = -1;
+
+        const spin = () => {
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * recommendations.length);
+            } while (randomIndex === lastIndex);
+            lastIndex = randomIndex;
+
+            const rec = recommendations[randomIndex];
+            recommendationResult.style.opacity = '0';
+            
+            setTimeout(() => {
+                recommendationResult.innerHTML = `
+                    <div class="result-icon"><i class="fas ${rec.icon} fa-spin"></i></div>
+                    <p class="result-text">How about trying <strong>${rec.category}</strong>?<br>${rec.description}</p>
+                `;
+                recommendationResult.style.opacity = '1';
+            }, 150);
+
+            spinCount++;
+            
+            if (spinCount < totalSpins) {
+                setTimeout(spin, spinInterval);
+            } else {
+                setTimeout(() => {
+                    const finalRec = recommendations[Math.floor(Math.random() * recommendations.length)];
+                    recommendationResult.innerHTML = `
+                        <div class="result-icon"><i class="fas ${finalRec.icon}"></i></div>
+                        <p class="result-text">How about trying <strong>${finalRec.category}</strong>?<br>${finalRec.description}</p>
+                    `;
+                    tryAgainButton.style.display = 'block';
+                    isSpinning = false;
+                }, 150);
+            }
+        };
+
+        spin();
+    }
+
+    // Handle mood selection with animation
+    moodButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            if (isSpinning) return;
+            
+            currentMood = button.getAttribute('data-mood');
+            moodButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            spinRecommendation(currentMood);
+        });
+
+        // Add hover effect
+        button.addEventListener('mouseover', () => {
+            if (!isSpinning && !button.classList.contains('active')) {
+                button.style.transform = 'translateY(-2px)';
+            }
+        });
+
+        button.addEventListener('mouseout', () => {
+            if (!button.classList.contains('active')) {
+                button.style.transform = 'translateY(0)';
+            }
+        });
+    });
+
+    // Handle try again button with animation
+    tryAgainButton.addEventListener('click', () => {
+        if (currentMood && !isSpinning) {
+            spinRecommendation(currentMood);
         }
     });
 }); 

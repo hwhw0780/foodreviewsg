@@ -363,11 +363,40 @@
 
     <!-- AI Food Picker Bot -->
     <div class="ai-food-bot">
-        <div id="food-picker-wheel" class="food-picker-wheel" style="display: none;">
-            <canvas id="wheelCanvas"></canvas>
-            <button id="spinButton" class="spin-button">Spin!</button>
-            <div id="result-message" class="result-message"></div>
+        <div id="food-picker-card" class="food-picker-card" style="display: none;">
+            <div class="card-header">
+                <h3>Food Recommendation</h3>
+                <button class="close-button"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="card-content">
+                <div class="mood-buttons">
+                    <button class="mood-btn" data-mood="casual">
+                        <i class="fas fa-coffee"></i>
+                        Casual
+                    </button>
+                    <button class="mood-btn" data-mood="fancy">
+                        <i class="fas fa-glass-martini-alt"></i>
+                        Fancy
+                    </button>
+                    <button class="mood-btn" data-mood="spicy">
+                        <i class="fas fa-pepper-hot"></i>
+                        Spicy
+                    </button>
+                    <button class="mood-btn" data-mood="healthy">
+                        <i class="fas fa-leaf"></i>
+                        Healthy
+                    </button>
+                </div>
+                <div id="recommendation-result" class="recommendation-result">
+                    <div class="result-icon"><i class="fas fa-utensils"></i></div>
+                    <p class="result-text">Select your mood for a food recommendation!</p>
+                </div>
+                <button id="try-again-btn" class="try-again-btn" style="display: none;">
+                    Try Again
+                </button>
+            </div>
         </div>
+        <div class="bot-speech-bubble">Can't decide what to eat? Let me help! 😋</div>
         <button id="ai-bot-button" class="ai-bot-button">
             <img src="images/ai-bot.png" alt="AI Food Bot">
         </button>
