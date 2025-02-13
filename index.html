@@ -3,10 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SG Best Food - Your Ultimate Singapore Food Guide</title>
+    
+    <!-- SEO Meta Tags -->
+    <title>SG Best Food - Your Ultimate Singapore Food Guide & Restaurant Recommendations</title>
+    <meta name="description" content="Discover the best food in Singapore with SG Best Food. Expert restaurant recommendations, authentic local cuisine reviews, and top dining spots in Singapore. Your trusted guide for Chinese, Local, Japanese, Korean restaurants and more.">
+    <meta name="keywords" content="sg best food, recommend food in sg, singapore food guide, best restaurants singapore, local food singapore, food recommendations singapore, singapore dining guide">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://sgbestfood.com/" />
+    
+    <!-- Open Graph Meta Tags for Social Media -->
+    <meta property="og:title" content="SG Best Food - Your Ultimate Singapore Food Guide" />
+    <meta property="og:description" content="Discover the best food in Singapore. Expert restaurant recommendations and authentic local cuisine reviews." />
+    <meta property="og:image" content="https://sgbestfood.com/images/og-image.jpg" />
+    <meta property="og:url" content="https://sgbestfood.com" />
+    <meta property="og:type" content="website" />
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SG Best Food - Singapore's Best Restaurant Guide">
+    <meta name="twitter:description" content="Find the best restaurants and food recommendations in Singapore. Local expertise you can trust.">
+    <meta name="twitter:image" content="https://sgbestfood.com/images/twitter-card.jpg">
+    
+    <!-- Existing CSS links -->
     <link rel="stylesheet" href="styles/main.css">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Schema.org markup for Google -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "SG Best Food",
+        "url": "https://sgbestfood.com",
+        "description": "Your ultimate guide to finding the best food and restaurants in Singapore",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://sgbestfood.com/search?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
 </head>
 <body>
     <!-- Navigation Bar -->
@@ -26,22 +64,23 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <header class="hero">
-        <div class="hero-content">
-            <h1>Discover Singapore's Best Restaurants</h1>
-            <p>Your trusted guide to Singapore's <span class="highlight-text">TOP 5</span> restaurants in each category - carefully curated for the finest dining experiences</p>
-            <div class="search-bar">
-                <input type="text" placeholder="Search for restaurants...">
-                <button><i class="fas fa-search"></i></button>
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Discover Singapore's Best Food & Restaurants</h1>
+                <p class="hero-subtitle">Your trusted guide to the finest dining experiences in Singapore</p>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search for restaurants...">
+                    <button><i class="fas fa-search"></i></button>
+                </div>
             </div>
-        </div>
-    </header>
+        </section>
 
-    <!-- Category Filter Section -->
-    <section class="category-filter">
-        <div class="category-container">
-            <h2>Browse by Category</h2>
+        <!-- Categories Section -->
+        <section class="categories">
+            <h2>Explore Food Categories</h2>
+            <p class="section-description">Find the perfect restaurant by cuisine type</p>
             <div class="category-buttons">
                 <button class="category-btn active" data-category="all">
                     <i class="fas fa-utensils"></i> All
@@ -98,236 +137,216 @@
                     <i class="fas fa-pepper-hot"></i> Mala Pot (麻辣香锅)
                 </button>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Location Filter -->
-    <section class="location-filter">
-        <div class="location-container">
-            <label for="location-select" class="location-label">Location:</label>
-            <select id="location-select">
-                <option value="all">All of Singapore</option>
-                <option value="ang-mo-kio">Ang Mo Kio</option>
-                <option value="bedok">Bedok</option>
-                <option value="bishan">Bishan</option>
-                <option value="bugis">Bugis</option>
-                <option value="chinatown">Chinatown</option>
-                <option value="city-hall">City Hall</option>
-                <option value="clementi">Clementi</option>
-                <option value="dhoby-ghaut">Dhoby Ghaut</option>
-                <option value="jurong-east">Jurong East</option>
-                <option value="jurong-west">Jurong West</option>
-                <option value="kallang">Kallang</option>
-                <option value="marina-bay">Marina Bay</option>
-                <option value="novena">Novena</option>
-                <option value="orchard">Orchard</option>
-                <option value="pasir-ris">Pasir Ris</option>
-                <option value="paya-lebar">Paya Lebar</option>
-                <option value="punggol">Punggol</option>
-                <option value="raffles-place">Raffles Place</option>
-                <option value="serangoon">Serangoon</option>
-                <option value="sengkang">Sengkang</option>
-                <option value="sembawang">Sembawang</option>
-                <option value="tampines">Tampines</option>
-                <option value="toa-payoh">Toa Payoh</option>
-                <option value="woodlands">Woodlands</option>
-                <option value="yishun">Yishun</option>
-            </select>
-        </div>
-    </section>
+        <!-- Location Filter -->
+        <section class="location-filter">
+            <div class="location-container">
+                <label for="location-select" class="location-label">Location:</label>
+                <select id="location-select">
+                    <option value="all">All of Singapore</option>
+                    <option value="ang-mo-kio">Ang Mo Kio</option>
+                    <option value="bedok">Bedok</option>
+                    <option value="bishan">Bishan</option>
+                    <option value="bugis">Bugis</option>
+                    <option value="chinatown">Chinatown</option>
+                    <option value="city-hall">City Hall</option>
+                    <option value="clementi">Clementi</option>
+                    <option value="dhoby-ghaut">Dhoby Ghaut</option>
+                    <option value="jurong-east">Jurong East</option>
+                    <option value="jurong-west">Jurong West</option>
+                    <option value="kallang">Kallang</option>
+                    <option value="marina-bay">Marina Bay</option>
+                    <option value="novena">Novena</option>
+                    <option value="orchard">Orchard</option>
+                    <option value="pasir-ris">Pasir Ris</option>
+                    <option value="paya-lebar">Paya Lebar</option>
+                    <option value="punggol">Punggol</option>
+                    <option value="raffles-place">Raffles Place</option>
+                    <option value="serangoon">Serangoon</option>
+                    <option value="sengkang">Sengkang</option>
+                    <option value="sembawang">Sembawang</option>
+                    <option value="tampines">Tampines</option>
+                    <option value="toa-payoh">Toa Payoh</option>
+                    <option value="woodlands">Woodlands</option>
+                    <option value="yishun">Yishun</option>
+                </select>
+            </div>
+        </section>
 
-    <!-- Featured Restaurants Section -->
-    <section class="featured-restaurants">
-        <h2 id="featured-title">Featured Restaurants</h2>
-        <div class="restaurant-grid">
-            <!-- Example restaurant card (will be dynamically populated) -->
-            <div class="restaurant-card" data-category="chinese" data-location="serangoon">
-                <div class="restaurant-image">
-                    <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5" alt="Restaurant Image">
-                </div>
-                <div class="restaurant-info">
-                    <h3>Din Tai Fung (鼎泰丰)</h3>
-                    <div class="cuisine">
-                        <i class="fas fa-utensils"></i>
-                        Chinese • Dim Sum
+        <!-- Featured Restaurants Section -->
+        <section class="featured-restaurants">
+            <h2 id="featured-title">Featured Restaurants in Singapore</h2>
+            <p class="section-description">Handpicked recommendations for the best dining experiences</p>
+            <div class="restaurant-grid">
+                <!-- Example restaurant card (will be dynamically populated) -->
+                <div class="restaurant-card" data-category="chinese" data-location="serangoon">
+                    <div class="restaurant-image">
+                        <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5" alt="Restaurant Image">
                     </div>
-                    <div class="rating">
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
+                    <div class="restaurant-info">
+                        <h3>Din Tai Fung (鼎泰丰)</h3>
+                        <div class="cuisine">
+                            <i class="fas fa-utensils"></i>
+                            Chinese • Dim Sum
                         </div>
-                        <span>(1,234 reviews)</span>
-                    </div>
-                    <div class="location">
-                        <i class="fas fa-map-marker-alt"></i>
-                        NEX Mall, Serangoon
-                    </div>
-                    <div class="price-range">
-                        <i class="fas fa-dollar-sign"></i>
-                        <i class="fas fa-dollar-sign"></i>
-                        <span>($15-$30)</span>
+                        <div class="rating">
+                            <div class="stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span>(1,234 reviews)</span>
+                        </div>
+                        <div class="location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            NEX Mall, Serangoon
+                        </div>
+                        <div class="price-range">
+                            <i class="fas fa-dollar-sign"></i>
+                            <i class="fas fa-dollar-sign"></i>
+                            <span>($15-$30)</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Statistics Section -->
-    <section class="statistics">
-        <div class="stats-header">
-            <h2>Platform Statistics</h2>
-            <p>Join Singapore's fastest-growing food discovery platform</p>
-            <a href="#contact" class="advertise-btn">
-                <i class="fas fa-bullhorn"></i>
-                Advertise with us!
-            </a>
-        </div>
-        <div class="stats-container">
-            <div class="stat-box">
-                <i class="fas fa-users"></i>
-                <div class="stat-info">
-                    <h3 class="stat-number" id="daily-users">0</h3>
-                    <p class="stat-label">Last 24 Hours Active Users</p>
+        <!-- Statistics Section -->
+        <section class="statistics">
+            <h2>Singapore's Leading Food Guide</h2>
+            <div class="stats-container">
+                <div class="stat-box">
+                    <i class="fas fa-users"></i>
+                    <div class="stat-info">
+                        <h3 class="stat-number" id="daily-users">0</h3>
+                        <p class="stat-label">Last 24 Hours Active Users</p>
+                    </div>
                 </div>
-            </div>
-            <div class="stat-box">
-                <i class="fas fa-calendar-check"></i>
-                <div class="stat-info">
-                    <h3 class="stat-number" id="daily-bookings">0</h3>
-                    <p class="stat-label">Last 24 Hours Bookings</p>
+                <div class="stat-box">
+                    <i class="fas fa-calendar-check"></i>
+                    <div class="stat-info">
+                        <h3 class="stat-number" id="daily-bookings">0</h3>
+                        <p class="stat-label">Last 24 Hours Bookings</p>
+                    </div>
                 </div>
-            </div>
-            <div class="stat-box">
-                <i class="fas fa-utensils"></i>
-                <div class="stat-info">
-                    <h3 class="stat-number" id="total-restaurants">0</h3>
-                    <p class="stat-label">Partner Restaurants</p>
-                </div>
-            </div>
-            <div class="stat-box">
-                <i class="fas fa-star"></i>
-                <div class="stat-info">
-                    <h3 class="stat-number" id="total-reviews">0</h3>
-                    <p class="stat-label">Customer Reviews</p>
-                </div>
-            </div>
-        </div>
-        <small class="update-text"><i>Updated every hour</i></small>
-    </section>
-
-    <!-- About Section -->
-    <section id="about" class="about-section">
-        <div class="about-content">
-            <h2>About SG Best Food</h2>
-            <div class="about-grid">
-                <div class="about-item">
+                <div class="stat-box">
                     <i class="fas fa-utensils"></i>
-                    <h3>Our Mission</h3>
-                    <p>To help food lovers discover the best dining experiences across Singapore, from local hawker gems to fine dining establishments.</p>
+                    <div class="stat-info">
+                        <h3 class="stat-number" id="total-restaurants">0</h3>
+                        <p class="stat-label">Partner Restaurants</p>
+                    </div>
                 </div>
-                <div class="about-item">
+                <div class="stat-box">
                     <i class="fas fa-star"></i>
-                    <h3>Advertising Opportunity</h3>
-                    <p>Help restaurants advertise and explore new opportunities, as we bring thousands of potential customers to your doorstep every day.</p>
-                </div>
-                <div class="about-item">
-                    <i class="fas fa-globe-asia"></i>
-                    <h3>Local Expertise</h3>
-                    <p>Our deep understanding of Singapore's diverse food culture ensures you get the most authentic recommendations.</p>
-                </div>
-                <div class="about-item">
-                    <i class="fas fa-handshake"></i>
-                    <h3>Community Driven</h3>
-                    <p>We work closely with local restaurants and food enthusiasts to build a vibrant food community in Singapore.</p>
+                    <div class="stat-info">
+                        <h3 class="stat-number" id="total-reviews">0</h3>
+                        <p class="stat-label">Customer Reviews</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+            <small class="update-text"><i>Updated every hour</i></small>
+        </section>
 
-    <!-- Partner Section -->
-    <section id="contact" class="partner-section">
-        <div class="partner-content">
-            <h2>Want to be part of Singapore's Best Food Platform?</h2>
-            <div class="partner-flex-container">
-                <div class="pricing-box">
-                    <div class="package-header">
-                        <span class="package-label">Value Package</span>
-                        <div class="price-container">
-                            <span class="currency">$</span>
-                            <span class="amount">42</span>
-                            <span class="period">/month • Cancel anytime</span>
-                        </div>
-                    </div>
-                    <div class="benefits-container">
-                        <div class="benefit-item">
-                            <i class="fas fa-crown"></i>
-                            <div class="benefit-text">
-                                <h4>Premium listing position on our platform</h4>
-                                <p>Stand out from the crowd with top placement</p>
-                            </div>
-                        </div>
-                        <div class="benefit-item">
-                            <i class="fas fa-calendar-check"></i>
-                            <div class="benefit-text">
-                                <h4>Easy booking system for your customers</h4>
-                                <p>Seamless reservation experience</p>
-                            </div>
-                        </div>
-                        <div class="benefit-item">
-                            <i class="fas fa-users"></i>
-                            <div class="benefit-text">
-                                <h4>High visibility to 1,500+ daily visitors</h4>
-                                <p>Reach thousands of potential customers</p>
-                            </div>
-                        </div>
-                        <div class="benefit-item">
-                            <i class="fab fa-google"></i>
-                            <div class="benefit-text">
-                                <h4>Enhanced exposure through Google Ads</h4>
-                                <p>Expand your reach beyond our platform</p>
-                            </div>
-                        </div>
-                        <div class="benefit-item">
-                            <i class="fas fa-star"></i>
-                            <div class="benefit-text">
-                                <h4>Equal exposure opportunity with branded restaurants</h4>
-                                <p>Compete with the biggest names in the industry</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="payment-options">
-                        <a href="join.html" class="join-btn">
-                            <i class="fas fa-handshake"></i>
-                            I Want To Join
-                        </a>
-                    </div>
-                </div>
-                <form id="partner-contact-form" class="partner-form">
-                    <h3>Have Question? Contact Us!</h3>
-                    <div class="form-group">
-                        <label for="restaurant-name-input">Restaurant Name*</label>
-                        <input type="text" id="restaurant-name-input" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="contact-email">Email Address*</label>
-                        <input type="email" id="contact-email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="contact-phone">Phone Number*</label>
-                        <input type="tel" id="contact-phone" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="restaurant-website">Website (Optional)</label>
-                        <input type="url" id="restaurant-website" placeholder="https://example.com">
-                    </div>
-                    <button type="submit" class="partner-submit-btn">Submit</button>
-                </form>
+        <!-- About Section -->
+        <section id="about" class="about-section">
+            <h2>About SG Best Food</h2>
+            <div class="about-content">
+                <p>Your ultimate guide to discovering the best restaurants and food spots in Singapore. From local delights to international cuisine, we help you find the perfect dining experience.</p>
+                <h3>Why Choose SG Best Food?</h3>
+                <ul>
+                    <li>Expert local recommendations</li>
+                    <li>Authentic reviews and ratings</li>
+                    <li>Updated daily with new restaurants</li>
+                    <li>Comprehensive cuisine categories</li>
+                </ul>
             </div>
-        </div>
-    </section>
+        </section>
+
+        <!-- Partner Section -->
+        <section id="contact" class="partner-section">
+            <div class="partner-content">
+                <h2>Want to be part of Singapore's Best Food Platform?</h2>
+                <div class="partner-flex-container">
+                    <div class="pricing-box">
+                        <div class="package-header">
+                            <span class="package-label">Value Package</span>
+                            <div class="price-container">
+                                <span class="currency">$</span>
+                                <span class="amount">42</span>
+                                <span class="period">/month • Cancel anytime</span>
+                            </div>
+                        </div>
+                        <div class="benefits-container">
+                            <div class="benefit-item">
+                                <i class="fas fa-crown"></i>
+                                <div class="benefit-text">
+                                    <h4>Premium listing position on our platform</h4>
+                                    <p>Stand out from the crowd with top placement</p>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <i class="fas fa-calendar-check"></i>
+                                <div class="benefit-text">
+                                    <h4>Easy booking system for your customers</h4>
+                                    <p>Seamless reservation experience</p>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <i class="fas fa-users"></i>
+                                <div class="benefit-text">
+                                    <h4>High visibility to 1,500+ daily visitors</h4>
+                                    <p>Reach thousands of potential customers</p>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <i class="fab fa-google"></i>
+                                <div class="benefit-text">
+                                    <h4>Enhanced exposure through Google Ads</h4>
+                                    <p>Expand your reach beyond our platform</p>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <i class="fas fa-star"></i>
+                                <div class="benefit-text">
+                                    <h4>Equal exposure opportunity with branded restaurants</h4>
+                                    <p>Compete with the biggest names in the industry</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="payment-options">
+                            <a href="join.html" class="join-btn">
+                                <i class="fas fa-handshake"></i>
+                                I Want To Join
+                            </a>
+                        </div>
+                    </div>
+                    <form id="partner-contact-form" class="partner-form">
+                        <h3>Have Question? Contact Us!</h3>
+                        <div class="form-group">
+                            <label for="restaurant-name-input">Restaurant Name*</label>
+                            <input type="text" id="restaurant-name-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-email">Email Address*</label>
+                            <input type="email" id="contact-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-phone">Phone Number*</label>
+                            <input type="tel" id="contact-phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="restaurant-website">Website (Optional)</label>
+                            <input type="url" id="restaurant-website" placeholder="https://example.com">
+                        </div>
+                        <button type="submit" class="partner-submit-btn">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
 
     <!-- Footer -->
     <footer>
