@@ -216,20 +216,6 @@
                     <li><i class="fab fa-google"></i> Enhanced exposure through Google Ads</li>
                     <li><i class="fas fa-star"></i> Equal exposure opportunity with branded restaurants</li>
                 </ul>
-                <div class="payment-options">
-                    <div class="payment-option yearly" onclick="selectPaymentOption('yearly')">
-                        <h3>Pay Yearly</h3>
-                        <div class="price">$350</div>
-                        <div class="save-tag">Save $154!</div>
-                        <div id="paypal-container-EKZWS9HZM7JF4" style="display: none;"></div>
-                    </div>
-                    <div class="payment-option monthly" onclick="selectPaymentOption('monthly')">
-                        <h3>Pay Monthly</h3>
-                        <div class="price">$42/month</div>
-                        <div class="cancel-text">Cancel anytime</div>
-                        <div id="paypal-button-container-P-0XW615804V1296820M6W2G4Y" style="display: none;"></div>
-                    </div>
-                </div>
             </div>
 
             <form id="partner-form" class="join-form">
@@ -256,6 +242,21 @@
                 <div class="form-group">
                     <label for="google-link">Google Maps Link</label>
                     <input type="url" id="google-link" placeholder="https://www.google.com/maps/...">
+                </div>
+
+                <div class="payment-options">
+                    <div class="payment-option yearly" onclick="selectPaymentOption('yearly')">
+                        <h3>Pay Yearly</h3>
+                        <div class="price">$350</div>
+                        <div class="save-tag">Save $154!</div>
+                        <div id="paypal-container-EKZWS9HZM7JF4" style="display: none;"></div>
+                    </div>
+                    <div class="payment-option monthly" onclick="selectPaymentOption('monthly')">
+                        <h3>Pay Monthly</h3>
+                        <div class="price">$42/month</div>
+                        <div class="cancel-text">Cancel anytime</div>
+                        <div id="paypal-button-container-P-0XW615804V1296820M6W2G4Y" style="display: none;"></div>
+                    </div>
                 </div>
             </form>
         </div>
@@ -316,7 +317,6 @@
                 },
                 onApprove: async function(data, actions) {
                     await sendFormData('monthly', data.subscriptionID);
-                    alert('Thank you for subscribing! We will contact you shortly.');
                 }
             }).render('#paypal-button-container-P-0XW615804V1296820M6W2G4Y');
 
@@ -325,7 +325,6 @@
                 onApprove: async function(data) {
                     if (validateForm()) {
                         await sendFormData('yearly', data.orderID);
-                        alert('Thank you for subscribing! We will contact you shortly.');
                     }
                 }
             }).render("#paypal-container-EKZWS9HZM7JF4");
@@ -384,7 +383,6 @@
                 }
             } catch (error) {
                 console.error('Error submitting form:', error);
-                alert('There was an error processing your subscription. Our team will contact you shortly.');
             }
         }
     </script>
