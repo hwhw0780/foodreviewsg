@@ -362,16 +362,14 @@
     <script src="js/main.js"></script>
 
     <!-- AI Food Picker Bot -->
-    <div class="ai-bot-container">
-        <div class="food-picker-wheel" id="foodPickerWheel" style="display: none;">
-            <div class="wheel-container">
-                <canvas id="wheelCanvas"></canvas>
-                <button id="spinButton" class="spin-button">Spin!</button>
-            </div>
-            <div class="wheel-message" id="wheelMessage">Click spin to find your next meal!</div>
+    <div class="ai-food-bot">
+        <div id="food-picker-wheel" class="food-picker-wheel" style="display: none;">
+            <canvas id="wheelCanvas"></canvas>
+            <button id="spinButton" class="spin-button">Spin!</button>
+            <div id="result-message" class="result-message"></div>
         </div>
-        <button class="ai-bot-button" id="aiBotButton">
-            <img src="images/ai-bot.png" alt="AI Food Assistant">
+        <button id="ai-bot-button" class="ai-bot-button">
+            <img src="images/ai-bot.png" alt="AI Food Bot">
         </button>
     </div>
 

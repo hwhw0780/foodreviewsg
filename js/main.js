@@ -721,128 +721,145 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Food Picker Wheel
-    const aiBotButton = document.getElementById('aiBotButton');
-    const foodPickerWheel = document.getElementById('foodPickerWheel');
-    const wheelCanvas = document.getElementById('wheelCanvas');
+    // AI Food Bot functionality
+    const aiBotButton = document.getElementById('ai-bot-button');
+    const foodPickerWheel = document.getElementById('food-picker-wheel');
+    const canvas = document.getElementById('wheelCanvas');
     const spinButton = document.getElementById('spinButton');
-    const wheelMessage = document.getElementById('wheelMessage');
-    const ctx = wheelCanvas.getContext('2d');
+    const resultMessage = document.getElementById('result-message');
+    let isSpinning = false;
 
-    // Food categories for the wheel
-    const categories = [
+    const foodCategories = [
         { name: 'Chinese', color: '#FF6B6B' },
         { name: 'Indian', color: '#4ECDC4' },
         { name: 'Japanese', color: '#45B7D1' },
         { name: 'Korean', color: '#96CEB4' },
         { name: 'Western', color: '#FFEEAD' },
         { name: 'Local', color: '#D4A5A5' },
-        { name: 'Malay', color: '#9ED2C6' },
-        { name: 'Seafood', color: '#FFB6B9' }
+        { name: 'Malay', color: '#9B9B9B' },
+        { name: 'Seafood', color: '#FFD93D' }
     ];
 
-    let isSpinning = false;
-    let currentRotation = 0;
+    let wheelAngle = 0;
+    const ctx = canvas.getContext('2d');
 
-    // Toggle wheel visibility
-    aiBotButton.addEventListener('click', () => {
-        const isVisible = foodPickerWheel.style.display !== 'none';
-        foodPickerWheel.style.display = isVisible ? 'none' : 'block';
-        if (!isVisible) {
-            drawWheel();
-        }
-    });
+    function resizeCanvas() {
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.width * dpr; // Make it square
+        ctx.scale(dpr, dpr);
+        canvas.style.width = rect.width + 'px';
+        canvas.style.height = rect.width + 'px';
+    }
 
-    // Initialize wheel
     function drawWheel() {
-        const centerX = wheelCanvas.width / 2;
-        const centerY = wheelCanvas.height / 2;
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
         const radius = Math.min(centerX, centerY) - 10;
-        const anglePerSegment = (2 * Math.PI) / categories.length;
+        const anglePerSegment = (2 * Math.PI) / foodCategories.length;
 
-        ctx.clearRect(0, 0, wheelCanvas.width, wheelCanvas.height);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate(wheelAngle);
 
-        // Draw segments
-        categories.forEach((category, index) => {
-            const startAngle = index * anglePerSegment + currentRotation;
+        foodCategories.forEach((category, index) => {
+            const startAngle = index * anglePerSegment;
             const endAngle = startAngle + anglePerSegment;
 
+            // Draw segment
             ctx.beginPath();
-            ctx.moveTo(centerX, centerY);
-            ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+            ctx.moveTo(0, 0);
+            ctx.arc(0, 0, radius, startAngle, endAngle);
             ctx.closePath();
-
             ctx.fillStyle = category.color;
             ctx.fill();
             ctx.stroke();
 
-            // Add text
+            // Draw text
             ctx.save();
-            ctx.translate(centerX, centerY);
             ctx.rotate(startAngle + anglePerSegment / 2);
             ctx.textAlign = 'right';
             ctx.fillStyle = '#000';
-            ctx.font = '14px Arial';
-            ctx.fillText(category.name, radius - 20, 5);
+            ctx.font = 'bold 16px Arial';
+            ctx.fillText(category.name, radius - 20, 6);
             ctx.restore();
         });
 
         // Draw center circle
         ctx.beginPath();
-        ctx.arc(centerX, centerY, 15, 0, 2 * Math.PI);
+        ctx.arc(0, 0, 15, 0, 2 * Math.PI);
         ctx.fillStyle = '#fff';
         ctx.fill();
         ctx.stroke();
+
+        ctx.restore();
     }
 
-    // Handle wheel spin
-    spinButton.addEventListener('click', () => {
+    function spinWheel() {
         if (isSpinning) return;
         isSpinning = true;
-        wheelMessage.textContent = 'Spinning...';
+        resultMessage.textContent = '';
+        spinButton.disabled = true;
 
-        // Random rotation between 5 and 10 full spins
         const spinDuration = 3000; // 3 seconds
-        const totalRotation = Math.PI * 2 * (5 + Math.random() * 5);
-        const startRotation = currentRotation;
         const startTime = Date.now();
+        const startAngle = wheelAngle;
+        const totalSpins = 5; // Number of full rotations
+        const extraSpinAngle = Math.random() * Math.PI * 2; // Random final position
+        const totalAngle = (Math.PI * 2 * totalSpins) + extraSpinAngle;
 
         function animate() {
-            const elapsed = Date.now() - startTime;
+            const now = Date.now();
+            const elapsed = now - startTime;
             const progress = Math.min(elapsed / spinDuration, 1);
 
             // Easing function for smooth deceleration
-            const easeOut = 1 - Math.pow(1 - progress, 3);
-            currentRotation = startRotation + totalRotation * easeOut;
+            const easeOut = function(t) {
+                return 1 - Math.pow(1 - t, 3);
+            };
 
+            wheelAngle = startAngle + totalAngle * easeOut(progress);
             drawWheel();
 
             if (progress < 1) {
                 requestAnimationFrame(animate);
             } else {
                 isSpinning = false;
-                // Calculate which category was selected
-                const anglePerSegment = (2 * Math.PI) / categories.length;
-                const normalizedRotation = currentRotation % (2 * Math.PI);
-                const selectedIndex = Math.floor(categories.length - (normalizedRotation / anglePerSegment)) % categories.length;
-                const selectedCategory = categories[selectedIndex];
+                spinButton.disabled = false;
                 
-                wheelMessage.textContent = `You should try ${selectedCategory.name} food!`;
+                // Calculate which category was selected
+                const normalizedAngle = (wheelAngle % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+                const segmentAngle = (Math.PI * 2) / foodCategories.length;
+                const selectedIndex = Math.floor(normalizedAngle / segmentAngle);
+                const selectedCategory = foodCategories[selectedIndex].name;
+                
+                resultMessage.textContent = `You should try ${selectedCategory} food!`;
             }
         }
 
         animate();
-    });
-
-    // Set canvas size
-    function resizeCanvas() {
-        const container = wheelCanvas.parentElement;
-        wheelCanvas.width = container.clientWidth;
-        wheelCanvas.height = container.clientWidth; // Keep it square
-        drawWheel();
     }
 
-    // Initial setup
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    // Toggle wheel visibility when bot is clicked
+    aiBotButton.addEventListener('click', () => {
+        const isVisible = foodPickerWheel.style.display !== 'none';
+        foodPickerWheel.style.display = isVisible ? 'none' : 'block';
+        if (!isVisible) {
+            resizeCanvas();
+            drawWheel();
+        }
+    });
+
+    // Handle spin button click
+    spinButton.addEventListener('click', spinWheel);
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+        if (foodPickerWheel.style.display !== 'none') {
+            resizeCanvas();
+            drawWheel();
+        }
+    });
 }); 
