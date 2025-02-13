@@ -263,19 +263,23 @@
                         <div class="price">$350</div>
                         <div class="save-tag">Save $154!</div>
                         <div class="gst-notice">Price is excluded 9% GST</div>
-                        <style>.pp-EKZWS9HZM7JF4{text-align:center;border:none;border-radius:0.25rem;min-width:11.625rem;padding:0 2rem;height:2.625rem;font-weight:bold;background-color:#FFD140;color:#000000;font-family:"Helvetica Neue",Arial,sans-serif;font-size:1rem;line-height:1.25rem;cursor:pointer;}</style>
-                        <form action="https://www.paypal.com/ncp/payment/EKZWS9HZM7JF4" method="post" target="_blank" style="display:inline-grid;justify-items:center;align-content:start;gap:0.5rem;">
-                            <input class="pp-EKZWS9HZM7JF4" type="submit" value="Buy Now" />
-                            <img src=https://www.paypalobjects.com/images/Debit_Credit_APM.svg alt="cards" />
-                            <section> Powered by <img src="https://www.paypalobjects.com/paypal-ui/logos/svg/paypal-wordmark-color.svg" alt="paypal" style="height:0.875rem;vertical-align:middle;"/></section>
-                        </form>
+                        <div class="paypal-button-container" style="display: none;">
+                            <style>.pp-EKZWS9HZM7JF4{text-align:center;border:none;border-radius:0.25rem;min-width:11.625rem;padding:0 2rem;height:2.625rem;font-weight:bold;background-color:#FFD140;color:#000000;font-family:"Helvetica Neue",Arial,sans-serif;font-size:1rem;line-height:1.25rem;cursor:pointer;}</style>
+                            <form action="https://www.paypal.com/ncp/payment/EKZWS9HZM7JF4" method="post" target="_blank" style="display:inline-grid;justify-items:center;align-content:start;gap:0.5rem;">
+                                <input class="pp-EKZWS9HZM7JF4" type="submit" value="Buy Now" />
+                                <img src=https://www.paypalobjects.com/images/Debit_Credit_APM.svg alt="cards" />
+                                <section> Powered by <img src="https://www.paypalobjects.com/paypal-ui/logos/svg/paypal-wordmark-color.svg" alt="paypal" style="height:0.875rem;vertical-align:middle;"/></section>
+                            </form>
+                        </div>
                     </div>
                     <div class="payment-option monthly" onclick="selectPaymentOption('monthly')">
                         <h3>Pay Monthly</h3>
                         <div class="price">$42/month</div>
                         <div class="cancel-text">Cancel anytime</div>
                         <div class="gst-notice">Price is excluded 9% GST</div>
-                        <div id="paypal-button-container-P-0XW615804V1296820M6W2G4Y" style="display: none;"></div>
+                        <div class="paypal-button-container" style="display: none;">
+                            <div id="paypal-button-container-P-0XW615804V1296820M6W2G4Y"></div>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -357,21 +361,22 @@
         }
 
         function selectPaymentOption(option) {
-            // Reset both containers
-            const monthlyContainer = document.getElementById('paypal-button-container-P-0XW615804V1296820M6W2G4Y');
-            const yearlyForm = document.querySelector('.payment-option.yearly form');
+            // Get both PayPal button containers
+            const monthlyContainer = document.querySelector('.payment-option.monthly .paypal-button-container');
+            const yearlyContainer = document.querySelector('.payment-option.yearly .paypal-button-container');
             
-            monthlyContainer.style.display = 'none';
-            yearlyForm.style.display = 'none';
+            // Hide both containers first
+            if (monthlyContainer) monthlyContainer.style.display = 'none';
+            if (yearlyContainer) yearlyContainer.style.display = 'none';
             
-            // Show selected option
-            if (option === 'monthly') {
+            // Show selected option's container
+            if (option === 'monthly' && monthlyContainer) {
                 monthlyContainer.style.display = 'block';
-            } else {
-                yearlyForm.style.display = 'inline-grid';
+            } else if (option === 'yearly' && yearlyContainer) {
+                yearlyContainer.style.display = 'block';
             }
 
-            // Add active state to selected option
+            // Update active state
             document.querySelectorAll('.payment-option').forEach(opt => {
                 opt.classList.remove('active');
             });
