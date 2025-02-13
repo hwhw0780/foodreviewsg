@@ -53,7 +53,6 @@ document.addEventListener('DOMContentLoaded', function() {
         'hotpot': 'Hotpot (火锅)',
         'seafood': 'Seafood (海鲜)',
         'dessert': 'Dessert (甜点)',
-        'ice-cream': 'Ice Cream (冰淇淋)',
         'cafe': 'Café (咖啡馆)',
         'bubble-tea': 'Bubble Tea (珍珠奶茶)',
         'vegetarian': 'Vegetarian (素食)',
