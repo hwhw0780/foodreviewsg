@@ -327,7 +327,9 @@
                                 <span>or scan to pay</span>
                             </div>
                             <div class="qr-code-section">
-                                <img src="images/paypal-qr.png" alt="PayPal QR Code Payment" onerror="this.style.display='none'; this.nextElementSibling.style.display='none';">
+                                <img src="./images/paypal-qr.png" alt="PayPal QR Code Payment" 
+                                     onerror="console.log('Failed to load QR code:', this.src); this.style.display='none'; this.nextElementSibling.style.display='none';"
+                                     onload="console.log('QR code loaded successfully:', this.src);">
                                 <p>Scan with your mobile device to pay</p>
                             </div>
                         </div>
