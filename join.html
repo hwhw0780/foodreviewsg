@@ -381,6 +381,39 @@
     <script src="https://www.paypal.com/sdk/js?client-id=AcQq7vIblkzfjRS7iSkd85poMDZvczYHr-YSZUmDj-zIWWQv4IqDUFiDDEr2oL1gpsylMcXs1elncQAD&vault=true&intent=subscription&components=buttons&currency=SGD"></script>
 
     <script>
+        // Define error handling functions first
+        function handleQRCodeError(img) {
+            console.error('Failed to load QR code:', img.src);
+            img.style.display = 'none';
+            img.nextElementSibling.style.display = 'none';
+            const errorMessage = document.createElement('p');
+            errorMessage.style.color = '#e74c3c';
+            errorMessage.textContent = 'QR code payment option temporarily unavailable';
+            img.parentElement.appendChild(errorMessage);
+        }
+
+        function validateFormBeforePayment(event) {
+            if (!validateForm()) {
+                event.preventDefault();
+                return false;
+            }
+            return true;
+        }
+
+        function validateForm() {
+            const form = document.getElementById('partner-form');
+            const requiredFields = form.querySelectorAll('[required]');
+            
+            for (let field of requiredFields) {
+                if (!field.value) {
+                    alert('Please fill in all required fields before proceeding with payment.');
+                    field.focus();
+                    return false;
+                }
+            }
+            return true;
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('partner-form');
             
@@ -407,20 +440,6 @@
                 }).render('#paypal-button-container-P-0XW615804V1296820M6W2G4Y');
             }
         });
-
-        function validateForm() {
-            const form = document.getElementById('partner-form');
-            const requiredFields = form.querySelectorAll('[required]');
-            
-            for (let field of requiredFields) {
-                if (!field.value) {
-                    alert('Please fill in all required fields before proceeding with payment.');
-                    field.focus();
-                    return false;
-                }
-            }
-            return true;
-        }
 
         function selectPaymentOption(option) {
             // Get both PayPal button containers
@@ -472,24 +491,6 @@
             } catch (error) {
                 console.error('Error submitting form:', error);
             }
-        }
-
-        function validateFormBeforePayment(event) {
-            if (!validateForm()) {
-                event.preventDefault();
-                return false;
-            }
-            return true;
-        }
-
-        function handleQRCodeError(img) {
-            console.error('Failed to load QR code:', img.src);
-            img.style.display = 'none';
-            img.nextElementSibling.style.display = 'none';
-            const errorMessage = document.createElement('p');
-            errorMessage.style.color = '#e74c3c';
-            errorMessage.textContent = 'QR code payment option temporarily unavailable';
-            img.parentElement.appendChild(errorMessage);
         }
     </script>
 </body>
