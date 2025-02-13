@@ -496,7 +496,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Statistics configuration
     const statisticsConfig = {
         'daily-users': { min: 850, max: 1230 },
-        'daily-bookings': { min: 35, max: 110 },
+        'daily-bookings': { min: 50, max: 73 },
         'total-restaurants': { value: 400 },
         'total-reviews': { value: 200000 }
     };
