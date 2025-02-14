@@ -44,8 +44,13 @@ app.use('/uploads', (req, res, next) => {
 });
 
 // Routes
-app.get('/', (req, res) => {
+app.get(['/', '/homepage'], (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Redirect /index.html to homepage
+app.get('/index.html', (req, res) => {
+    res.redirect(301, '/');
 });
 
 // Serve join page
