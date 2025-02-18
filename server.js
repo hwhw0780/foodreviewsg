@@ -9,6 +9,8 @@ const partnerRoutes = require('./routes/partnerRoutes');
 const topListRoutes = require('./routes/topLists');
 const pendingReviewRoutes = require('./routes/pendingReviews');
 const TopList = require('./models/TopList');
+const Restaurant = require('./models/Restaurant');
+const PendingReview = require('./models/PendingReview');
 
 const app = express();
 
@@ -100,7 +102,7 @@ app.use('/api/pending-reviews', pendingReviewRoutes);
 // Review submission endpoint
 app.post('/api/reviews', async (req, res) => {
     try {
-        const { restaurantId, reviewerName, rating, reviewText, status } = req.body;
+        const { restaurantId, reviewerName, rating, reviewText } = req.body;
 
         // Validate input
         if (!restaurantId || !reviewerName || !rating || !reviewText) {
@@ -111,25 +113,22 @@ app.post('/api/reviews', async (req, res) => {
             return res.status(400).json({ error: 'Invalid rating' });
         }
 
-        // Create review object
-        const review = {
-            restaurantId,
-            reviewerName,
-            rating,
-            reviewText,
-            status: 'pending',
-            submittedAt: new Date().toISOString()
-        };
-
-        // Save to database
-        const db = await getDb();
-        const result = await db.collection('pendingReviews').insertOne(review);
-
-        if (result.acknowledged) {
-            res.status(201).json({ message: 'Review submitted successfully' });
-        } else {
-            throw new Error('Failed to save review');
+        // Check if restaurant exists
+        const restaurant = await Restaurant.findByPk(restaurantId);
+        if (!restaurant) {
+            return res.status(404).json({ error: 'Restaurant not found' });
         }
+
+        // Create review using PendingReview model
+        const review = await PendingReview.create({
+            restaurantId,
+            author: reviewerName,
+            rating,
+            comment: reviewText,
+            status: 'pending'
+        });
+
+        res.status(201).json({ message: 'Review submitted successfully' });
     } catch (error) {
         console.error('Error saving review:', error);
         res.status(500).json({ error: 'Internal server error' });
