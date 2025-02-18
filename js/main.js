@@ -338,7 +338,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to get random items from array
     function getRandomItems(array, count) {
-        const shuffled = [...array].sort(() => 0.5 - Math.random());
+        const shuffled = [...array].sort(() => Math.random() - 0.5);
         return shuffled.slice(0, count);
     }
 
@@ -384,22 +384,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Separate ads and regular restaurants
         const adRestaurants = filteredRestaurants.filter(r => r.adStatus !== 'none');
-        const regularRestaurants = filteredRestaurants.filter(r => r.adStatus === 'none')
-            .sort((a, b) => b.rating - a.rating)
-            .slice(0, 5); // Get top 5 regular restaurants by rating
+        const regularRestaurants = filteredRestaurants.filter(r => r.adStatus === 'none');
+
+        // Get random selection of regular restaurants
+        const selectedRegularRestaurants = getRandomItems(regularRestaurants, 5);
 
         // Randomly select ads for display
         let selectedAds = [];
         if (adRestaurants.length > 0) {
             // Shuffle ads
-            const shuffledAds = [...adRestaurants].sort(() => Math.random() - 0.5);
-            // Select up to 2 ads for before/after positions
-            selectedAds = shuffledAds.slice(0, Math.min(2, shuffledAds.length));
-            // If there are more ads, randomly add them to the regular list
-            if (shuffledAds.length > 2) {
-                const remainingAds = shuffledAds.slice(2);
-                regularRestaurants.splice(Math.floor(Math.random() * regularRestaurants.length), 0, ...remainingAds);
-            }
+            selectedAds = getRandomItems(adRestaurants, Math.min(2, adRestaurants.length));
         }
 
         // Display restaurants in order: 1 ad (if available) + regular restaurants + 1 ad (if available)
@@ -407,7 +401,7 @@ document.addEventListener('DOMContentLoaded', function() {
             restaurantGrid.appendChild(createRestaurantCard(selectedAds[0]));
         }
 
-        regularRestaurants.forEach(restaurant => {
+        selectedRegularRestaurants.forEach(restaurant => {
             restaurantGrid.appendChild(createRestaurantCard(restaurant));
         });
 
@@ -415,7 +409,7 @@ document.addEventListener('DOMContentLoaded', function() {
             restaurantGrid.appendChild(createRestaurantCard(selectedAds[1]));
         }
 
-        updateTitle(currentCategory, regularRestaurants.length);
+        updateTitle(currentCategory, selectedRegularRestaurants.length);
     }
 
     // Show no results message
