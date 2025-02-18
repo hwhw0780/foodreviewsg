@@ -7,6 +7,7 @@ const restaurantRoutes = require('./routes/restaurants');
 const statisticsRoutes = require('./routes/statistics');
 const partnerRoutes = require('./routes/partnerRoutes');
 const topListRoutes = require('./routes/topLists');
+const pendingReviewRoutes = require('./routes/pendingReviews');
 const TopList = require('./models/TopList');
 
 const app = express();
@@ -91,9 +92,10 @@ app.get('/admin/dashboard', (req, res) => {
 
 // API Routes
 app.use('/api/restaurants', restaurantRoutes);
-app.use('/api/statistics', statisticsRoutes);
 app.use('/api/top-lists', topListRoutes);
-app.use('/api', partnerRoutes);
+app.use('/api/statistics', statisticsRoutes);
+app.use('/api/partner', partnerRoutes);
+app.use('/api/pending-reviews', pendingReviewRoutes);
 
 // Review submission endpoint
 app.post('/api/reviews', async (req, res) => {

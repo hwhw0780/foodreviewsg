@@ -18,7 +18,7 @@
             <a href="#" class="active"><i class="fas fa-chart-line"></i> Dashboard</a>
             <a href="#restaurants"><i class="fas fa-utensils"></i> Restaurants</a>
             <a href="#top-lists"><i class="fas fa-list-ol"></i> Top 5 Lists</a>
-            <a href="#reviews"><i class="fas fa-star"></i> Reviews</a>
+            <a href="#pending-reviews"><i class="fas fa-star"></i> Pending Reviews</a>
             <a href="#users"><i class="fas fa-users"></i> Users</a>
             <a href="#" id="logout-btn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
@@ -444,6 +444,28 @@
                     <button type="button" class="admin-btn secondary" id="cancel-top-list-form">Cancel</button>
                 </div>
             </form>
+        </section>
+
+        <!-- Pending Reviews Section -->
+        <section class="admin-section" id="pending-reviews-section">
+            <h2>Pending Reviews</h2>
+            <div class="pending-reviews-list">
+                <table id="pending-reviews-table">
+                    <thead>
+                        <tr>
+                            <th>Restaurant</th>
+                            <th>Author</th>
+                            <th>Rating</th>
+                            <th>Comment</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
         </section>
     </div>
 

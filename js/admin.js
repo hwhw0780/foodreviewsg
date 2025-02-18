@@ -1071,4 +1071,97 @@ document.addEventListener('DOMContentLoaded', function() {
         
         console.log('[Admin] Initialization complete');
     });
+
+    // Fetch pending reviews
+    async function fetchPendingReviews() {
+        try {
+            const response = await fetch('/api/pending-reviews');
+            if (!response.ok) {
+                throw new Error('Failed to fetch pending reviews');
+            }
+
+            const reviews = await response.json();
+            displayPendingReviews(reviews);
+        } catch (error) {
+            console.error('Error fetching pending reviews:', error);
+            showMessage('Failed to fetch pending reviews: ' + error.message, 'error');
+        }
+    }
+
+    // Display pending reviews
+    function displayPendingReviews(reviews) {
+        const tbody = document.querySelector('#pending-reviews-table tbody');
+        tbody.innerHTML = '';
+
+        reviews.forEach(review => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${review.Restaurant.name}${review.Restaurant.nameChinese ? ` (${review.Restaurant.nameChinese})` : ''}</td>
+                <td>${review.author}</td>
+                <td class="review-rating">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</td>
+                <td class="review-comment">${review.comment}</td>
+                <td>${new Date(review.createdAt).toLocaleDateString()}</td>
+                <td class="review-actions">
+                    <button class="approve-btn" data-id="${review.id}">Approve</button>
+                    <button class="reject-btn" data-id="${review.id}">Reject</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        // Add event listeners to action buttons
+        tbody.querySelectorAll('.approve-btn').forEach(btn => {
+            btn.addEventListener('click', () => approveReview(btn.dataset.id));
+        });
+
+        tbody.querySelectorAll('.reject-btn').forEach(btn => {
+            btn.addEventListener('click', () => rejectReview(btn.dataset.id));
+        });
+    }
+
+    // Approve a review
+    async function approveReview(id) {
+        try {
+            const response = await fetch(`/api/pending-reviews/${id}/approve`, {
+                method: 'POST'
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to approve review');
+            }
+
+            showMessage('Review approved successfully', 'success');
+            fetchPendingReviews();
+            fetchRestaurants(); // Refresh restaurant list to show updated ratings
+        } catch (error) {
+            console.error('Error approving review:', error);
+            showMessage('Failed to approve review: ' + error.message, 'error');
+        }
+    }
+
+    // Reject a review
+    async function rejectReview(id) {
+        if (confirm('Are you sure you want to reject this review?')) {
+            try {
+                const response = await fetch(`/api/pending-reviews/${id}/reject`, {
+                    method: 'POST'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to reject review');
+                }
+
+                showMessage('Review rejected successfully', 'success');
+                fetchPendingReviews();
+            } catch (error) {
+                console.error('Error rejecting review:', error);
+                showMessage('Failed to reject review: ' + error.message, 'error');
+            }
+        }
+    }
+
+    // Initial fetch of pending reviews if on dashboard
+    if (window.location.href.includes('dashboard.html')) {
+        fetchPendingReviews();
+    }
 }); 
