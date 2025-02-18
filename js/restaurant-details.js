@@ -240,6 +240,94 @@ modalStyles.textContent = `
 `;
 document.head.appendChild(modalStyles);
 
+// Star Rating Functionality
+const starRating = document.querySelector('.star-rating');
+const stars = starRating.querySelectorAll('i');
+let selectedRating = 0;
+
+stars.forEach((star, index) => {
+    star.addEventListener('click', () => {
+        selectedRating = index + 1;
+        updateStars();
+    });
+
+    star.addEventListener('mouseover', () => {
+        stars.forEach((s, i) => {
+            if (i <= index) {
+                s.classList.add('active');
+            } else {
+                s.classList.remove('active');
+            }
+        });
+    });
+
+    star.addEventListener('mouseout', () => {
+        updateStars();
+    });
+});
+
+function updateStars() {
+    stars.forEach((star, index) => {
+        if (index < selectedRating) {
+            star.classList.add('active');
+        } else {
+            star.classList.remove('active');
+        }
+    });
+}
+
+// Review Form Submission
+const reviewForm = document.querySelector('.review-form');
+const successMessage = document.querySelector('.review-success');
+
+reviewForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const reviewerName = document.getElementById('reviewer-name').value;
+    const reviewText = document.getElementById('review-text').value;
+
+    if (!reviewerName || !reviewText || selectedRating === 0) {
+        alert('Please fill in all fields and select a rating');
+        return;
+    }
+
+    const reviewData = {
+        restaurantId: restaurantId,
+        reviewerName,
+        rating: selectedRating,
+        reviewText,
+        status: 'pending' // For admin approval
+    };
+
+    try {
+        const response = await fetch('/api/reviews', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(reviewData)
+        });
+
+        if (response.ok) {
+            // Clear form
+            reviewForm.reset();
+            selectedRating = 0;
+            updateStars();
+            
+            // Show success message
+            successMessage.style.display = 'block';
+            setTimeout(() => {
+                successMessage.style.display = 'none';
+            }, 3000);
+        } else {
+            throw new Error('Failed to submit review');
+        }
+    } catch (error) {
+        console.error('Error submitting review:', error);
+        alert('Failed to submit review. Please try again later.');
+    }
+});
+
 // Initialize page
 document.addEventListener('DOMContentLoaded', () => {
     if (!restaurantId) {

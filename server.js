@@ -95,6 +95,45 @@ app.use('/api/statistics', statisticsRoutes);
 app.use('/api/top-lists', topListRoutes);
 app.use('/api', partnerRoutes);
 
+// Review submission endpoint
+app.post('/api/reviews', async (req, res) => {
+    try {
+        const { restaurantId, reviewerName, rating, reviewText, status } = req.body;
+
+        // Validate input
+        if (!restaurantId || !reviewerName || !rating || !reviewText) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        if (rating < 1 || rating > 5) {
+            return res.status(400).json({ error: 'Invalid rating' });
+        }
+
+        // Create review object
+        const review = {
+            restaurantId,
+            reviewerName,
+            rating,
+            reviewText,
+            status: 'pending',
+            submittedAt: new Date().toISOString()
+        };
+
+        // Save to database
+        const db = await getDb();
+        const result = await db.collection('pendingReviews').insertOne(review);
+
+        if (result.acknowledged) {
+            res.status(201).json({ message: 'Review submitted successfully' });
+        } else {
+            throw new Error('Failed to save review');
+        }
+    } catch (error) {
+        console.error('Error saving review:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
