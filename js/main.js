@@ -124,7 +124,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Add click event listener to show modal
         card.addEventListener('click', () => {
-            window.location.href = `restaurant-details.html?id=${restaurant.id}`;
+            // Track restaurant click event
+            window.trackEvent('Restaurant', 'view', restaurant.name);
+            showRestaurantModal(restaurant);
         });
 
         // Add ad indicator if restaurant has active ad status
@@ -443,6 +445,8 @@ document.addEventListener('DOMContentLoaded', function() {
             button.classList.add('active');
             currentCategory = button.getAttribute('data-category');
             displayRestaurants();
+            // Track category filter clicks
+            window.trackEvent('Filter', 'category', currentCategory);
         });
     });
 
@@ -450,6 +454,8 @@ document.addEventListener('DOMContentLoaded', function() {
     locationSelect.addEventListener('change', () => {
         currentLocation = locationSelect.value;
         displayRestaurants();
+        // Track location filter changes
+        window.trackEvent('Filter', 'location', currentLocation);
     });
 
     // Search functionality
@@ -478,6 +484,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 restaurantGrid.appendChild(card);
             });
         }
+        // Track search event
+        const searchQuery = searchTerm;
+        window.trackEvent('Search', 'perform', searchQuery);
     }
 
     searchButton.addEventListener('click', handleSearch);
@@ -628,6 +637,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (response.ok) {
                     alert('Thank you for your interest! We will contact you soon.');
                     partnerForm.reset();
+                    // Track partner form submissions
+                    window.trackEvent('Partner', 'signup_attempt');
                 } else {
                     const errorData = await response.json();
                     throw new Error(errorData.error || 'Failed to submit form');
