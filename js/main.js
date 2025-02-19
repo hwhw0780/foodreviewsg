@@ -26,6 +26,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Track advertise button clicks
+    if (advertiseBtn) {
+        advertiseBtn.addEventListener('click', () => {
+            window.trackEvent('CTA', 'click', 'Advertise Button - Statistics Section');
+        });
+    }
+
     // Get DOM elements
     const categoryButtons = document.querySelectorAll('.category-btn');
     const locationSelect = document.getElementById('location-select');
