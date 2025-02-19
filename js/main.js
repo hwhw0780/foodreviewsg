@@ -29,7 +29,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Track advertise button clicks
     if (advertiseBtn) {
         advertiseBtn.addEventListener('click', () => {
-            window.trackEvent('CTA', 'click', 'Advertise Button - Statistics Section');
+            window.trackEvent('CTA', 'click', 'Advertise Button - Statistics Section', {
+                'page_section': 'statistics',
+                'button_text': advertiseBtn.textContent.trim(),
+                'scroll_position': window.scrollY,
+                'timestamp': new Date().toISOString()
+            });
+            
+            // Also track as a conversion
+            gtag('event', 'conversion', {
+                'send_to': 'G-S5DZFBK6Q9',
+                'event_category': 'CTA',
+                'event_label': 'Advertise Button Click',
+                'value': 1
+            });
         });
     }
 
