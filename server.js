@@ -69,11 +69,39 @@ app.get('/privacy-policy.html', (req, res) => {
 // Serve dynamic Top 5 list pages
 app.get('/top-5/:slug', async (req, res) => {
     try {
-        // Always serve the page and let the client-side handle the data fetching and error display
-        res.sendFile(path.join(__dirname, 'top-list.html'));
+        const slug = req.params.slug;
+        const list = await TopList.findOne({
+            where: { slug }
+        });
+
+        if (!list) {
+            // Even if list is not found, serve the page and let client handle the error display
+            res.sendFile(path.join(__dirname, 'top-list.html'));
+            return;
+        }
+
+        // Read the HTML template
+        let html = fs.readFileSync(path.join(__dirname, 'top-list.html'), 'utf8');
+
+        // Replace meta tags
+        html = html.replace(/<title>.*?<\/title>/, `<title>${list.metaTitle}</title>`);
+        html = html.replace(/<meta name="title" content=".*?"/, `<meta name="title" content="${list.metaTitle}"`);
+        html = html.replace(/<meta name="description" content=".*?"/, `<meta name="description" content="${list.metaDescription}"`);
+        
+        // Update Open Graph meta tags
+        html = html.replace(/<meta property="og:title" content=".*?"/, `<meta property="og:title" content="${list.metaTitle}"`);
+        html = html.replace(/<meta property="og:description" content=".*?"/, `<meta property="og:description" content="${list.metaDescription}"`);
+        html = html.replace(/<meta property="og:url" content=".*?"/, `<meta property="og:url" content="https://sgbestfood.com/top-5/${slug}"`);
+        
+        // Update Twitter meta tags
+        html = html.replace(/<meta property="twitter:title" content=".*?"/, `<meta property="twitter:title" content="${list.metaTitle}"`);
+        html = html.replace(/<meta property="twitter:description" content=".*?"/, `<meta property="twitter:description" content="${list.metaDescription}"`);
+        html = html.replace(/<meta property="twitter:url" content=".*?"/, `<meta property="twitter:url" content="https://sgbestfood.com/top-5/${slug}"`);
+
+        res.send(html);
     } catch (error) {
         console.error('Error serving top-5 list page:', error);
-        res.status(500).send('Server error');
+        res.sendFile(path.join(__dirname, 'top-list.html'));
     }
 });
 
