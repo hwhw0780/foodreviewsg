@@ -71,7 +71,11 @@ app.get('/top-5/:slug', async (req, res) => {
     try {
         const slug = req.params.slug;
         const list = await TopList.findOne({
-            where: { slug }
+            where: { slug },
+            include: [{
+                model: Restaurant,
+                attributes: ['id', 'name', 'nameChinese']
+            }]
         });
 
         if (!list) {
@@ -83,20 +87,56 @@ app.get('/top-5/:slug', async (req, res) => {
         // Read the HTML template
         let html = fs.readFileSync(path.join(__dirname, 'top-list.html'), 'utf8');
 
+        // Generate restaurant-specific keywords and descriptions
+        const restaurantKeywords = list.restaurants.map(r => {
+            const restaurant = list.Restaurants.find(rest => rest.id === r.id);
+            if (restaurant) {
+                return `${restaurant.name}, ${restaurant.nameChinese || ''}, ${list.category} restaurant in ${list.location}`;
+            }
+            return '';
+        }).filter(Boolean).join(', ');
+
+        // Create comprehensive meta description including restaurant names
+        const restaurantNames = list.Restaurants.map(r => r.name).join(', ');
+        const extendedDescription = `${list.metaDescription} Featured restaurants: ${restaurantNames}.`;
+
         // Replace meta tags
         html = html.replace(/<title>.*?<\/title>/, `<title>${list.metaTitle}</title>`);
         html = html.replace(/<meta name="title" content=".*?"/, `<meta name="title" content="${list.metaTitle}"`);
-        html = html.replace(/<meta name="description" content=".*?"/, `<meta name="description" content="${list.metaDescription}"`);
+        html = html.replace(/<meta name="description" content=".*?"/, `<meta name="description" content="${extendedDescription}"`);
+        html = html.replace(/<meta name="keywords" content=".*?"/, `<meta name="keywords" content="${list.metaKeywords}, ${restaurantKeywords}"`);
         
         // Update Open Graph meta tags
         html = html.replace(/<meta property="og:title" content=".*?"/, `<meta property="og:title" content="${list.metaTitle}"`);
-        html = html.replace(/<meta property="og:description" content=".*?"/, `<meta property="og:description" content="${list.metaDescription}"`);
+        html = html.replace(/<meta property="og:description" content=".*?"/, `<meta property="og:description" content="${extendedDescription}"`);
         html = html.replace(/<meta property="og:url" content=".*?"/, `<meta property="og:url" content="https://sgbestfood.com/top-5/${slug}"`);
         
         // Update Twitter meta tags
         html = html.replace(/<meta property="twitter:title" content=".*?"/, `<meta property="twitter:title" content="${list.metaTitle}"`);
-        html = html.replace(/<meta property="twitter:description" content=".*?"/, `<meta property="twitter:description" content="${list.metaDescription}"`);
+        html = html.replace(/<meta property="twitter:description" content=".*?"/, `<meta property="twitter:description" content="${extendedDescription}"`);
         html = html.replace(/<meta property="twitter:url" content=".*?"/, `<meta property="twitter:url" content="https://sgbestfood.com/top-5/${slug}"`);
+
+        // Add restaurant-specific structured data
+        const structuredData = {
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "itemListElement": list.restaurants.map((r, index) => {
+                const restaurant = list.Restaurants.find(rest => rest.id === r.id);
+                return {
+                    "@type": "ListItem",
+                    "position": r.rank,
+                    "item": {
+                        "@type": "Restaurant",
+                        "name": restaurant.name,
+                        "alternateName": restaurant.nameChinese || undefined,
+                        "url": `https://sgbestfood.com/restaurant-details.html?id=${restaurant.id}`
+                    }
+                };
+            })
+        };
+
+        // Insert structured data before closing head tag
+        html = html.replace('</head>', `<script type="application/ld+json">${JSON.stringify(structuredData)}</script></head>`);
 
         res.send(html);
     } catch (error) {

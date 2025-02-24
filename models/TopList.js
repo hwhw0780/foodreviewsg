@@ -54,6 +54,28 @@ const TopList = sequelize.define('TopList', {
         type: DataTypes.TEXT,
         allowNull: false
     },
+    metaKeywords: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        defaultValue: ''
+    },
+    restaurantSeoData: {
+        type: DataTypes.JSON,
+        allowNull: false,
+        defaultValue: [],
+        validate: {
+            isValidSeoData(value) {
+                if (!Array.isArray(value)) {
+                    throw new Error('Restaurant SEO data must be an array');
+                }
+                value.forEach(seo => {
+                    if (!seo.restaurantId || !seo.keywords || !seo.description) {
+                        throw new Error('Each SEO entry must have restaurantId, keywords, and description');
+                    }
+                });
+            }
+        }
+    },
     lastUpdated: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW

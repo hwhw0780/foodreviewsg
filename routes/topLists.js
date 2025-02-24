@@ -12,9 +12,39 @@ router.post('/', async (req, res) => {
         // Generate slug
         const slug = `top-5-${category.toLowerCase()}-${location.toLowerCase()}`.replace(/\s+/g, '-');
         
+        // Fetch restaurant details for SEO
+        const restaurantIds = restaurants.map(r => r.id);
+        const restaurantDetails = await Restaurant.findAll({
+            where: { id: { [Op.in]: restaurantIds } },
+            attributes: ['id', 'name', 'nameChinese', 'category', 'location']
+        });
+
         // Generate meta title and description
         const metaTitle = `Top 5 ${category} Restaurants in ${location}, Singapore`;
         const metaDescription = `Discover the best ${category} restaurants in ${location}, Singapore. Our carefully curated list of the top 5 ${category.toLowerCase()} dining spots in ${location}.`;
+        
+        // Generate restaurant-specific SEO data
+        const restaurantSeoData = restaurantDetails.map(restaurant => {
+            const rank = restaurants.find(r => r.id === restaurant.id).rank;
+            return {
+                restaurantId: restaurant.id,
+                keywords: `${restaurant.name}, ${restaurant.nameChinese || ''}, best ${category} restaurant in ${location}, number ${rank} ${category} restaurant Singapore, ${restaurant.name} ${location}`,
+                description: `${restaurant.name} (${restaurant.nameChinese || ''}) is ranked #${rank} in our list of best ${category} restaurants in ${location}, Singapore. Experience authentic ${category} cuisine at this top-rated dining spot.`
+            };
+        });
+
+        // Generate meta keywords combining all restaurant names and relevant terms
+        const metaKeywords = [
+            `top 5 ${category} restaurants`,
+            `best ${category} food ${location}`,
+            `${category} restaurants Singapore`,
+            ...restaurantDetails.map(r => r.name),
+            ...restaurantDetails.map(r => r.nameChinese).filter(Boolean),
+            `${category} food guide`,
+            `${location} food guide`,
+            `Singapore ${category} restaurants`,
+            `best restaurants ${location}`
+        ].join(', ');
 
         const topList = await TopList.create({
             category,
@@ -22,7 +52,9 @@ router.post('/', async (req, res) => {
             slug,
             restaurants,
             metaTitle,
-            metaDescription
+            metaDescription,
+            metaKeywords,
+            restaurantSeoData
         });
 
         res.status(201).json(topList);
@@ -137,7 +169,14 @@ router.put('/:id', async (req, res) => {
             return res.status(400).json({ error: 'At least one restaurant is required' });
         }
 
-        // Update slug if category or location changed
+        // Fetch restaurant details for SEO
+        const restaurantIds = restaurants.map(r => r.id);
+        const restaurantDetails = await Restaurant.findAll({
+            where: { id: { [Op.in]: restaurantIds } },
+            attributes: ['id', 'name', 'nameChinese', 'category', 'location']
+        });
+
+        // Generate updated SEO data
         let updates = {
             category,
             location,
@@ -145,11 +184,35 @@ router.put('/:id', async (req, res) => {
             lastUpdated: new Date()
         };
 
+        // Update slug and meta data if category or location changed
         if (category !== list.category || location !== list.location) {
             updates.slug = `top-5-${category.toLowerCase()}-${location.toLowerCase()}`.replace(/\s+/g, '-');
             updates.metaTitle = `Top 5 ${category} Restaurants in ${location}, Singapore`;
             updates.metaDescription = `Discover the best ${category} restaurants in ${location}, Singapore. Our carefully curated list of the top 5 ${category.toLowerCase()} dining spots in ${location}.`;
+            
+            // Update meta keywords
+            updates.metaKeywords = [
+                `top 5 ${category} restaurants`,
+                `best ${category} food ${location}`,
+                `${category} restaurants Singapore`,
+                ...restaurantDetails.map(r => r.name),
+                ...restaurantDetails.map(r => r.nameChinese).filter(Boolean),
+                `${category} food guide`,
+                `${location} food guide`,
+                `Singapore ${category} restaurants`,
+                `best restaurants ${location}`
+            ].join(', ');
         }
+
+        // Update restaurant-specific SEO data
+        updates.restaurantSeoData = restaurantDetails.map(restaurant => {
+            const rank = restaurants.find(r => r.id === restaurant.id).rank;
+            return {
+                restaurantId: restaurant.id,
+                keywords: `${restaurant.name}, ${restaurant.nameChinese || ''}, best ${category} restaurant in ${location}, number ${rank} ${category} restaurant Singapore, ${restaurant.name} ${location}`,
+                description: `${restaurant.name} (${restaurant.nameChinese || ''}) is ranked #${rank} in our list of best ${category} restaurants in ${location}, Singapore. Experience authentic ${category} cuisine at this top-rated dining spot.`
+            };
+        });
 
         await list.update(updates);
         res.json(list);
