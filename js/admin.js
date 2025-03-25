@@ -44,6 +44,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const restaurantFormSection = document.getElementById('restaurant-form-section');
     const previewSection = document.getElementById('preview-section');
     const cancelFormBtn = document.getElementById('cancel-form');
+    
+    // Pagination variables
+    let currentPage = 1;
+    const restaurantsPerPage = 10;
+    let totalPages = 1;
+    let currentSortField = 'location';
+    let currentSortDirection = 'asc';
 
     // Fetch and display restaurants
     async function fetchRestaurants() {
@@ -53,18 +60,61 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw new Error('Failed to fetch restaurants');
             }
             restaurants = await response.json();
+            
+            // Default sort by location (A-Z)
+            sortRestaurants('location', 'asc');
+            
+            // Display first page
+            currentPage = 1;
             displayRestaurants();
         } catch (error) {
             showMessage('Failed to fetch restaurants: ' + error.message, 'error');
         }
     }
 
-    // Display restaurants in table
+    // Sort restaurants
+    function sortRestaurants(field, direction) {
+        currentSortField = field;
+        currentSortDirection = direction;
+        
+        restaurants.sort((a, b) => {
+            let valueA = a[field];
+            let valueB = b[field];
+            
+            // Handle case-insensitive string comparison
+            if (typeof valueA === 'string') {
+                valueA = valueA.toLowerCase();
+            }
+            if (typeof valueB === 'string') {
+                valueB = valueB.toLowerCase();
+            }
+            
+            if (valueA < valueB) {
+                return direction === 'asc' ? -1 : 1;
+            }
+            if (valueA > valueB) {
+                return direction === 'asc' ? 1 : -1;
+            }
+            return 0;
+        });
+    }
+
+    // Display restaurants in table with pagination
     function displayRestaurants(filtered = restaurants) {
         const tbody = restaurantTable.querySelector('tbody');
         tbody.innerHTML = '';
+        
+        // Update total pages
+        totalPages = Math.ceil(filtered.length / restaurantsPerPage);
+        
+        // Calculate start and end indices for current page
+        const startIdx = (currentPage - 1) * restaurantsPerPage;
+        const endIdx = Math.min(startIdx + restaurantsPerPage, filtered.length);
+        
+        // Create table rows for current page only
+        const currentPageItems = filtered.slice(startIdx, endIdx);
 
-        filtered.forEach(restaurant => {
+        currentPageItems.forEach(restaurant => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>${restaurant.name}</td>
@@ -112,6 +162,127 @@ document.addEventListener('DOMContentLoaded', function() {
 
         tbody.querySelectorAll('.delete-btn').forEach(btn => {
             btn.addEventListener('click', () => deleteRestaurant(btn.dataset.id));
+        });
+        
+        // Update pagination controls
+        updatePaginationControls(filtered.length);
+    }
+    
+    // Update pagination controls
+    function updatePaginationControls(totalItems) {
+        // Check if controls already exist
+        let paginationContainer = document.querySelector('.pagination-controls');
+        
+        // Create container if it doesn't exist
+        if (!paginationContainer) {
+            paginationContainer = document.createElement('div');
+            paginationContainer.className = 'pagination-controls';
+            
+            // Insert after table
+            const tableContainer = restaurantTable.parentNode;
+            tableContainer.insertBefore(paginationContainer, tableContainer.querySelector('button'));
+        }
+        
+        // Clear existing controls
+        paginationContainer.innerHTML = '';
+        
+        // Add sorting controls
+        const sortingControls = document.createElement('div');
+        sortingControls.className = 'sorting-controls';
+        sortingControls.innerHTML = `
+            <span>Sort by:</span>
+            <button class="sort-btn ${currentSortField === 'location' ? 'active' : ''}" data-field="location">
+                Location ${currentSortField === 'location' ? (currentSortDirection === 'asc' ? '↑' : '↓') : ''}
+            </button>
+            <button class="sort-btn ${currentSortField === 'name' ? 'active' : ''}" data-field="name">
+                Name ${currentSortField === 'name' ? (currentSortDirection === 'asc' ? '↑' : '↓') : ''}
+            </button>
+            <button class="sort-btn ${currentSortField === 'rating' ? 'active' : ''}" data-field="rating">
+                Rating ${currentSortField === 'rating' ? (currentSortDirection === 'asc' ? '↑' : '↓') : ''}
+            </button>
+        `;
+        paginationContainer.appendChild(sortingControls);
+        
+        // Add page info and navigation
+        if (totalPages > 1) {
+            const pageInfo = document.createElement('div');
+            pageInfo.className = 'page-info';
+            pageInfo.innerHTML = `
+                <span>Page ${currentPage} of ${totalPages}</span>
+                <span>(${totalItems} restaurants total)</span>
+            `;
+            paginationContainer.appendChild(pageInfo);
+            
+            const pageNav = document.createElement('div');
+            pageNav.className = 'page-navigation';
+            
+            // Previous button
+            const prevBtn = document.createElement('button');
+            prevBtn.className = 'page-btn prev';
+            prevBtn.innerHTML = '&laquo; Previous';
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    filterRestaurants();
+                }
+            });
+            pageNav.appendChild(prevBtn);
+            
+            // Page numbers
+            const pagesContainer = document.createElement('div');
+            pagesContainer.className = 'page-numbers';
+            
+            // Calculate visible pages (show max 5 pages at a time)
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
+            if (endPage - startPage < 4) {
+                startPage = Math.max(1, endPage - 4);
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = `page-number ${i === currentPage ? 'active' : ''}`;
+                pageBtn.textContent = i;
+                pageBtn.addEventListener('click', () => {
+                    currentPage = i;
+                    filterRestaurants();
+                });
+                pagesContainer.appendChild(pageBtn);
+            }
+            pageNav.appendChild(pagesContainer);
+            
+            // Next button
+            const nextBtn = document.createElement('button');
+            nextBtn.className = 'page-btn next';
+            nextBtn.innerHTML = 'Next &raquo;';
+            nextBtn.disabled = currentPage === totalPages;
+            nextBtn.addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    filterRestaurants();
+                }
+            });
+            pageNav.appendChild(nextBtn);
+            
+            paginationContainer.appendChild(pageNav);
+        }
+        
+        // Add event listeners to sorting buttons
+        paginationContainer.querySelectorAll('.sort-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const field = btn.dataset.field;
+                let direction = 'asc';
+                
+                // Toggle direction if clicking the same field
+                if (field === currentSortField) {
+                    direction = currentSortDirection === 'asc' ? 'desc' : 'asc';
+                }
+                
+                sortRestaurants(field, direction);
+                currentPage = 1; // Reset to first page on sort
+                filterRestaurants();
+            });
         });
     }
 
