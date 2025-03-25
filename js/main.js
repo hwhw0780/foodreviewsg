@@ -74,11 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'seafood': 'Seafood (海鲜)',
         'dessert': 'Dessert (甜点)',
         'cafe': 'Café (咖啡馆)',
-        'bubble-tea': 'Bubble Tea (珍珠奶茶)',
         'vegetarian': 'Vegetarian (素食)',
-        'frog-porridge': 'Frog Porridge (田鸡粥)',
-        'breakfast': 'Breakfast (早餐店)',
-        'mixed-rice': 'Mixed Rice (菜饭)',
         'mala-pot': 'Mala Pot (麻辣香锅)'
     };
 
@@ -752,7 +748,7 @@ document.addEventListener('DOMContentLoaded', function() {
             { category: 'Local', description: 'Comforting local delights', icon: 'fa-home' },
             { category: 'Chicken Rice', description: 'Classic Hainanese chicken rice', icon: 'fa-drumstick-bite' },
             { category: 'Café', description: 'Relaxing café experience', icon: 'fa-coffee' },
-            { category: 'Bubble Tea', description: 'Refreshing bubble tea', icon: 'fa-glass-whiskey' }
+            { category: 'Dim Sum', description: 'Delicious bite-sized treats', icon: 'fa-cookie' }
         ],
         fancy: [
             { category: 'Japanese', description: 'Premium Japanese cuisine', icon: 'fa-fish' },
