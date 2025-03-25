@@ -143,9 +143,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button class="edit-btn" data-id="${restaurant.id}">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button class="duplicate-btn" data-id="${restaurant.id}">
-                        <i class="fas fa-copy"></i>
-                    </button>
                     <button class="delete-btn" data-id="${restaurant.id}">
                         <i class="fas fa-trash"></i>
                     </button>
@@ -1341,81 +1338,4 @@ document.addEventListener('DOMContentLoaded', function() {
     if (window.location.href.includes('dashboard.html')) {
         fetchPendingReviews();
     }
-
-    // Setup restaurant table event delegation
-    setupRestaurantTable();
-});
-
-function setupRestaurantTable() {
-    // Setup table event delegation
-    if (restaurantTable) {
-        restaurantTable.addEventListener('click', function(e) {
-            // If the clicked element is the edit button
-            if (e.target.classList.contains('edit-btn') || e.target.parentElement.classList.contains('edit-btn')) {
-                const row = e.target.closest('tr');
-                const id = row.dataset.id;
-                editRestaurant(id);
-            }
-            
-            // If the clicked element is the duplicate button
-            if (e.target.classList.contains('duplicate-btn') || e.target.parentElement.classList.contains('duplicate-btn')) {
-                const row = e.target.closest('tr');
-                const id = row.dataset.id;
-                duplicateRestaurant(id);
-            }
-            
-            // If the clicked element is the delete button
-            if (e.target.classList.contains('delete-btn') || e.target.parentElement.classList.contains('delete-btn')) {
-                const row = e.target.closest('tr');
-                const id = row.dataset.id;
-                deleteRestaurant(id);
-            }
-        });
-    }
-}
-
-// Function to duplicate a restaurant
-async function duplicateRestaurant(id) {
-    try {
-        const response = await fetch(`/api/restaurants/${id}`);
-        if (!response.ok) {
-            throw new Error('Failed to fetch restaurant data');
-        }
-        
-        const restaurant = await response.json();
-        
-        // Modify the restaurant data for duplication
-        delete restaurant._id; // Remove ID so a new one will be assigned
-        restaurant.name = `${restaurant.name} (Copy)`;
-        
-        // Show the form section
-        restaurantFormSection.style.display = 'block';
-        document.getElementById('form-title').textContent = 'Add New Restaurant (Duplicated)';
-        
-        // Fill the form with the duplicated data
-        document.getElementById('restaurant-name').value = restaurant.name;
-        document.getElementById('restaurant-name-chinese').value = restaurant.chineseName || '';
-        document.getElementById('restaurant-category').value = restaurant.category;
-        document.getElementById('restaurant-website').value = restaurant.website || '';
-        document.getElementById('restaurant-phone').value = restaurant.phone || '';
-        document.getElementById('restaurant-location').value = restaurant.location;
-        document.getElementById('restaurant-address').value = restaurant.address || '';
-        document.getElementById('price-range').value = restaurant.priceRange;
-        document.getElementById('restaurant-rating').value = restaurant.rating || 0;
-        document.getElementById('restaurant-reviews').value = restaurant.reviewCount || 0;
-        document.getElementById('google-review-url').value = restaurant.googleReviewUrl || '';
-        document.getElementById('menu-url').value = restaurant.menuUrl || '';
-        document.getElementById('booking-url').value = restaurant.bookingUrl || '';
-        document.getElementById('facebook-url').value = restaurant.facebookUrl || '';
-        document.getElementById('xhs-url').value = restaurant.xhsUrl || '';
-        
-        // Note: Images won't be duplicated as they require file uploads
-        
-        // Scroll to the form
-        restaurantFormSection.scrollIntoView({ behavior: 'smooth' });
-        
-    } catch (error) {
-        console.error('Error duplicating restaurant:', error);
-        showToast('Failed to duplicate restaurant', 'error');
-    }
-}
+}); 
