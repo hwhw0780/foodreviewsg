@@ -64,6 +64,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // Default sort by location (A-Z)
             sortRestaurants('location', 'asc');
             
+            // Calculate total pages
+            totalPages = Math.ceil(restaurants.length / restaurantsPerPage);
+            
             // Display first page
             currentPage = 1;
             displayRestaurants();
@@ -179,8 +182,8 @@ document.addEventListener('DOMContentLoaded', function() {
             paginationContainer.className = 'pagination-controls';
             
             // Insert after table
-            const tableContainer = restaurantTable.parentNode;
-            tableContainer.insertBefore(paginationContainer, tableContainer.querySelector('button'));
+            const tableContainer = document.querySelector('.restaurant-list');
+            tableContainer.appendChild(paginationContainer);
         }
         
         // Clear existing controls
