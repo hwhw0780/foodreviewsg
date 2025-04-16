@@ -514,10 +514,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Statistics configuration
     const statisticsConfig = {
-        'daily-users': { min: 850, max: 1230 },
-        'daily-bookings': { min: 38, max: 61 },
-        'total-restaurants': { value: 400 },
-        'total-reviews': { value: 200000 }
+        'daily-users': { min: 850, max: 1589 },   // Wider range for daily users
+        'daily-bookings': { min: 35, max: 72 },   // Wider range for daily bookings
+        'total-restaurants': { value: 400 },      // Fixed at 400+
+        'total-reviews': { value: 200000 }        // Fixed at 200,000+
     };
 
     let lastHourlyUpdate = null;
@@ -535,13 +535,23 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Check if we need to generate new random values (if it's a new hour or no previous update)
         if (!lastUpdate || lastUpdate.getHours() !== now.getHours() || lastUpdate.getDate() !== now.getDate()) {
-            // Generate new random values for hourly changing stats
-            window.currentStats = {
-                'daily-users': getRandomInRange(statisticsConfig['daily-users'].min, statisticsConfig['daily-users'].max),
-                'daily-bookings': getRandomInRange(statisticsConfig['daily-bookings'].min, statisticsConfig['daily-bookings'].max),
-                'total-restaurants': statisticsConfig['total-restaurants'].value,
-                'total-reviews': statisticsConfig['total-reviews'].value
-            };
+            // For the very first run (no previous update), use exact values from join.html
+            if (!lastUpdate) {
+                window.currentStats = {
+                    'daily-users': 1222,  // Exact value from join.html
+                    'daily-bookings': 51, // Exact value from join.html
+                    'total-restaurants': statisticsConfig['total-restaurants'].value,
+                    'total-reviews': statisticsConfig['total-reviews'].value
+                };
+            } else {
+                // Generate new random values for hourly changing stats
+                window.currentStats = {
+                    'daily-users': getRandomInRange(statisticsConfig['daily-users'].min, statisticsConfig['daily-users'].max),
+                    'daily-bookings': getRandomInRange(statisticsConfig['daily-bookings'].min, statisticsConfig['daily-bookings'].max),
+                    'total-restaurants': statisticsConfig['total-restaurants'].value,
+                    'total-reviews': statisticsConfig['total-reviews'].value
+                };
+            }
             
             // Store the new values and update time in localStorage
             localStorage.setItem('currentStats', JSON.stringify(window.currentStats));

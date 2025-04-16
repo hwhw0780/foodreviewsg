@@ -1,234 +1,359 @@
 /* Restaurant Details Styles */
+:root {
+    --primary-color: #e74c3c;
+    --primary-dark: #c0392b;
+    --secondary-color: #3498db;
+    --secondary-dark: #2980b9;
+    --success-color: #2ecc71;
+    --success-dark: #27ae60;
+    --warning-color: #f1c40f;
+    --text-dark: #2c3e50;
+    --text-medium: #34495e;
+    --text-light: #7f8c8d;
+    --background-light: #f8f9fa;
+    --background-white: #ffffff;
+    --border-light: #ecf0f1;
+    --shadow-sm: 0 2px 10px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 15px rgba(0,0,0,0.08);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 15px;
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+}
+
+body {
+    background-color: var(--background-light);
+    color: var(--text-dark);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    line-height: 1.6;
+}
+
 .restaurant-details {
     padding-top: 60px;
     max-width: 1200px;
     margin: 0 auto;
+    background-color: var(--background-light);
 }
 
 /* Banner Section */
 .banner-section {
     width: 100%;
-    height: 400px;
+    height: 0;
+    padding-bottom: 75%; /* 4:3 aspect ratio (75% of width) */
     overflow: hidden;
     position: relative;
+    border-radius: var(--radius-md) var(--radius-md) 0 0;
+    box-shadow: var(--shadow-md);
 }
 
 .banner-section img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 /* Info Section */
 .info-section {
-    background: white;
-    padding: 2rem;
-    margin: -50px 2rem 0;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    background: var(--background-white);
+    padding: var(--spacing-lg) var(--spacing-lg);
+    margin: -50px var(--spacing-lg) 0;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
     position: relative;
+    border: 1px solid var(--border-light);
 }
 
 .main-info h1 {
     font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-    color: #333;
+    margin-bottom: var(--spacing-xs);
+    color: var(--text-dark);
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
 }
 
 .chinese-name {
     font-size: 1.5rem;
-    color: #666;
-    margin-bottom: 1rem;
+    color: var(--text-medium);
+    margin-bottom: var(--spacing-sm);
+    font-weight: 400;
 }
 
 .category-location {
     font-size: 1.1rem;
-    color: #666;
-    margin-bottom: 1rem;
+    color: var(--text-medium);
+    margin-bottom: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .separator {
-    margin: 0 0.5rem;
+    margin: 0 var(--spacing-xs);
+    color: var(--text-light);
 }
 
 .rating-section {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-sm);
 }
 
 .stars {
-    color: #f1c40f;
+    color: var(--warning-color);
+    letter-spacing: 1px;
 }
 
 .price-range {
-    color: #2ecc71;
-    font-weight: 500;
+    color: var(--success-color);
+    font-weight: 600;
+    background-color: rgba(46, 204, 113, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.9rem;
 }
 
 /* Action Buttons */
 .action-buttons {
     display: flex;
-    gap: 1rem;
-    margin: 1.5rem 0;
+    gap: var(--spacing-sm);
+    margin: var(--spacing-md) 0;
 }
 
 .action-btn {
-    padding: 0.8rem 1.5rem;
-    border-radius: 5px;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-sm);
     text-decoration: none;
     color: white;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    transition: background-color 0.3s ease;
+    gap: var(--spacing-xs);
+    transition: all 0.3s ease;
+    font-weight: 500;
+    box-shadow: var(--shadow-sm);
 }
 
 .menu-btn {
-    background-color: #e74c3c;
+    background-color: var(--primary-color);
 }
 
 .booking-btn {
-    background-color: #2ecc71;
+    background-color: var(--success-color);
 }
 
 .google-btn {
-    background-color: #4285f4;
+    background-color: var(--secondary-color);
 }
 
 .action-btn:hover {
-    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }
 
 /* Contact Info */
 .contact-info {
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid #eee;
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--border-light);
 }
 
 .info-item {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-    color: #666;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-medium);
 }
 
 .info-item:last-child {
     margin-bottom: 0;
 }
 
+.info-item i {
+    color: var(--primary-color);
+    font-size: 1.1rem;
+    width: 24px;
+    text-align: center;
+}
+
 .info-item a {
-    color: #3498db;
+    color: var(--secondary-color);
     text-decoration: none;
+    transition: color 0.2s;
+    font-weight: 500;
 }
 
 .info-item a:hover {
+    color: var(--secondary-dark);
     text-decoration: underline;
 }
 
 /* Photos Section */
 .photos-section {
-    padding: 2rem;
-    margin-top: 2rem;
+    padding: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+    background-color: var(--background-white);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-light);
 }
 
 .photos-section h2 {
-    margin-bottom: 1.5rem;
-    color: #333;
+    margin-bottom: var(--spacing-md);
+    color: var(--text-dark);
+    font-size: 1.8rem;
+    font-weight: 600;
+    position: relative;
+    padding-bottom: var(--spacing-xs);
+}
+
+.photos-section h2::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: var(--primary-color);
+    border-radius: 3px;
 }
 
 .photos-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
+    gap: var(--spacing-sm);
 }
 
 .photos-grid img {
     width: 100%;
     aspect-ratio: 1;
     object-fit: cover;
-    border-radius: 5px;
+    border-radius: var(--radius-sm);
     cursor: pointer;
-    transition: transform 0.3s ease;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+    border: 2px solid transparent;
 }
 
 .photos-grid img:hover {
-    transform: scale(1.05);
+    transform: scale(1.03);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-color);
 }
 
 /* Reviews Section */
 .reviews-section {
-    padding: 2rem;
-    margin-top: 2rem;
+    padding: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+    background-color: var(--background-white);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-light);
 }
 
 .reviews-section h2 {
-    margin-bottom: 1.5rem;
-    color: #333;
+    margin-bottom: var(--spacing-md);
+    color: var(--text-dark);
+    font-size: 1.8rem;
+    font-weight: 600;
+    position: relative;
+    padding-bottom: var(--spacing-xs);
+}
+
+.reviews-section h2::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: var(--primary-color);
+    border-radius: 3px;
 }
 
 .reviews-container {
     display: grid;
-    gap: 1.5rem;
+    gap: var(--spacing-md);
 }
 
 .review-card {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    background: var(--background-white);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-light);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.review-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
 }
 
 .review-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 1rem;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+    padding-bottom: var(--spacing-xs);
+    border-bottom: 1px solid var(--border-light);
 }
 
 .reviewer-name {
     font-weight: 600;
-    color: #333;
+    color: var(--text-dark);
+    font-size: 1.1rem;
 }
 
 .review-rating {
-    color: #f1c40f;
+    color: var(--warning-color);
+    font-size: 1.1rem;
+    letter-spacing: 1px;
 }
 
 .review-comment {
-    color: #666;
-    line-height: 1.6;
+    color: var(--text-medium);
+    line-height: 1.7;
     white-space: pre-line;
+    font-size: 1rem;
 }
 
 /* Social Links */
 .social-links {
     display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid #eee;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-sm);
+    padding-top: var(--spacing-sm);
+    border-top: 1px solid var(--border-light);
 }
 
 .social-link {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-sm);
     text-decoration: none;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    background: white;
-    border: 1px solid #eee;
-    padding: 8px;
+    transition: all 0.3s ease;
+    background: var(--background-white);
+    border: 1px solid var(--border-light);
+    padding: 6px;
 }
 
 .social-link:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: var(--shadow-sm);
+    border-color: var(--primary-color);
 }
 
 .social-link img {
@@ -243,98 +368,122 @@
 
 /* Review Form Section */
 .review-form-section {
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 1px solid #eee;
+    margin-top: var(--spacing-xl);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--border-light);
 }
 
 .review-form-section h3 {
-    color: #333;
-    font-size: 1.8rem;
-    margin-bottom: 1.5rem;
+    color: var(--text-dark);
+    font-size: 1.6rem;
+    margin-bottom: var(--spacing-md);
+    font-weight: 600;
+    position: relative;
+    padding-bottom: var(--spacing-xs);
+}
+
+.review-form-section h3::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: var(--primary-color);
+    border-radius: 3px;
 }
 
 .review-form {
     max-width: 600px;
     margin: 0 auto;
-    background: white;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    background: var(--background-white);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-light);
 }
 
 .review-form .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--spacing-md);
 }
 
 .review-form label {
     display: block;
-    color: #333;
+    color: var(--text-dark);
     font-weight: 500;
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--spacing-xs);
+    font-size: 1rem;
 }
 
 .review-form input[type="text"],
 .review-form textarea {
     width: 100%;
-    padding: 0.8rem;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
     font-size: 1rem;
-    transition: border-color 0.3s ease;
+    transition: all 0.3s ease;
+    background-color: var(--background-light);
 }
 
 .review-form input[type="text"]:focus,
 .review-form textarea:focus {
     outline: none;
-    border-color: #e74c3c;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.15);
+    background-color: var(--background-white);
 }
 
 .star-rating {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.4rem;
     font-size: 1.5rem;
     color: #ddd;
     cursor: pointer;
 }
 
 .star-rating i {
-    transition: color 0.3s ease;
+    transition: color 0.2s ease, transform 0.1s ease;
 }
 
 .star-rating i:hover,
 .star-rating i.active {
-    color: #f1c40f;
+    color: var(--warning-color);
+    transform: scale(1.1);
 }
 
 .submit-review-btn {
-    background: #e74c3c;
+    background: var(--primary-color);
     color: white;
     border: none;
-    padding: 1rem 2rem;
-    border-radius: 5px;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--radius-sm);
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
     width: 100%;
+    box-shadow: var(--shadow-sm);
 }
 
 .submit-review-btn:hover {
-    background: #c0392b;
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }
 
 /* Success Message */
 .review-success {
-    background: #2ecc71;
+    background: var(--success-color);
     color: white;
-    padding: 1rem;
-    border-radius: 5px;
+    padding: var(--spacing-sm);
+    border-radius: var(--radius-sm);
     text-align: center;
-    margin-top: 1rem;
+    margin-top: var(--spacing-sm);
     display: none;
     font-weight: 500;
-    animation: fadeIn 0.3s ease-in-out;
+    animation: fadeIn 0.4s ease-in-out;
+    box-shadow: var(--shadow-sm);
 }
 
 @keyframes fadeIn {
@@ -351,46 +500,94 @@
 /* Responsive Design */
 @media (max-width: 768px) {
     .banner-section {
-        height: 300px;
+        padding-bottom: 75%; /* Maintain 4:3 aspect ratio */
+        border-radius: 0;
     }
 
     .info-section {
-        margin: -30px 1rem 0;
-        padding: 1.5rem;
+        margin: -30px var(--spacing-sm) 0;
+        padding: var(--spacing-md);
+        border-radius: var(--radius-sm);
     }
 
     .main-info h1 {
-        font-size: 2rem;
+        font-size: 1.8rem;
+    }
+    
+    .chinese-name {
+        font-size: 1.2rem;
     }
 
     .action-buttons {
         flex-direction: column;
+        gap: var(--spacing-xs);
     }
 
     .action-btn {
         width: 100%;
         justify-content: center;
+        padding: 0.8rem;
+    }
+
+    .photos-section, 
+    .reviews-section {
+        padding: var(--spacing-md);
+        border-radius: var(--radius-sm);
+        margin-top: var(--spacing-md);
+    }
+    
+    .photos-section h2,
+    .reviews-section h2 {
+        font-size: 1.5rem;
     }
 
     .photos-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 8px;
     }
 
     .social-links {
         flex-direction: row;
-        justify-content: center;
+        justify-content: flex-start;
+        gap: 10px;
+        flex-wrap: wrap;
     }
 
     .social-link {
-        width: 36px;
-        height: 36px;
+        width: 30px;
+        height: 30px;
+        padding: 4px;
+        border-radius: 4px;
+    }
+
+    .social-link img {
+        max-width: 100%;
+        max-height: 100%;
     }
 
     .review-form {
-        padding: 1.5rem;
+        padding: var(--spacing-md);
+        border-radius: var(--radius-sm);
+    }
+    
+    .review-form-section h3 {
+        font-size: 1.4rem;
     }
 
     .star-rating {
         font-size: 1.3rem;
+    }
+    
+    .review-form label {
+        font-size: 0.95rem;
+    }
+    
+    .review-form input[type="text"],
+    .review-form textarea {
+        padding: 0.7rem;
+    }
+    
+    .submit-review-btn {
+        padding: 0.7rem;
     }
 } 
